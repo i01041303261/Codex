@@ -1,0 +1,857 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CODEX: 끝없는 차원의 모험</title>
+<style>
+:root{--bg:#0d0a05;--panel:#1b263b;--gold:#ffb703;--purple:#6930c3;--blue:#5b8fd4;--text:#f4f1de}*{box-sizing:border-box}body{margin:0;color:var(--text);font-family:system-ui;background:radial-gradient(circle at 20% 10%,#342056,#17152f 35%,#05050d 100%);min-height:100vh}.wrap{max-width:1050px;margin:auto;padding:20px}h1{font-size:clamp(26px,5vw,46px);text-shadow:0 0 20px #6930c3}.sub{color:#b8c7e8}.stats,.nav{display:flex;gap:8px;flex-wrap:wrap}.stat,.card,.game{background:#1b263bdd;border:1px solid #91a4d244;border-radius:16px;padding:14px}.stat b{color:#ffcf5a}button{border:0;border-radius:12px;padding:12px 16px;background:#30376d;color:white;font-weight:800;cursor:pointer;margin:3px}button.primary{background:linear-gradient(135deg,#6930c3,#5b8fd4)}.screen{display:none}.screen.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.map{height:350px;position:relative;background:linear-gradient(135deg,#17152b,#22294c);border-radius:20px;overflow:hidden}.node{position:absolute;width:115px;text-align:center;padding:12px 5px;border-radius:14px;background:#20274a;border:2px solid #5b8fd4;cursor:pointer}.node small{display:block;color:#b8c7e8}.n1{left:5%;top:40%}.n2{left:27%;top:15%}.n3{left:27%;top:65%}.n4{left:49%;top:40%}.n5{right:5%;top:15%}.n6{right:5%;top:65%}.game{text-align:center;margin-top:12px}.big{font-size:44px;margin:15px}.msg{min-height:28px;color:#ffcf5a;font-weight:800}.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.mini button{width:100%;min-height:105px}input{padding:11px;border-radius:10px;border:1px solid #777;background:#101323;color:white} .tag{display:inline-block;padding:6px 9px;margin:3px;border-radius:999px;background:#6930c344}footer{text-align:center;color:#7f88a9;padding:25px}
+
+.rouletteInfo{margin:14px 0;padding:14px;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(0,0,0,.22);white-space:pre-line;line-height:1.6}
+.rouletteResult{font-size:1.1rem;font-weight:700;min-height:2.5em;white-space:pre-line}
+
+.shopBalance{margin:12px 0;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.08);font-size:1.05rem}
+.shopGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:18px 0}
+.shopItem{padding:18px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);text-align:center}
+.shopIcon{font-size:2.3rem;margin-bottom:6px}
+.shopItem h3{margin:8px 0}
+.shopItem p{min-height:40px}
+.shopItem strong{display:block;margin:10px 0}
+.shopBuy{width:100%}
+.villageArt{width:100%;display:block;border-radius:18px;margin-bottom:14px;border:1px solid #91a4d244;transition:background 1.2s ease}
+.villageArt.tod-morning{background:linear-gradient(180deg,#ffd9a0,#ff9f7a 45%,#3a2456)}
+.villageArt.tod-day{background:linear-gradient(180deg,#8fd3ff,#cdeaff 45%,#3a2456)}
+.villageArt.tod-evening{background:linear-gradient(180deg,#4b2f73,#ff7a4a 55%,#3a2456)}
+.villageArt.tod-night{background:linear-gradient(180deg,#1b1240,#2c1b4d 60%,#3a2456)}
+.windowLight,.lampBulb{transition:opacity .8s ease}
+.battleGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.unit{background:#0f1730;border:1px solid #2d3b68;border-radius:18px;padding:16px;text-align:center}.battleBtns{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.hpbar{height:14px;background:#293452;border-radius:99px;overflow:hidden}.hpbar i{display:block;height:100%;width:100%;background:#4dd48a;transition:.2s}.hpbar.enemy i{background:#e85b6b}.battleGrid .big{font-size:4rem}@media(max-width:650px){.battleGrid{grid-template-columns:1fr}}
+</style>
+<style>
+#codexResultOverlay{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+#codexResultBox{max-width:520px;width:100%;background:#11182b;border:1px solid #344263;border-radius:22px;padding:28px;text-align:center;box-shadow:0 20px 60px #0008}
+#codexResultBox.win{border-color:#3fa66b}.codexFail{border-color:#a94a5a!important}
+#codexResultTitle{font-size:2rem;font-weight:900;margin-bottom:12px}.codexResultText{white-space:pre-line;color:#c9d3ee;margin-bottom:20px}
+</style>
+</head><body><div class="wrap">
+<div class="sub">🌌 차원이 끝나는 곳까지</div><h1>CODEX: 끝없는 차원의 모험</h1>
+<div class="stats"><div class="stat">🪙 토큰 <b id="tokens">100</b></div><div class="stat">✨ EXP <b id="xp">0</b></div><div class="stat">🆙 Lv.<b id="level">1</b></div></div>
+<div class="nav"><button onclick="show('home')" data-action="home">🏠 마을</button><button onclick="show('map')" data-action="map">🗺️ 차원 탐험</button><button onclick="show('mini')" data-action="minigame">🎮 미니게임 월드</button><button onclick="showBook()" data-action="collection">🏆 도감</button><button onclick="show('quest')">📋 퀘스트</button></div>
+<section id="home" class="screen active"><div class="card">
+<svg class="villageArt" viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="코덱스 마을 일러스트">
+  <defs>
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff6d6"/>
+      <stop offset="100%" stop-color="#ffcf5a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mtn1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a2a63"/>
+      <stop offset="100%" stop-color="#241a44"/>
+    </linearGradient>
+    <linearGradient id="mtn2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a3480"/>
+      <stop offset="100%" stop-color="#2c2054"/>
+    </linearGradient>
+    <linearGradient id="roofGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffcf5a"/>
+      <stop offset="100%" stop-color="#e08b1f"/>
+    </linearGradient>
+    <filter id="skyBlur" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+  </defs>
+
+  <circle id="skyGlow" cx="670" cy="55" r="40" fill="#ffcf5a" opacity="0.55" filter="url(#skyBlur)"/>
+  <circle id="skyBody" cx="670" cy="55" r="20" fill="#fff3c4"/>
+
+  <g id="starsGroup">
+  <circle cx="90" cy="35" r="2" fill="#fff"/>
+  <circle cx="150" cy="60" r="1.6" fill="#fff"/>
+  <circle cx="240" cy="30" r="2" fill="#fff"/>
+  <circle cx="330" cy="50" r="1.5" fill="#fff"/>
+  <circle cx="420" cy="25" r="1.8" fill="#fff"/>
+  <circle cx="540" cy="40" r="1.6" fill="#fff"/>
+  <circle cx="60" cy="80" r="1.4" fill="#fff"/>
+  <circle cx="480" cy="70" r="1.3" fill="#fff"/>
+  </g>
+
+  <path d="M0,150 L60,95 L120,140 L180,80 L250,150 L320,100 L400,150 L470,90 L540,150 L610,110 L680,150 L740,100 L800,150 L800,240 L0,240 Z" fill="url(#mtn1)"/>
+  <path d="M0,190 L90,140 L170,180 L260,130 L350,190 L430,150 L520,190 L610,145 L700,190 L800,160 L800,240 L0,240 Z" fill="url(#mtn2)"/>
+
+  <ellipse cx="400" cy="238" rx="420" ry="16" fill="#1a1330"/>
+
+  <!-- 왼쪽 오두막 -->
+  <g>
+    <rect x="70" y="175" width="70" height="50" rx="4" fill="#2c2354" stroke="#5b8fd4" stroke-width="2"/>
+    <polygon points="60,178 105,140 150,178" fill="url(#roofGold)"/>
+    <rect x="95" y="195" width="20" height="30" fill="#1b1638"/>
+    <rect class="windowLight" x="78" y="185" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
+  </g>
+
+  <!-- 가운데 탑 (마을 중심) -->
+  <g>
+    <rect x="355" y="120" width="90" height="105" rx="6" fill="#342a5e" stroke="#6930c3" stroke-width="2.5"/>
+    <polygon points="345,124 400,70 455,124" fill="url(#roofGold)"/>
+    <circle cx="400" cy="78" r="5" fill="#ffcf5a"/>
+    <rect x="385" y="185" width="30" height="40" fill="#1b1638"/>
+    <rect class="windowLight" x="368" y="140" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
+    <rect class="windowLight" x="416" y="140" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
+    <rect class="windowLight" x="392" y="160" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
+  </g>
+
+  <!-- 오른쪽 오두막 -->
+  <g>
+    <rect x="640" y="170" width="80" height="55" rx="4" fill="#2c2354" stroke="#5b8fd4" stroke-width="2"/>
+    <polygon points="628,173 680,132 732,173" fill="url(#roofGold)"/>
+    <rect x="668" y="195" width="22" height="30" fill="#1b1638"/>
+    <rect class="windowLight" x="650" y="182" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
+    <rect class="windowLight" x="696" y="182" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
+  </g>
+
+  <!-- 가로등 -->
+  <g stroke="#b8c7e8" stroke-width="2">
+    <line x1="230" y1="180" x2="230" y2="225"/>
+    <circle class="lampBulb" cx="230" cy="175" r="7" fill="#ffcf5a"/>
+  </g>
+  <g stroke="#b8c7e8" stroke-width="2">
+    <line x1="560" y1="185" x2="560" y2="225"/>
+    <circle class="lampBulb" cx="560" cy="180" r="7" fill="#ffcf5a"/>
+  </g>
+
+  <!-- 깃발 -->
+  <polygon points="400,70 400,55 420,62" fill="#6930c3"/>
+</svg>
+<h2>🏠 코덱스 마을</h2><p>차원을 탐험하고 보물과 칭호를 모아보세요.</p><button class="primary" onclick="show('map')">🗺️ 모험 시작</button><button onclick="show('mini')" data-action="minigame">🎮 미니게임 월드</button></div><div class="grid" style="margin-top:12px"><div class="card"><h3>📖 기록</h3><p id="record">모험을 시작해보세요.</p></div><div class="card"><h3>🎯 성장</h3><p>다음 레벨까지 <b id="need">100</b> EXP</p></div></div>
+<button onclick="showShop()">🛒 상점</button><button onclick="show('battle'); startBattle()">⚔️ 전투</button><button onclick="show('quest')">📋 일일퀘스트</button><button onclick="show('book')">🏆 칭호창</button>
+</section>
+<section id="map" class="screen"><div class="card"><h2>🗺️ 차원 지도</h2><p>지역을 클릭해 탐험하세요.</p><div class="map"><div class="node n1" onclick="adventure(1)">🌳 초원<small>1차원</small></div><div class="node n2" onclick="adventure(2)">🏜️ 사막<small>2차원</small></div><div class="node n3" onclick="adventure(3)">❄️ 얼음왕국<small>3차원</small></div><div class="node n4" onclick="adventure(4)">🌋 화산<small>4차원</small></div><div class="node n5" onclick="adventure(5)">🌌 우주<small>5차원</small></div><div class="node n6" onclick="adventure(6)">🔐 비밀 차원<small>???</small></div></div></div></section>
+<section id="adv" class="screen"><div class="game"><h2 id="zone">🌳 초원</h2><div class="big" id="icon">👾</div><p id="event">탐험 중...</p><button class="primary" onclick="explore()">🔎 계속 탐험</button><button onclick="startBattle()">⚔️ 몬스터 전투</button><button onclick="startBossFight()">👑 보스 도전</button><button onclick="show('map')">🗺️ 지도</button><div class="msg" id="eventMsg"></div></div></section>
+<section id="mini" class="screen"><div class="card"><h2>🎮 미니게임 월드</h2><p>클리어하면 EXP와 토큰을 얻습니다.</p><div class="mini"><button onclick="direction()">⬅️➡️<br>방향 맞추기<br>+10 EXP +15🪙</button><button onclick="memory()">🧠<br>기억력 챌린지<br>+15 EXP +20🪙</button><button onclick="mathGame()">🔢<br>숫자 챌린지<br>+20 EXP +25🪙</button><button onclick="reaction()">⚡<br>반응속도<br>+20 EXP +30🪙</button></div></div><div class="game"><h3 id="mtitle">미니게임을 골라주세요!</h3><div class="big" id="prompt">🎮</div><div id="area"></div><div class="msg" id="mmsg"></div></div></section>
+<section id="book" class="screen"><div class="card"><h2>🏆 모험 도감</h2><p>칭호 <b id="titles">0</b>/10</p><div id="titleList"></div><h3>🌌 발견한 차원</h3><div id="zones"></div></div></section>
+
+<section id="battle" class="screen"><div class="card"><h2>⚔️ 차원 전투</h2><div class="battleGrid"><div class="unit"><div class="big" id="playerIcon">🧙</div><h3>CODEX 탐험가</h3><p>❤️ <b id="playerHp">100/100</b></p><div class="hpbar"><i id="playerHpBar"></i></div><p>⚔️ 공격력 <b id="playerAtk">10</b> · 🛡️ 방어력 <b id="playerDef">3</b></p></div><div class="unit"><div class="big" id="enemyIcon">🐺</div><h3 id="enemyName">초원 늑대</h3><p>❤️ <b id="enemyHp">50/50</b></p><div class="hpbar enemy"><i id="enemyHpBar"></i></div><p>⚔️ 공격력 <b id="enemyAtk">7</b></p></div></div><div class="battleBtns"><button class="primary" id="attackBtn" onclick="attackEnemy()">⚔️ 공격</button><button onclick="defendEnemy()">🛡️ 방어</button><button onclick="healBattle()">❤️ 포션</button><button onclick="battleSkill()">✨ 스킬</button><button onclick="show('home')">🏠 도망</button></div><pre id="battleLog" class="msg"></pre><div id="bossBox" class="card" style="display:none"><h3>👑 보스 등장!</h3><div class="big" id="bossIcon">👑</div><p id="bossName">숲의 수호자</p><p>❤️ <b id="bossHp">300/300</b></p><div class="hpbar enemy"><i id="bossHpBar"></i></div><button class="primary" onclick="bossAttackEnemy()">⚔️ 보스 공격</button></div></div></section>
+<section id="quest" class="screen"><div class="card"><h2>📋 일일퀘스트</h2><p>⬜ 차원 탐험 1회</p><p>⬜ 미니게임 1회</p><p>⬜ EXP 50 획득</p><button class="primary" onclick="questReward()">🎁 보상 받기</button><p id="qmsg"></p></div></section>
+<section id="shop" class="screen">
+  <div class="card">
+    <h2>🛒 CODEX 상점</h2>
+    <p class="sub">보유 🪙 토큰으로 아이템을 구매하세요.</p>
+    <div class="shopBalance">🪙 보유 토큰: <strong id="shopTokens">0</strong></div>
+
+    <div class="shopGrid">
+      <div class="shopItem">
+        <div class="shopIcon">✨</div>
+        <h3>EXP 부스터</h3>
+        <p>즉시 EXP +50</p>
+        <strong>🪙 100</strong>
+        <button class="primary shopBuy" data-shop-item="exp50">구매</button>
+      </div>
+
+      <div class="shopItem">
+        <div class="shopIcon">🪙</div>
+        <h3>토큰 보급 상자</h3>
+        <p>토큰 +100</p>
+        <strong>🪙 180</strong>
+        <button class="primary shopBuy" data-shop-item="token100">구매</button>
+      </div>
+
+      <div class="shopItem">
+        <div class="shopIcon">🎰</div>
+        <h3>룰렛 기회 +1</h3>
+        <p>현재 선택한 차원의 룰렛 기회 +1</p>
+        <strong>🪙 120</strong>
+        <button class="primary shopBuy" data-shop-item="roulette1">구매</button>
+      </div>
+
+      <div class="shopItem">
+        <div class="shopIcon">🏆</div>
+        <h3>랜덤 칭호 상자</h3>
+        <p>새로운 칭호 1개 도전</p>
+        <strong>🪙 250</strong>
+        <button class="primary shopBuy" data-shop-item="title">구매</button>
+      </div>
+    </div>
+
+    <p id="shopMsg" class="rouletteResult"></p>
+    <button class="secondary" onclick="show('home')">🏠 마을로 돌아가기</button>
+  </div>
+</section>
+<footer>CODEX • Endless Dimension | ChatGPT: Codex, Claude made</footer></div>
+
+
+
+<script>
+(() => {
+  "use strict";
+
+  const STORAGE_KEY = "codexEndless";
+  const TITLE_CATEGORIES = {
+    "언레어": ["🌱 새싹 탐험가","🪶 첫걸음","🍀 행운의 초보","🗺️ 길잡이 견습","🔦 어둠의 탐색자","🎒 작은 모험가","🧭 방향 감각","🌿 숲의 친구","🪵 캠프 초보","🐾 발자국 추적자","🪨 돌멩이 수집가","🌙 밤길 입문자","☀️ 첫 햇살","💧 샘물 발견자","🍎 간식 수집가","📜 첫 기록","🔔 차원의 종소리","🕯️ 작은 불빛","🌼 들꽃 수집가","🧩 퍼즐 입문자"],
+    "레어": ["💎 보물 사냥꾼","⚡ 번개 반응자","🏹 정밀 사냥꾼","🛡️ 수호자 견습","🎯 명중 전문가","🗝️ 비밀열쇠 수집가","🧪 포션 연구가","🧱 성벽 돌파자","🦅 하늘 정찰자","🐺 야생 추적자","🏜️ 사막 방랑자","❄️ 얼음 정찰자","🌋 화산 탐사자","🌌 별빛 여행자","🌊 파도 항해자"],
+    "에픽": ["🔥 차원 도전자","🧠 퍼즐 마스터","⚔️ 전투 전략가","🎰 룰렛 마스터","🌀 차원 점프자","👾 몬스터 헌터","🧭 미지의 개척자","💫 별가루 수집가","🛡️ 철벽 방어자","⚔️ 연속 공격자","🏆 승리 수집가","🪐 우주 탐험가","🌠 혜성 추적자","🔮 예언의 탐험가","🧿 수호의 눈"],
+    "슈퍼에픽": ["👑 왕국의 친구","🐉 드래곤 추적자","🌋 화산 정복자","❄️ 빙결 돌파자","🌌 성운 탐험가","⚡ 천둥의 전사","🌀 차원 파괴자","💠 초월의 보물꾼","🔥 불꽃의 지배자","🌙 달빛의 수호자","☄️ 혜성의 기사","🗡️ 차원검의 주인","🧿 고대 유물 사냥꾼","🛡️ 무한 방패","✨ 초월 탐험가"],
+    "전설": ["🏆 보스 브레이커","👑 차원의 왕","🐲 용의 정복자","🌌 우주 지배자","🔱 차원 최강자","⚔️ 전설의 검객","🌀 무한의 개척자","💎 전설의 보물왕","🔥 불멸의 화염","❄️ 영원의 빙결","🌠 별의 지배자","👁️ 차원 감시자","🗝️ 끝의 열쇠","🛡️ 전설의 수호자","🌟 끝없는 탐험가"],
+    "시크릿": ["🤫 숨겨진 차원의 주인","🕳️ 공허를 본 자","👁️ CODEX의 선택","🌑 검은 별의 방문자","🌀 무한 루프 탈출자","🔮 금지된 예언자","🪐 미지의 관찰자","🗝️ 차원의 문지기","🌘 그림자 너머","💫 시간의 흔적","🧿 잊힌 수호자","⚫ 공허의 핵","🌌 무한 성운","👑 시크릿 로드","🌀 경계의 여행자","🕯️ 마지막 불꽃","📡 차원 신호 수신자","🪽 초월의 방문자"],
+    "리미트": ["🔒 최초의 기록자","🔒 개발자의 친구"]
+  };
+  const TITLES = Object.values(TITLE_CATEGORIES).flat();
+
+  // 차원마다 성공 확률과 보상 범위를 다르게 설정
+  const DIMENSIONS = {
+    1: { name:"🌳 초원", icon:"🌳", chance:80, exp:[8,18], tokens:[8,20] },
+    2: { name:"🏜️ 사막", icon:"🏜️", chance:70, exp:[12,25], tokens:[12,30] },
+    3: { name:"❄️ 얼음왕국", icon:"❄️", chance:60, exp:[18,35], tokens:[18,45] },
+    4: { name:"🌋 화산", icon:"🌋", chance:50, exp:[25,45], tokens:[25,60] },
+    5: { name:"🌌 우주", icon:"🌌", chance:40, exp:[35,60], tokens:[35,80] },
+    6: { name:"🔐 비밀 차원", icon:"🔐", chance:25, exp:[50,100], tokens:[60,150] }
+  };
+
+  const defaultState = {
+    tokens: 100,
+    exp: 0,
+    level: 1,
+    titles: [],
+    zones: [],
+    dailyDone: false,
+    lastEvent: "아직 모험을 시작하지 않았습니다.",
+    roulette: { dimension: 1, tries: 10 },
+    lastRouletteRefill: null
+  };
+
+  let state = loadState();
+
+  function loadState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      const merged = Object.assign({}, defaultState, saved || {});
+      merged.roulette = Object.assign({}, defaultState.roulette, (saved && saved.roulette) || {});
+      if (typeof merged.roulette.tries !== "number") merged.roulette.tries = 10;
+      return merged;
+    } catch (e) {
+      return Object.assign({}, defaultState);
+    }
+  }
+
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  // 매일(기기 실제 날짜 기준) 자정이 지나면 룰렛 기회를 10회로 자동 충전
+  function dailyRouletteRefillCheck() {
+    const today = todayStr();
+    if (state.lastRouletteRefill !== today) {
+      state.roulette.tries = 10;
+      state.lastRouletteRefill = today;
+      save();
+    }
+  }
+
+  dailyRouletteRefillCheck();
+  setInterval(dailyRouletteRefillCheck, 60 * 1000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) dailyRouletteRefillCheck(); });
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    updateUI();
+  }
+
+  function nextLevelExp() {
+    return state.level * 100;
+  }
+
+  function rand(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function updateUI() {
+    const tokens = document.getElementById("tokens");
+    const xp = document.getElementById("xp");
+    const level = document.getElementById("level");
+    const need = document.getElementById("need");
+    const record = document.getElementById("record");
+    const titles = document.getElementById("titles");
+    const titleList = document.getElementById("titleList");
+    const zones = document.getElementById("zones");
+    const shopTokens = document.getElementById("shopTokens");
+    if (tokens) tokens.textContent = state.tokens;
+    if (xp) xp.textContent = state.exp + "/" + nextLevelExp();
+    if (level) level.textContent = state.level;
+    if (need) need.textContent = Math.max(0, nextLevelExp() - state.exp);
+    if (record) record.textContent = state.lastEvent;
+    if (titles) titles.textContent = state.titles.length;
+    if (titleList) {
+      titleList.innerHTML = Object.entries(TITLE_CATEGORIES).map(([cat,list]) => {
+        const rows = list.map(t => '<span class="tag">' + (state.titles.includes(t) ? '✅ ' : '⬜ ') + escapeHtml(t) + '</span>').join("");
+        return '<h3>' + cat + ' (' + list.filter(t => state.titles.includes(t)).length + '/' + list.length + ')</h3>' + rows;
+      }).join("");
+    }
+    if (shopTokens) shopTokens.textContent = state.tokens;
+    if (zones) {
+      zones.innerHTML = state.zones.length
+        ? state.zones.map(z => '<span class="tag">' + escapeHtml(z) + '</span>').join("")
+        : '<span class="sub">아직 발견한 차원이 없습니다.</span>';
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, ch => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[ch]));
+  }
+
+  function reward(exp, tokens) {
+    state.exp += exp;
+    state.tokens += tokens;
+    while (state.exp >= nextLevelExp()) {
+      state.exp -= nextLevelExp();
+      state.level++;
+      alert("🎉 LEVEL UP!\nLv." + state.level + " 달성!");
+    }
+    save();
+  }
+
+  window.show = function(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.classList.add("active");
+    window.scrollTo({top:0, behavior:"smooth"});
+    updateUI();
+  };
+
+  window.adventure = function(number) {
+    const d = DIMENSIONS[number] || DIMENSIONS[1];
+    state.roulette.dimension = number;
+    if (!state.zones.includes(d.name)) state.zones.push(d.name);
+
+    const zone = document.getElementById("zone");
+    const icon = document.getElementById("icon");
+    const event = document.getElementById("event");
+    const msg = document.getElementById("eventMsg");
+
+    if (zone) zone.textContent = d.name;
+    if (icon) icon.textContent = d.icon;
+    if (event) event.textContent = "🎰 " + d.name + " 룰렛";
+    if (msg) {
+      msg.textContent =
+        "성공 확률 " + d.chance + "% · 기회 " + state.roulette.tries + "회\n" +
+        "EXP +" + d.exp[0] + "~" + d.exp[1] +
+        " · 🪙 토큰 +" + d.tokens[0] + "~" + d.tokens[1];
+    }
+    state.lastEvent = d.name + " 룰렛을 선택했습니다.";
+    save();
+    window.show("adv");
+  };
+
+  // 차원별 룰렛: 기회는 총 10회. 성공/실패를 룰렛으로 결정한다.
+  window.explore = function() {
+    const number = Number(state.roulette.dimension) || 1;
+    const d = DIMENSIONS[number] || DIMENSIONS[1];
+
+    if (state.roulette.tries <= 0) {
+      alert("🎰 이 차원의 룰렛 기회 10회를 모두 사용했습니다!\n다른 차원을 선택하거나 게임을 새로 시작해 주세요.");
+      return;
+    }
+
+    state.roulette.tries--;
+
+    // 룰렛 회전 연출
+    const icon = document.getElementById("icon");
+    const event = document.getElementById("event");
+    const msg = document.getElementById("eventMsg");
+
+    if (event) event.textContent = "🎰 룰렛 돌리는 중...";
+    if (msg) msg.textContent = "기회 " + state.roulette.tries + "회 남음";
+
+    let ticks = 0;
+    const timer = setInterval(() => {
+      if (icon) icon.textContent = ["🎰","✨","⭐","🎯"][ticks % 4];
+      ticks++;
+      if (ticks >= 8) {
+        clearInterval(timer);
+        const success = Math.random() * 100 < d.chance;
+
+        if (success) {
+          const expGain = rand(d.exp[0], d.exp[1]);
+          const tokenGain = rand(d.tokens[0], d.tokens[1]);
+          if (icon) icon.textContent = "🎉";
+          if (event) event.textContent = "🎰 룰렛 결과: 성공!";
+          if (msg) msg.textContent =
+            "SUCCESS ✅\n✨ EXP +" + expGain +
+            " · 🪙 토큰 +" + tokenGain +
+            "\n남은 기회: " + state.roulette.tries + "/10";
+
+          state.lastEvent = d.name + " 룰렛 성공! EXP +" + expGain + ", 토큰 +" + tokenGain;
+          reward(expGain, tokenGain);
+          maybeTitle();
+        } else {
+          if (icon) icon.textContent = "❌";
+          if (event) event.textContent = "🎰 룰렛 결과: 실패!";
+          if (msg) msg.textContent =
+            "FAIL ❌\n보상 없음\n남은 기회: " + state.roulette.tries + "/10";
+          state.lastEvent = d.name + " 룰렛 실패!";
+          save();
+        }
+        updateUI();
+      }
+    }, 100);
+  };
+
+  function maybeTitle() {
+    if (Math.random() > 0.25) return;
+    const available = TITLES.filter(t => !TITLE_CATEGORIES["리미트"].includes(t) && !state.titles.includes(t));
+    if (!available.length) return;
+    const title = available[Math.floor(Math.random() * available.length)];
+    state.titles.push(title);
+    alert("🏆 새로운 칭호 획득!\n" + title);
+    save();
+  }
+
+  // 미니게임도 기존 버튼이 계속 작동하도록 유지
+  window.direction = function() {
+    window.show("mini");
+    const choices = ["⬆️ 위","⬇️ 아래","⬅️ 왼쪽","➡️ 오른쪽"];
+    const answer = choices[rand(0,3)];
+    document.getElementById("mtitle").textContent = "⬅️➡️ 방향 맞추기";
+    document.getElementById("prompt").textContent = answer;
+    document.getElementById("area").innerHTML =
+      '<p>위에 표시된 방향을 선택하세요.</p>' +
+      choices.map(c => '<button class="answerBtn" data-answer="' +
+      escapeHtml(c) + '">' + c + '</button>').join("");
+    document.getElementById("mmsg").textContent = "";
+    document.querySelectorAll(".answerBtn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        if (this.dataset.answer === answer) {
+          reward(10,15);
+          document.getElementById("mmsg").textContent = "🎉 성공! EXP +10 · 토큰 +15";
+        } else {
+          document.getElementById("mmsg").textContent = "❌ 실패! 정답은 " + answer;
+        }
+      }, {once:true});
+    });
+  };
+
+  window.memory = function() {
+    window.show("mini");
+    const nums = [1,2,3,4,5].sort(() => Math.random()-0.5);
+    document.getElementById("mtitle").textContent = "🧠 기억력 챌린지";
+    document.getElementById("prompt").textContent = nums.join(" ");
+    document.getElementById("area").innerHTML =
+      '<p>숫자를 기억한 뒤 입력하세요.</p><input id="memoryInput" inputmode="numeric">' +
+      '<button id="memorySubmit" class="primary">정답 확인</button>';
+    document.getElementById("mmsg").textContent = "";
+    setTimeout(() => {
+      const p = document.getElementById("prompt");
+      if (p) p.textContent = "❓";
+    }, 2000);
+    document.getElementById("memorySubmit").onclick = function() {
+      const ok = document.getElementById("memoryInput").value.replace(/\s/g,"") === nums.join("");
+      if (ok) {
+        reward(15,20);
+        document.getElementById("mmsg").textContent = "🎉 성공! EXP +15 · 토큰 +20";
+      } else document.getElementById("mmsg").textContent = "❌ 실패! 정답은 " + nums.join("");
+      this.disabled = true;
+    };
+  };
+
+  window.mathGame = function() {
+    window.show("mini");
+    const answer = rand(1,50);
+    document.getElementById("mtitle").textContent = "🔢 숫자 챌린지";
+    document.getElementById("prompt").textContent = "1 ~ 50";
+    document.getElementById("area").innerHTML =
+      '<p>숫자를 맞혀보세요.</p><input id="numberInput" type="number">' +
+      '<button id="numberSubmit" class="primary">정답 확인</button>';
+    document.getElementById("mmsg").textContent = "";
+    document.getElementById("numberSubmit").onclick = function() {
+      const ok = Number(document.getElementById("numberInput").value) === answer;
+      if (ok) {
+        reward(20,25);
+        document.getElementById("mmsg").textContent = "🎉 성공! EXP +20 · 토큰 +25";
+      } else document.getElementById("mmsg").textContent = "❌ 실패! 정답은 " + answer;
+      this.disabled = true;
+    };
+  };
+
+  window.reaction = function() {
+    window.show("mini");
+    document.getElementById("mtitle").textContent = "⚡ 반응속도";
+    document.getElementById("prompt").textContent = "준비...";
+    document.getElementById("area").innerHTML =
+      '<p id="reactionInfo">잠시 기다리세요.</p><button id="reactionBtn" class="primary" disabled>대기 중...</button>';
+    document.getElementById("mmsg").textContent = "";
+    const delay = rand(1000,3500);
+    let start = 0;
+    const timer = setTimeout(() => {
+      start = performance.now();
+      document.getElementById("prompt").textContent = "⚡ 지금!";
+      document.getElementById("reactionBtn").disabled = false;
+      document.getElementById("reactionBtn").textContent = "지금 클릭!";
+    }, delay);
+    document.getElementById("reactionBtn").onclick = function() {
+      if (!start) return;
+      clearTimeout(timer);
+      const ms = Math.round(performance.now()-start);
+      reward(20,30);
+      document.getElementById("mmsg").textContent = "⚡ 성공! " + ms + "ms · EXP +20 · 토큰 +30";
+      this.disabled = true;
+    };
+  };
+
+  window.questReward = function() {
+    if (state.dailyDone) {
+      document.getElementById("qmsg").textContent = "✅ 오늘 보상은 이미 받았습니다.";
+      return;
+    }
+    state.dailyDone = true;
+    reward(30,30);
+    document.getElementById("qmsg").textContent = "🎉 성공! EXP +30 · 토큰 +30";
+  };
+
+  window.showBook = function() {
+    window.show("book");
+    updateUI();
+  };
+
+  // ── 실제 시간에 따른 마을 낮/밤 연출 ─────────────────────
+  const TOD_CONFIG = {
+    morning: { cx:150, cy:140, r:24, body:"#ffe3b0", glow:"#ffb37a", starOp:0, winOp:0.15, lampOp:0.15 },
+    day:     { cx:400, cy:55,  r:30, body:"#fff6cf", glow:"#fff0b0", starOp:0, winOp:0.05, lampOp:0.05 },
+    evening: { cx:640, cy:150, r:26, body:"#ffcf8a", glow:"#ff8a5c", starOp:0.5, winOp:0.7, lampOp:0.7 },
+    night:   { cx:670, cy:55,  r:20, body:"#fff3c4", glow:"#ffcf5a", starOp:1, winOp:0.9, lampOp:1 }
+  };
+
+  function timeOfDayPeriod(hour) {
+    if (hour >= 5 && hour < 8) return "morning";
+    if (hour >= 8 && hour < 17) return "day";
+    if (hour >= 17 && hour < 20) return "evening";
+    return "night";
+  }
+
+  function applyTimeOfDay() {
+    const svg = document.querySelector(".villageArt");
+    if (!svg) return;
+    const period = timeOfDayPeriod(new Date().getHours());
+    const c = TOD_CONFIG[period];
+
+    svg.classList.remove("tod-morning", "tod-day", "tod-evening", "tod-night");
+    svg.classList.add("tod-" + period);
+
+    const body = document.getElementById("skyBody");
+    const glow = document.getElementById("skyGlow");
+    const stars = document.getElementById("starsGroup");
+    if (body) { body.setAttribute("cx", c.cx); body.setAttribute("cy", c.cy); body.setAttribute("r", c.r); body.setAttribute("fill", c.body); }
+    if (glow) { glow.setAttribute("cx", c.cx); glow.setAttribute("cy", c.cy); glow.setAttribute("r", c.r * 2); glow.setAttribute("fill", c.glow); }
+    if (stars) stars.style.opacity = c.starOp;
+    document.querySelectorAll(".windowLight").forEach(el => el.style.opacity = c.winOp);
+    document.querySelectorAll(".lampBulb").forEach(el => el.style.opacity = c.lampOp);
+  }
+
+  applyTimeOfDay();
+  setInterval(applyTimeOfDay, 60 * 1000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) applyTimeOfDay(); });
+  // ──────────────────────────────────────────────────
+
+  window.showShop = function() {
+    window.show("shop");
+    const balance = document.getElementById("shopTokens");
+    if (balance) balance.textContent = state.tokens;
+    const msg = document.getElementById("shopMsg");
+    if (msg) msg.textContent = "";
+  };
+
+  function shopMessage(text) {
+    const msg = document.getElementById("shopMsg");
+    if (msg) msg.textContent = text;
+    const balance = document.getElementById("shopTokens");
+    if (balance) balance.textContent = state.tokens;
+    updateUI();
+  }
+
+  function buyShopItem(item) {
+    const prices = {
+      exp50: 100,
+      token100: 180,
+      roulette1: 120,
+      title: 250
+    };
+    const price = prices[item];
+
+    if (typeof price !== "number") return;
+
+    if (state.tokens < price) {
+      shopMessage("❌ 토큰이 부족합니다. 필요한 토큰: " + price);
+      return;
+    }
+
+    if (item === "exp50") {
+      state.tokens -= price;
+      state.exp += 50;
+      while (state.exp >= nextLevelExp()) {
+        state.exp -= nextLevelExp();
+        state.level++;
+        alert("🎉 LEVEL UP!\nLv." + state.level + " 달성!");
+      }
+      save();
+      shopMessage("✅ EXP 부스터 구매!\n✨ EXP +50");
+      return;
+    }
+
+    if (item === "token100") {
+      state.tokens -= price;
+      state.tokens += 100;
+      save();
+      shopMessage("✅ 토큰 보급 상자 구매!\n🪙 토큰 +100");
+      return;
+    }
+
+    if (item === "roulette1") {
+      state.tokens -= price;
+      state.roulette.tries += 1;
+      save();
+      shopMessage("✅ 룰렛 기회 +1!\n🎰 현재 기회: " + state.roulette.tries + "회");
+      return;
+    }
+
+    if (item === "title") {
+      state.tokens -= price;
+      const available = TITLES.filter(t => !TITLE_CATEGORIES["리미트"].includes(t) && !state.titles.includes(t));
+      if (!available.length) {
+        state.tokens += price;
+        save();
+        shopMessage("🏆 모든 칭호를 이미 획득했습니다!");
+        return;
+      }
+      const title = available[Math.floor(Math.random() * available.length)];
+      state.titles.push(title);
+      save();
+      alert("🏆 랜덤 칭호 상자!\n새 칭호: " + title);
+      shopMessage("✅ 랜덤 칭호를 획득했습니다!");
+    }
+  }
+
+  document.addEventListener("click", function(e) {
+    const btn = e.target.closest(".shopBuy");
+    if (!btn) return;
+    buyShopItem(btn.dataset.shopItem);
+  });
+
+
+  // ===== 전투/보스 시스템: 버튼을 누르면 반드시 실행되도록 상태를 직접 관리 =====
+  let combat = null;
+  let bossCombat = null;
+  let guarding = false;
+  let autoBattleTimer = null;
+  let lowHpPrompted = false;
+  let battleFinished = false;
+
+  function combatLog(text){
+    const el=document.getElementById("battleLog");
+    if(el){ el.textContent += text + "\n"; el.scrollTop=el.scrollHeight; }
+  }
+  function clearAutoBattle(){
+    if(autoBattleTimer){ clearInterval(autoBattleTimer); autoBattleTimer=null; }
+  }
+  function setAutoBattleUI(){
+    const box=document.querySelector("#battle .battleBtns");
+    if(box){
+      box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:12px;border:1px solid #344263;border-radius:14px;background:#101a2d;color:#dbe5ff;font-weight:800">⚡ 자동전투 진행 중...<br><span style="font-size:.82rem;color:#9eafd2">전투가 자동으로 진행됩니다.</span></div><button onclick="show(\'home\')">🏠 전투 포기</button>';
+    }
+    const bossBtn=document.querySelector("#bossBox button");
+    if(bossBtn){ bossBtn.style.display="none"; }
+  }
+  function syncCombat(){
+    if(!combat) return;
+    const ph=Math.max(0,state.hp||0), eh=Math.max(0,combat.hp);
+    const playerHp=document.getElementById("playerHp"), enemyHp=document.getElementById("enemyHp");
+    if(playerHp) playerHp.textContent=ph+"/"+combat.playerMax;
+    if(enemyHp) enemyHp.textContent=eh+"/"+combat.maxHp;
+    const phb=document.getElementById("playerHpBar"), ehb=document.getElementById("enemyHpBar");
+    if(phb) phb.style.width=Math.max(0,Math.min(100,ph/combat.playerMax*100))+"%";
+    if(ehb) ehb.style.width=Math.max(0,Math.min(100,eh/combat.maxHp*100))+"%";
+    const atk=document.getElementById("playerAtk"), def=document.getElementById("playerDef"), eatk=document.getElementById("enemyAtk");
+    if(atk) atk.textContent=state.atk||10;
+    if(def) def.textContent=state.def||3;
+    if(eatk) eatk.textContent=Math.round(combat.atk);
+  }
+  function checkLowHp(){
+    if(!combat || battleFinished) return false;
+    const hp=state.hp||0, max=combat.playerMax;
+    if(hp<=0) return false;
+    if(hp<=max*0.3 && !lowHpPrompted){
+      lowHpPrompted=true;
+      const yes=confirm("❤️ HP가 거의 없습니다!\n피를 회복하시겠습니까?");
+      if(yes){
+        state.hp=Math.min(max,hp+40);
+        combatLog("❤️ 자동전투 중 HP를 회복했습니다! +40 HP");
+        save();
+        syncCombat();
+        if(state.hp>max*0.3) lowHpPrompted=false;
+        return true;
+      }
+      combatLog("⚠️ 회복하지 않고 자동전투를 계속합니다.");
+    }
+    return false;
+  }
+  function winBattle(rewardExp,rewardTokens,message){
+    if(battleFinished)return;
+    battleFinished=true; clearAutoBattle();
+    reward(rewardExp,rewardTokens);
+    state.lastEvent=message;
+    save();
+    maybeTitle();
+    syncCombat();
+    if(typeof codexResult==="function") codexResult(true,"전투에서 적을 쓰러뜨렸습니다!\n✨ EXP +"+rewardExp+" · 🪙 "+rewardTokens+"\n\n자동전투가 종료되었습니다.");
+  }
+  function loseBattle(message){
+    if(battleFinished)return;
+    battleFinished=true; clearAutoBattle();
+    state.hp=0;
+    state.lastEvent=message;
+    save();
+    syncCombat();
+    if(typeof codexResult==="function") codexResult(false,message+"\n\nHP가 모두 소진되었습니다. 차원으로 돌아가 다시 도전하세요.");
+  }
+  function autoBattleTick(){
+    if(!combat || battleFinished)return;
+    checkLowHp();
+    if(state.hp<=0){ loseBattle("💀 패배! 적에게 쓰러졌습니다."); return; }
+
+    // 플레이어 자동 공격
+    const dmg=Math.max(1,(state.atk||10)+rand(0,5));
+    combat.hp=Math.max(0,combat.hp-dmg);
+    combatLog("⚔️ 자동 공격! "+dmg+" 피해");
+    syncCombat();
+    if(combat.hp<=0){
+      if(bossCombat){
+        const d=DIMENSIONS[state.roulette.dimension]||DIMENSIONS[1];
+        const e=80+d.exp[1], t=60+d.tokens[1];
+        state.bosses=(state.bosses||[]);
+        if(!state.bosses.includes(state.roulette.dimension)) state.bosses.push(state.roulette.dimension);
+        const defeated=bossCombat.name;
+        bossCombat=null;
+        const bb=document.getElementById("bossBox");
+        if(bb) bb.style.display="none";
+        winBattle(e,t,"👑 "+defeated+" 격파!");
+      }else{
+        const e=rand(15,30), t=rand(10,25);
+        winBattle(e,t,"🎉 "+combat.name+" 처치!");
+      }
+      return;
+    }
+
+    // 적 자동 반격
+    const enemyDmg=Math.max(1,Math.round(combat.atk-(state.def||3)));
+    state.hp=Math.max(0,state.hp-enemyDmg);
+    combatLog("💥 "+combat.name+" 자동 반격! "+enemyDmg+" 피해");
+    syncCombat();
+    if(state.hp<=0){ loseBattle("💀 패배! "+combat.name+"에게 쓰러졌습니다."); return; }
+    checkLowHp();
+    save();
+  }
+  function beginAutoBattle(){
+    clearAutoBattle();
+    autoBattleTimer=setInterval(autoBattleTick,900);
+    setAutoBattleUI();
+  }
+  window.startBattle=function(){
+    clearAutoBattle();
+    const d=DIMENSIONS[state.roulette.dimension]||DIMENSIONS[1];
+    const names={1:["🐺 초원 늑대","🐌 슬라임","🐗 돌멧돼지"],2:["🦂 사막 전갈","🐍 모래뱀","🪨 사막 골렘"],3:["🐺 설원 늑대","🧊 얼음 정령"],4:["🔥 화염 슬라임","🪨 용암 골렘"],5:["👾 스타 몬스터","☄️ 혜성 정령"],6:["🌀 공허의 괴물","👁️ 차원 감시자"]};
+    const list=names[state.roulette.dimension]||names[1], name=list[rand(0,list.length-1)];
+    const hp=40+d.exp[1]*3;
+    combat={name,hp,maxHp:hp,atk:Math.max(5,Math.floor(hp/8)),playerMax:Math.max(100,state.level*15+100)};
+    state.hp=Math.min(combat.playerMax,state.hp||combat.playerMax);
+    guarding=false; lowHpPrompted=false; battleFinished=false; bossCombat=null;
+    document.getElementById("enemyName").textContent=name;
+    document.getElementById("enemyIcon").textContent=name.slice(0,2);
+    document.getElementById("battleLog").textContent="";
+    document.getElementById("bossBox").style.display="none";
+    show("battle");
+    combatLog("⚔️ "+name+" 등장! 자동전투를 시작합니다.");
+    syncCombat();
+    beginAutoBattle();
+  };
+  // 기존 공격 버튼과 호환되도록 유지하되, 이제 자동전투를 시작합니다.
+  window.attackEnemy=function(){ if(!combat || battleFinished) startBattle(); };
+  window.defendEnemy=function(){ if(!combat || battleFinished) startBattle(); };
+  window.healBattle=function(){
+    if(!combat || battleFinished)return;
+    const hp=Math.min(combat.playerMax,(state.hp||0)+40);
+    state.hp=hp; lowHpPrompted=false;
+    combatLog("❤️ HP 포션 사용! +40 HP"); save(); syncCombat();
+  };
+  window.battleSkill=function(){ if(!combat || battleFinished) startBattle(); };
+  window.bossAttackEnemy=function(){ if(!bossCombat || battleFinished)return; autoBattleTick(); };
+  window.startBossFight=function(){
+    clearAutoBattle();
+    const d=DIMENSIONS[state.roulette.dimension]||DIMENSIONS[1];
+    const maxHp=Math.max(250,d.exp[1]*15);
+    bossCombat={name:d.name+" 보스",hp:maxHp,maxHp:maxHp,atk:Math.max(8,d.exp[1]/2),phase:1};
+    combat={name:""+bossCombat.name,hp:bossCombat.hp,maxHp:bossCombat.maxHp,atk:bossCombat.atk,playerMax:Math.max(100,state.level*15+100)};
+    state.hp=Math.min(combat.playerMax,state.hp||combat.playerMax);
+    lowHpPrompted=false; battleFinished=false;
+    show("battle");
+    document.getElementById("bossBox").style.display="block";
+    document.getElementById("bossName").textContent=bossCombat.name;
+    document.getElementById("bossIcon").textContent="👑";
+    document.getElementById("battleLog").textContent="👑 "+bossCombat.name+" 등장! 자동전투를 시작합니다.";
+    document.getElementById("bossHp").textContent=Math.round(bossCombat.hp)+"/"+Math.round(bossCombat.maxHp);
+    document.getElementById("bossHpBar").style.width="100%";
+    syncCombat();
+    beginAutoBattle();
+  };
+  // 전역 오류를 잡아 화면을 멈추지 않고 콘솔에 기록
+  window.addEventListener("error", e => console.error("[CODEX 오류 catch]", e.error || e.message));
+  window.addEventListener("unhandledrejection", e => console.error("[CODEX Promise 오류 catch]", e.reason));
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    const home = document.getElementById("home");
+    if (home) home.classList.add("active");
+    updateUI();
+  });
+
+  updateUI();
+})();
+</script>
+
+<div id="codexResultOverlay">
+  <div id="codexResultBox">
+    <div id="codexResultTitle"></div>
+    <div id="codexResultText" class="codexResultText"></div>
+    <button id="codexDimensionReturn" class="primary">🗺️ 차원으로 돌아가기</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+function codexResult(win,text){
+ const o=document.getElementById("codexResultOverlay");
+ const b=document.getElementById("codexResultBox");
+ const t=document.getElementById("codexResultTitle");
+ const x=document.getElementById("codexResultText");
+ if(!o||!b||!t||!x)return;
+ b.className=win?"":"codexFail";
+ t.textContent=win?"🎉 승리!":"💀 패배!";
+ x.textContent=text;
+ o.style.display="flex";
+}
+function codexReturnDimension(){
+ const o=document.getElementById("codexResultOverlay");
+ if(o)o.style.display="none";
+ if(typeof clearAutoBattle==="function")clearAutoBattle();
+ if(typeof combat!=="undefined")combat=null;
+ if(typeof bossCombat!=="undefined")bossCombat=null;
+ if(typeof battleFinished!=="undefined")battleFinished=false;
+ if(typeof state!=="undefined"){
+   state.hp=Math.max(1,Math.max(100,state.level*15+100));
+   save();
+ }
+ if(typeof show==="function")show("map");
+ else if(typeof showScreen==="function")showScreen("dimensions");
+}
+window.codexResult=codexResult;
+window.codexReturnDimension=codexReturnDimension;
+document.addEventListener("DOMContentLoaded",function(){
+ const b=document.getElementById("codexDimensionReturn");
+ if(b)b.addEventListener("click",codexReturnDimension);
+});
+})();
+</script>
+</body></html>
