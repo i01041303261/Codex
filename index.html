@@ -917,6 +917,215 @@ button.warning {
 #codexResultTitle { font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; }
 .codexResultText { white-space: pre-line; color: #cbd5e1; font-size: 1.05rem; line-height: 1.6; margin-bottom: 24px; }
 
+/* Auth Header & Modal Styles */
+.tool-btn.auth-btn {
+  background: rgba(58, 134, 255, 0.2);
+  border-color: rgba(58, 134, 255, 0.55);
+  color: #93c5fd;
+  font-weight: 700;
+}
+.tool-btn.auth-btn:hover {
+  background: rgba(58, 134, 255, 0.35);
+  border-color: #60a5fa;
+  box-shadow: 0 0 16px rgba(58, 134, 255, 0.45);
+}
+.tool-btn.auth-btn.highlight {
+  background: linear-gradient(135deg, rgba(123, 44, 191, 0.5), rgba(247, 37, 133, 0.5));
+  border-color: rgba(247, 37, 133, 0.7);
+  color: #fbcfe8;
+  font-weight: 800;
+}
+.tool-btn.auth-btn.highlight:hover {
+  background: linear-gradient(135deg, rgba(123, 44, 191, 0.7), rgba(247, 37, 133, 0.7));
+  box-shadow: 0 0 18px rgba(247, 37, 133, 0.6);
+}
+.tool-btn.auth-btn.logged-in {
+  background: rgba(0, 245, 212, 0.18);
+  border-color: rgba(0, 245, 212, 0.6);
+  color: var(--cyan);
+}
+.tool-btn.auth-btn.logout-btn {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+}
+.tool-btn.auth-btn.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
+}
+
+#codexAuthOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 15, 0.88);
+  backdrop-filter: blur(14px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+.auth-box {
+  max-width: 460px;
+  width: 100%;
+  background: linear-gradient(145deg, #161c32, #0d1222);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(123, 44, 191, 0.3);
+  border-radius: 24px;
+  padding: 30px 24px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.auth-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.auth-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  margin-bottom: 16px;
+}
+.auth-tabs {
+  display: flex;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 5px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+.auth-tab-btn {
+  flex: 1;
+  padding: 9px 0;
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-weight: 800;
+  font-size: 0.92rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.auth-tab-btn.active {
+  background: linear-gradient(135deg, #7b2cbf, #3a86ff);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(123, 44, 191, 0.4);
+}
+.auth-form {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+.auth-form.active {
+  display: flex;
+}
+.auth-input-group {
+  text-align: left;
+}
+.auth-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.auth-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+  background: rgba(0, 0, 0, 0.6);
+}
+.auth-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 10px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  text-align: left;
+  cursor: pointer;
+}
+.auth-checkbox-row input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+.auth-msg {
+  font-size: 0.85rem;
+  min-height: 20px;
+  margin-top: 4px;
+  font-weight: 700;
+}
+.auth-msg.error { color: #ff5470; }
+.auth-msg.success { color: var(--green); }
+.auth-btn-submit {
+  width: 100%;
+  padding: 13px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  border-radius: 14px;
+  cursor: pointer;
+}
+.auth-switch-link {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 10px;
+}
+.auth-switch-link a {
+  color: var(--cyan);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 700;
+}
+.auth-close-x {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+}
+.auth-close-x:hover { color: #fff; }
+
+.account-info-card {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+.account-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.account-info-row:last-child { margin-bottom: 0; }
+.account-info-label { color: #94a3b8; font-weight: 600; }
+.account-info-val { color: #fff; font-weight: 800; }
+
 footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0; margin-top: auto; }
 </style>
 </head>
@@ -933,6 +1142,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         <h1>CODEX <span>끝없는 차원의 모험</span></h1>
       </div>
       <div class="header-tools">
+        <button id="authBtn" class="tool-btn auth-btn" onclick="openAuthModal('login')">🔑 로그인</button>
+        <button id="registerBtn" class="tool-btn auth-btn highlight" onclick="openAuthModal('register')">✨ 회원가입</button>
         <button id="soundToggleBtn" class="tool-btn" onclick="toggleSound()">🔊 사운드 ON</button>
         <button class="tool-btn" onclick="showHelpModal()">❓ 가이드</button>
       </div>
@@ -1449,11 +1660,142 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   </div>
 </div>
 
+<!-- 로그인 / 회원가입 / 계정 모달 -->
+<div id="codexAuthOverlay" onclick="if(event.target === this) closeAuthModal()">
+  <div class="auth-box">
+    <button class="auth-close-x" onclick="closeAuthModal()" title="닫기">&times;</button>
+    <div class="auth-title">🌌 CODEX 차원 계정</div>
+    <div class="auth-subtitle">계정을 만들면 진행 상황이 안전하게 저장됩니다.</div>
+
+    <div class="auth-tabs" id="authTabsNav">
+      <button id="authTabBtnLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">🔑 로그인</button>
+      <button id="authTabBtnRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">✨ 회원가입</button>
+      <button id="authTabBtnAccount" class="auth-tab-btn" onclick="switchAuthTab('account')" style="display: none;">👤 내 계정</button>
+    </div>
+
+    <!-- 로그인 폼 -->
+    <form id="authLoginForm" class="auth-form active" onsubmit="handleLoginSubmit(event)">
+      <div class="auth-input-group">
+        <label class="auth-label" for="loginUsername">아이디</label>
+        <input type="text" id="loginUsername" class="auth-input" placeholder="아이디를 입력하세요" required autocomplete="username">
+      </div>
+      <div class="auth-input-group">
+        <label class="auth-label" for="loginPassword">비밀번호</label>
+        <input type="password" id="loginPassword" class="auth-input" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
+      </div>
+      <div id="loginMsg" class="auth-msg"></div>
+      <button type="submit" class="primary auth-btn-submit">🔑 로그인하기</button>
+      <div class="auth-switch-link">
+        아직 계정이 없으신가요? <a onclick="switchAuthTab('register')">회원가입 하기</a>
+      </div>
+    </form>
+
+    <!-- 회원가입 폼 -->
+    <form id="authRegisterForm" class="auth-form" onsubmit="handleRegisterSubmit(event)">
+      <div class="auth-input-group">
+        <label class="auth-label" for="regUsername">아이디 (영문/숫자/한글 2자 이상)</label>
+        <input type="text" id="regUsername" class="auth-input" placeholder="사용할 아이디" required minlength="2" maxlength="15" autocomplete="username">
+      </div>
+      <div class="auth-input-group">
+        <label class="auth-label" for="regNickname">캐릭터 닉네임 (게임 내 표시)</label>
+        <input type="text" id="regNickname" class="auth-input" placeholder="예: 차원정복자 (미입력시 아이디와 동일)" maxlength="12">
+      </div>
+      <div class="auth-input-group">
+        <label class="auth-label" for="regPassword">비밀번호 (4자 이상)</label>
+        <input type="password" id="regPassword" class="auth-input" placeholder="비밀번호 4자 이상" required minlength="4" autocomplete="new-password">
+      </div>
+      <div class="auth-input-group">
+        <label class="auth-label" for="regPasswordConfirm">비밀번호 확인</label>
+        <input type="password" id="regPasswordConfirm" class="auth-input" placeholder="비밀번호 재입력" required minlength="4" autocomplete="new-password">
+      </div>
+      <label class="auth-checkbox-row">
+        <input type="checkbox" id="regKeepData" checked>
+        <span>현재 플레이 중인 캐릭터 데이터(레벨/토큰 등) 이어받기</span>
+      </label>
+      <div id="regMsg" class="auth-msg"></div>
+      <button type="submit" class="primary auth-btn-submit" style="background: linear-gradient(135deg, #7b2cbf, #f72585);">✨ 회원가입 완료 및 모험 시작</button>
+      <div class="auth-switch-link">
+        이미 계정이 있으신가요? <a onclick="switchAuthTab('login')">로그인 하기</a>
+      </div>
+    </form>
+
+    <!-- 계정 정보 & 세이브 백업 폼 -->
+    <div id="authAccountForm" class="auth-form">
+      <div class="account-info-card">
+        <div class="account-info-row">
+          <span class="account-info-label">아이디</span>
+          <span class="account-info-val" id="accInfoUsername">-</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-label">닉네임</span>
+          <span class="account-info-val" id="accInfoNickname">-</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-label">현재 레벨</span>
+          <span class="account-info-val" id="accInfoLevel">Lv.1</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-label">착용 직업</span>
+          <span class="account-info-val" id="accInfoJob">-</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-label">보유 토큰</span>
+          <span class="account-info-val" id="accInfoTokens">🪙 0</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <button type="button" class="secondary" style="flex: 1; padding: 10px; font-size: 0.88rem;" onclick="exportSaveCode()">📋 세이브 복사</button>
+        <button type="button" class="secondary" style="flex: 1; padding: 10px; font-size: 0.88rem;" onclick="importSaveCode()">📥 세이브 복원</button>
+      </div>
+
+      <button type="button" class="danger auth-btn-submit" onclick="handleLogout()">🚪 로그아웃</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (() => {
   "use strict";
 
   const STORAGE_KEY = "codexEndless";
+  const AUTH_USERS_KEY = "codex_users_db";
+  const AUTH_SESSION_KEY = "codex_current_session";
+
+  function getUsersDB() {
+    try {
+      return JSON.parse(localStorage.getItem(AUTH_USERS_KEY) || "{}");
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveUsersDB(db) {
+    try {
+      localStorage.setItem(AUTH_USERS_KEY, JSON.stringify(db));
+    } catch (e) {
+      console.warn("[Auth] Failed to save users DB", e);
+    }
+  }
+
+  function getCurrentUsername() {
+    return localStorage.getItem(AUTH_SESSION_KEY) || null;
+  }
+
+  function getCurrentUser() {
+    const username = getCurrentUsername();
+    if (!username) return null;
+    const db = getUsersDB();
+    return db[username] || null;
+  }
+
+  function setSession(username) {
+    if (username) {
+      localStorage.setItem(AUTH_SESSION_KEY, username);
+    } else {
+      localStorage.removeItem(AUTH_SESSION_KEY);
+    }
+  }
 
   // 1. Web Audio 사운드 시스템
   let soundEnabled = true;
@@ -1693,7 +2035,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   function loadState() {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      let saved = null;
+      const user = getCurrentUser();
+      if (user && user.saveData) {
+        saved = user.saveData;
+      } else {
+        saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      }
       const merged = Object.assign({}, defaultState, saved || {});
       merged.roulette = Object.assign({}, defaultState.roulette, (saved && saved.roulette) || {});
       if (typeof merged.roulette.tries !== "number") merged.roulette.tries = 10;
@@ -1710,7 +2058,20 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   }
 
   function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    try {
+      const username = getCurrentUsername();
+      if (username) {
+        const db = getUsersDB();
+        if (db[username]) {
+          db[username].saveData = state;
+          db[username].lastLogin = new Date().toISOString();
+          saveUsersDB(db);
+        }
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn("[Save Error]", e);
+    }
     updateUI();
   }
 
@@ -1824,6 +2185,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     const playerAvatar = document.getElementById("playerAvatar");
     if (playerAvatar) playerAvatar.textContent = state.avatar || "🧙";
+
+    const hudPlayerName = document.getElementById("hudPlayerName");
+    const user = getCurrentUser();
+    if (hudPlayerName) {
+      hudPlayerName.textContent = user ? `${user.nickname} (@${user.username})` : "게스트 탐험가";
+    }
 
     const record = document.getElementById("record");
     const homeAtk = document.getElementById("homeAtk");
@@ -2734,10 +3101,285 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     document.querySelectorAll(".lampBulb").forEach(el => el.style.opacity = c.lampOp);
   }
 
+  // 21. 회원가입 및 로그인 계정 관리 시스템
+  function updateAuthUI() {
+    const user = getCurrentUser();
+    const authBtn = document.getElementById("authBtn");
+    const regBtn = document.getElementById("registerBtn");
+    const tabAcc = document.getElementById("authTabBtnAccount");
+    const hudPlayerName = document.getElementById("hudPlayerName");
+
+    if (user) {
+      if (authBtn) {
+        authBtn.textContent = `👤 ${user.nickname}`;
+        authBtn.className = "tool-btn auth-btn logged-in";
+        authBtn.title = "내 계정 정보 확인 및 관리";
+        authBtn.onclick = () => openAuthModal('account');
+      }
+      if (regBtn) {
+        regBtn.textContent = "🚪 로그아웃";
+        regBtn.className = "tool-btn auth-btn logout-btn";
+        regBtn.title = "현재 계정에서 로그아웃";
+        regBtn.onclick = () => handleLogout();
+      }
+      if (tabAcc) tabAcc.style.display = "inline-block";
+      if (hudPlayerName) hudPlayerName.textContent = `${user.nickname} (@${user.username})`;
+    } else {
+      if (authBtn) {
+        authBtn.textContent = "🔑 로그인";
+        authBtn.className = "tool-btn auth-btn";
+        authBtn.title = "계정 로그인";
+        authBtn.onclick = () => openAuthModal('login');
+      }
+      if (regBtn) {
+        regBtn.textContent = "✨ 회원가입";
+        regBtn.className = "tool-btn auth-btn highlight";
+        regBtn.title = "신규 계정 만들기";
+        regBtn.onclick = () => openAuthModal('register');
+      }
+      if (tabAcc) tabAcc.style.display = "none";
+      if (hudPlayerName) hudPlayerName.textContent = "게스트 탐험가";
+    }
+  }
+
+  window.openAuthModal = function(initialTab = 'login') {
+    Sound.click();
+    const overlay = document.getElementById("codexAuthOverlay");
+    if (!overlay) return;
+    overlay.style.display = "flex";
+    const user = getCurrentUser();
+    if (user && initialTab !== 'register' && initialTab !== 'login') {
+      switchAuthTab('account');
+    } else {
+      switchAuthTab(initialTab);
+    }
+  };
+
+  window.closeAuthModal = function() {
+    Sound.click();
+    const overlay = document.getElementById("codexAuthOverlay");
+    if (overlay) overlay.style.display = "none";
+    clearAuthMsgs();
+  };
+
+  function clearAuthMsgs() {
+    const lMsg = document.getElementById("loginMsg");
+    const rMsg = document.getElementById("regMsg");
+    if (lMsg) { lMsg.textContent = ""; lMsg.className = "auth-msg"; }
+    if (rMsg) { rMsg.textContent = ""; rMsg.className = "auth-msg"; }
+  }
+
+  window.switchAuthTab = function(tab) {
+    Sound.click();
+    clearAuthMsgs();
+    const tabLogin = document.getElementById("authTabBtnLogin");
+    const tabReg = document.getElementById("authTabBtnRegister");
+    const tabAcc = document.getElementById("authTabBtnAccount");
+    const formLogin = document.getElementById("authLoginForm");
+    const formReg = document.getElementById("authRegisterForm");
+    const formAcc = document.getElementById("authAccountForm");
+
+    if (tabLogin) tabLogin.classList.remove("active");
+    if (tabReg) tabReg.classList.remove("active");
+    if (tabAcc) tabAcc.classList.remove("active");
+    if (formLogin) formLogin.classList.remove("active");
+    if (formReg) formReg.classList.remove("active");
+    if (formAcc) formAcc.classList.remove("active");
+
+    if (tab === 'register') {
+      if (tabReg) tabReg.classList.add("active");
+      if (formReg) formReg.classList.add("active");
+      setTimeout(() => { const el = document.getElementById("regUsername"); if (el) el.focus(); }, 100);
+    } else if (tab === 'account') {
+      if (tabAcc) tabAcc.classList.add("active");
+      if (formAcc) formAcc.classList.add("active");
+      renderAccountTab();
+    } else {
+      if (tabLogin) tabLogin.classList.add("active");
+      if (formLogin) formLogin.classList.add("active");
+      setTimeout(() => { const el = document.getElementById("loginUsername"); if (el) el.focus(); }, 100);
+    }
+  };
+
+  function renderAccountTab() {
+    const user = getCurrentUser();
+    if (!user) {
+      switchAuthTab('login');
+      return;
+    }
+    const accU = document.getElementById("accInfoUsername");
+    const accN = document.getElementById("accInfoNickname");
+    const accL = document.getElementById("accInfoLevel");
+    const accJ = document.getElementById("accInfoJob");
+    const accT = document.getElementById("accInfoTokens");
+    const job = getCurrentJob();
+
+    if (accU) accU.textContent = user.username;
+    if (accN) accN.textContent = user.nickname;
+    if (accL) accL.textContent = `Lv.${state.level}`;
+    if (accJ) accJ.textContent = `${job.icon} ${job.name} (${job.tier})`;
+    if (accT) accT.textContent = `🪙 ${state.tokens.toLocaleString()}`;
+  }
+
+  window.handleLoginSubmit = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    clearAuthMsgs();
+    const uInput = document.getElementById("loginUsername");
+    const pInput = document.getElementById("loginPassword");
+    const msgEl = document.getElementById("loginMsg");
+    const username = (uInput ? uInput.value : "").trim();
+    const password = pInput ? pInput.value : "";
+
+    if (!username || !password) {
+      if (msgEl) { msgEl.textContent = "⚠️ 아이디와 비밀번호를 모두 입력해주세요."; msgEl.className = "auth-msg error"; }
+      Sound.hit();
+      return;
+    }
+
+    const db = getUsersDB();
+    const user = db[username];
+    if (!user || user.password !== password) {
+      if (msgEl) { msgEl.textContent = "❌ 아이디 또는 비밀번호가 일치하지 않습니다."; msgEl.className = "auth-msg error"; }
+      Sound.hit();
+      return;
+    }
+
+    setSession(username);
+    state = loadState();
+    currentHp = null;
+    currentMp = null;
+    updateAuthUI();
+    updateUI();
+    Sound.levelup();
+    closeAuthModal();
+    if (uInput) uInput.value = "";
+    if (pInput) pInput.value = "";
+    showResultModal(true, `🎉 [${user.nickname}]님, 환영합니다!\n성공적으로 로그인되었습니다.\n차원의 모험을 이어서 시작하세요!`);
+  };
+
+  window.handleRegisterSubmit = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    clearAuthMsgs();
+    const uInput = document.getElementById("regUsername");
+    const nInput = document.getElementById("regNickname");
+    const pInput = document.getElementById("regPassword");
+    const cInput = document.getElementById("regPasswordConfirm");
+    const kInput = document.getElementById("regKeepData");
+    const msgEl = document.getElementById("regMsg");
+
+    const username = (uInput ? uInput.value : "").trim();
+    const nickname = (nInput && nInput.value.trim()) ? nInput.value.trim() : username;
+    const password = pInput ? pInput.value : "";
+    const confirm = cInput ? cInput.value : "";
+    const keepData = kInput ? kInput.checked : true;
+
+    if (!username || username.length < 2) {
+      if (msgEl) { msgEl.textContent = "⚠️ 아이디는 2자 이상 입력해주세요."; msgEl.className = "auth-msg error"; }
+      Sound.hit();
+      return;
+    }
+    if (!password || password.length < 4) {
+      if (msgEl) { msgEl.textContent = "⚠️ 비밀번호는 4자 이상 입력해주세요."; msgEl.className = "auth-msg error"; }
+      Sound.hit();
+      return;
+    }
+    if (password !== confirm) {
+      if (msgEl) { msgEl.textContent = "❌ 비밀번호 확인이 일치하지 않습니다."; msgEl.className = "auth-msg error"; }
+      Sound.hit();
+      return;
+    }
+
+    const db = getUsersDB();
+    if (db[username]) {
+      if (msgEl) { msgEl.textContent = "❌ 이미 사용 중인 아이디입니다. 다른 아이디를 입력해주세요."; msgEl.className = "auth-msg error"; }
+      Sound.hit();
+      return;
+    }
+
+    const userSaveData = keepData ? JSON.parse(JSON.stringify(state)) : Object.assign({}, defaultState);
+    db[username] = {
+      username: username,
+      nickname: nickname,
+      password: password,
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
+      saveData: userSaveData
+    };
+    saveUsersDB(db);
+
+    setSession(username);
+    state = loadState();
+    currentHp = null;
+    currentMp = null;
+    updateAuthUI();
+    updateUI();
+    Sound.levelup();
+    closeAuthModal();
+
+    if (uInput) uInput.value = "";
+    if (nInput) nInput.value = "";
+    if (pInput) pInput.value = "";
+    if (cInput) cInput.value = "";
+
+    showResultModal(true, `🎉 회원가입 성공!\n[${nickname}] 계정이 생성되어 바로 로그인되었습니다.\n모든 진행 상황이 안전하게 저장됩니다!`);
+  };
+
+  window.handleLogout = function() {
+    Sound.click();
+    if (!confirm("정말 로그아웃 하시겠습니까?\n로그아웃하면 게스트 모드로 전환됩니다.")) return;
+    setSession(null);
+    state = loadState();
+    currentHp = null;
+    currentMp = null;
+    updateAuthUI();
+    updateUI();
+    closeAuthModal();
+    showResultModal(true, "🚪 로그아웃되었습니다.\n게스트 모드로 플레이합니다.");
+  };
+
+  window.exportSaveCode = function() {
+    Sound.click();
+    try {
+      const code = btoa(encodeURIComponent(JSON.stringify(state)));
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          alert("📋 세이브 코드가 클립보드에 복사되었습니다!\n메모장 등에 안전하게 보관하세요.");
+        }).catch(() => {
+          prompt("아래 코드를 복사해서 보관하세요:", code);
+        });
+      } else {
+        prompt("아래 코드를 복사해서 보관하세요:", code);
+      }
+    } catch (e) {
+      alert("세이브 코드 생성에 실패했습니다: " + e.message);
+    }
+  };
+
+  window.importSaveCode = function() {
+    Sound.click();
+    const input = prompt("불러올 세이브 코드를 입력하세요:");
+    if (!input) return;
+    try {
+      const jsonStr = decodeURIComponent(atob(input.trim()));
+      const loaded = JSON.parse(jsonStr);
+      if (typeof loaded !== "object" || !loaded) throw new Error("올바르지 않은 데이터 형식입니다.");
+      state = Object.assign({}, defaultState, loaded);
+      save();
+      updateAuthUI();
+      updateUI();
+      Sound.levelup();
+      alert("🎉 세이브 데이터를 성공적으로 복원했습니다!");
+    } catch (e) {
+      Sound.hit();
+      alert("❌ 올바른 세이브 코드가 아닙니다: " + e.message);
+    }
+  };
+
   document.addEventListener("DOMContentLoaded", () => {
     initBgParticles();
     updateVillageDayNight();
     setInterval(updateVillageDayNight, 60 * 1000);
+    updateAuthUI();
     updateUI();
   });
 
