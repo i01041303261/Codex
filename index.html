@@ -1920,8 +1920,49 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         osc.start(audioCtx.currentTime + idx * 0.09);
         osc.stop(audioCtx.currentTime + idx * 0.09 + 0.25);
       });
+    },
+    login() {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      // 웅장하고 신비로운 차원 입장 & 로그인 성공 차임 (화음 + 상승 아르페지오)
+      const notes = [
+        { freq: 440.00, time: 0.00, dur: 0.35, gain: 0.16 },
+        { freq: 554.37, time: 0.07, dur: 0.35, gain: 0.18 },
+        { freq: 659.25, time: 0.14, dur: 0.40, gain: 0.22 },
+        { freq: 880.00, time: 0.21, dur: 0.45, gain: 0.25 },
+        { freq: 1108.73, time: 0.28, dur: 0.60, gain: 0.28 },
+        { freq: 1318.51, time: 0.36, dur: 0.85, gain: 0.25 }
+      ];
+      notes.forEach(n => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(n.freq, audioCtx.currentTime + n.time);
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime + n.time);
+        gain.gain.linearRampToValueAtTime(n.gain, audioCtx.currentTime + n.time + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + n.time + n.dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + n.time);
+        osc.stop(audioCtx.currentTime + n.time + n.dur);
+      });
+      try {
+        const bassOsc = audioCtx.createOscillator();
+        const bassGain = audioCtx.createGain();
+        bassOsc.type = "triangle";
+        bassOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
+        bassOsc.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 0.3);
+        bassGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+        bassOsc.connect(bassGain);
+        bassGain.connect(audioCtx.destination);
+        bassOsc.start(audioCtx.currentTime);
+        bassOsc.stop(audioCtx.currentTime + 0.8);
+      } catch (e) {}
     }
   };
+  Sound.levelup = Sound.levelUp;
 
   window.toggleSound = function() {
     soundEnabled = !soundEnabled;
@@ -3332,7 +3373,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     currentMp = null;
     updateAuthUI();
     updateUI();
-    Sound.levelup();
+    Sound.login();
     closeAuthModal();
     if (uInput) uInput.value = "";
     if (pInput) pInput.value = "";
@@ -3395,7 +3436,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     currentMp = null;
     updateAuthUI();
     updateUI();
-    Sound.levelup();
+    Sound.login();
     closeAuthModal();
 
     if (uInput) uInput.value = "";
@@ -3461,6 +3502,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     setInterval(updateVillageDayNight, 60 * 1000);
     updateAuthUI();
     updateUI();
+  });
+
+  // 브라우저 오디오 권한 자동 활성화 리스너
+  ['click', 'keydown', 'touchstart', 'submit'].forEach(evt => {
+    window.addEventListener(evt, () => {
+      initAudio();
+    }, { passive: true });
   });
 
   window.addEventListener("error", e => console.warn("[CODEX Guard]", e.error || e.message));
