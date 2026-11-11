@@ -954,6 +954,36 @@ button.warning {
   box-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
 }
 
+/* Game lock when not authenticated */
+body.auth-locked .wrap {
+  filter: blur(14px) brightness(0.55);
+  pointer-events: none !important;
+  user-select: none !important;
+  transition: filter 0.4s ease;
+}
+body.auth-locked #authCloseBtn {
+  display: none !important;
+}
+body.auth-locked #codexAuthOverlay {
+  background: rgba(3, 6, 15, 0.96);
+  backdrop-filter: blur(20px);
+}
+.auth-lock-banner {
+  background: rgba(255, 75, 110, 0.16);
+  border: 1px solid rgba(255, 75, 110, 0.45);
+  color: #ff758f;
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 0 15px rgba(255, 75, 110, 0.2);
+}
+
 #codexAuthOverlay {
   position: fixed;
   inset: 0;
@@ -1661,11 +1691,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 </div>
 
 <!-- 로그인 / 회원가입 / 계정 모달 -->
-<div id="codexAuthOverlay" onclick="if(event.target === this) closeAuthModal()">
+<div id="codexAuthOverlay" onclick="handleOverlayBackdropClick(event)">
   <div class="auth-box">
-    <button class="auth-close-x" onclick="closeAuthModal()" title="닫기">&times;</button>
-    <div class="auth-title">🌌 CODEX 차원 계정</div>
-    <div class="auth-subtitle">계정을 만들면 진행 상황이 안전하게 저장됩니다.</div>
+    <button class="auth-close-x" id="authCloseBtn" onclick="closeAuthModal()" title="닫기">&times;</button>
+    <div class="auth-title" id="authTitle">🔒 차원 입장 게이트</div>
+    <div class="auth-subtitle" id="authSubtitle">회원가입 또는 로그인 후 CODEX 세계에 입장할 수 있습니다.</div>
+    <div id="authLockNotice" class="auth-lock-banner">🔒 회원가입을 해야 게임을 플레이할 수 있습니다.</div>
 
     <div class="auth-tabs" id="authTabsNav">
       <button id="authTabBtnLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">🔑 로그인</button>
@@ -3022,6 +3053,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   };
 
   window.show = function(screenId) {
+    if (!getCurrentUser()) {
+      openAuthModal();
+      return;
+    }
     Sound.click();
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
@@ -3101,15 +3136,20 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     document.querySelectorAll(".lampBulb").forEach(el => el.style.opacity = c.lampOp);
   }
 
-  // 21. 회원가입 및 로그인 계정 관리 시스템
+  // 21. 회원가입 및 로그인 계정 관리 시스템 (강제 인증 보호)
   function updateAuthUI() {
     const user = getCurrentUser();
     const authBtn = document.getElementById("authBtn");
     const regBtn = document.getElementById("registerBtn");
     const tabAcc = document.getElementById("authTabBtnAccount");
     const hudPlayerName = document.getElementById("hudPlayerName");
+    const overlay = document.getElementById("codexAuthOverlay");
+    const authTitle = document.getElementById("authTitle");
+    const authSubtitle = document.getElementById("authSubtitle");
+    const authLockNotice = document.getElementById("authLockNotice");
 
     if (user) {
+      document.body.classList.remove("auth-locked");
       if (authBtn) {
         authBtn.textContent = `👤 ${user.nickname}`;
         authBtn.className = "tool-btn auth-btn logged-in";
@@ -3124,7 +3164,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       }
       if (tabAcc) tabAcc.style.display = "inline-block";
       if (hudPlayerName) hudPlayerName.textContent = `${user.nickname} (@${user.username})`;
+      if (authTitle) authTitle.innerHTML = "🌌 CODEX 차원 계정";
+      if (authSubtitle) authSubtitle.textContent = "계정 정보 및 진행 상황이 안전하게 저장 중입니다.";
+      if (authLockNotice) authLockNotice.style.display = "none";
     } else {
+      document.body.classList.add("auth-locked");
       if (authBtn) {
         authBtn.textContent = "🔑 로그인";
         authBtn.className = "tool-btn auth-btn";
@@ -3138,9 +3182,26 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         regBtn.onclick = () => openAuthModal('register');
       }
       if (tabAcc) tabAcc.style.display = "none";
-      if (hudPlayerName) hudPlayerName.textContent = "게스트 탐험가";
+      if (hudPlayerName) hudPlayerName.textContent = "🔒 미인증 탐험가";
+      if (authTitle) authTitle.innerHTML = "🔒 차원 입장 게이트";
+      if (authSubtitle) authSubtitle.textContent = "회원가입 또는 로그인 후 CODEX 세계에 입장할 수 있습니다.";
+      if (authLockNotice) authLockNotice.style.display = "flex";
+
+      // 미인증 시 모달 강제 표시
+      if (overlay) {
+        overlay.style.display = "flex";
+        const db = getUsersDB();
+        const hasUsers = Object.keys(db).length > 0;
+        switchAuthTab(hasUsers ? 'login' : 'register');
+      }
     }
   }
+
+  window.handleOverlayBackdropClick = function(e) {
+    if (e.target && e.target.id === "codexAuthOverlay") {
+      closeAuthModal();
+    }
+  };
 
   window.openAuthModal = function(initialTab = 'login') {
     Sound.click();
@@ -3156,11 +3217,32 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   };
 
   window.closeAuthModal = function() {
+    if (!getCurrentUser()) {
+      Sound.hit();
+      const lMsg = document.getElementById("loginMsg");
+      const rMsg = document.getElementById("regMsg");
+      const msg = "🔒 회원가입 또는 로그인을 완료해야 게임을 시작할 수 있습니다!";
+      if (lMsg && document.getElementById("authLoginForm").classList.contains("active")) {
+        lMsg.textContent = msg; lMsg.className = "auth-msg error";
+      } else if (rMsg) {
+        rMsg.textContent = msg; rMsg.className = "auth-msg error";
+      }
+      return;
+    }
     Sound.click();
     const overlay = document.getElementById("codexAuthOverlay");
     if (overlay) overlay.style.display = "none";
     clearAuthMsgs();
   };
+
+  window.addEventListener("keydown", e => {
+    if (e.key === "Escape") {
+      if (getCurrentUser()) {
+        closeAuthModal();
+        closeResultOverlay();
+      }
+    }
+  });
 
   function clearAuthMsgs() {
     const lMsg = document.getElementById("loginMsg");
@@ -3326,15 +3408,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   window.handleLogout = function() {
     Sound.click();
-    if (!confirm("정말 로그아웃 하시겠습니까?\n로그아웃하면 게스트 모드로 전환됩니다.")) return;
+    if (!confirm("정말 로그아웃 하시겠습니까?\n로그아웃하면 다시 로그인하거나 회원가입할 때까지 게임 화면이 잠깁니다.")) return;
     setSession(null);
-    state = loadState();
+    state = Object.assign({}, defaultState);
     currentHp = null;
     currentMp = null;
     updateAuthUI();
     updateUI();
-    closeAuthModal();
-    showResultModal(true, "🚪 로그아웃되었습니다.\n게스트 모드로 플레이합니다.");
   };
 
   window.exportSaveCode = function() {
