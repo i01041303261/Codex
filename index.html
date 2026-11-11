@@ -1,183 +1,1605 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CODEX: 끝없는 차원의 모험</title>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CODEX: 끝없는 차원의 모험</title>
 <style>
-:root{--bg:#0d0a05;--panel:#1b263b;--gold:#ffb703;--purple:#6930c3;--blue:#5b8fd4;--text:#f4f1de}*{box-sizing:border-box}body{margin:0;color:var(--text);font-family:system-ui;background:radial-gradient(circle at 20% 10%,#342056,#17152f 35%,#05050d 100%);min-height:100vh}.wrap{max-width:1050px;margin:auto;padding:20px}h1{font-size:clamp(26px,5vw,46px);text-shadow:0 0 20px #6930c3}.sub{color:#b8c7e8}.stats,.nav{display:flex;gap:8px;flex-wrap:wrap}.stat,.card,.game{background:#1b263bdd;border:1px solid #91a4d244;border-radius:16px;padding:14px}.stat b{color:#ffcf5a}button{border:0;border-radius:12px;padding:12px 16px;background:#30376d;color:white;font-weight:800;cursor:pointer;margin:3px}button.primary{background:linear-gradient(135deg,#6930c3,#5b8fd4)}.screen{display:none}.screen.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.map{height:350px;position:relative;background:linear-gradient(135deg,#17152b,#22294c);border-radius:20px;overflow:hidden}.node{position:absolute;width:115px;text-align:center;padding:12px 5px;border-radius:14px;background:#20274a;border:2px solid #5b8fd4;cursor:pointer}.node small{display:block;color:#b8c7e8}.n1{left:5%;top:40%}.n2{left:27%;top:15%}.n3{left:27%;top:65%}.n4{left:49%;top:40%}.n5{right:5%;top:15%}.n6{right:5%;top:65%}.game{text-align:center;margin-top:12px}.big{font-size:44px;margin:15px}.msg{min-height:28px;color:#ffcf5a;font-weight:800}.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.mini button{width:100%;min-height:105px}input{padding:11px;border-radius:10px;border:1px solid #777;background:#101323;color:white} .tag{display:inline-block;padding:6px 9px;margin:3px;border-radius:999px;background:#6930c344}footer{text-align:center;color:#7f88a9;padding:25px}
+:root {
+  --bg-dark: #070913;
+  --panel-bg: rgba(22, 28, 48, 0.75);
+  --panel-border: rgba(100, 140, 240, 0.25);
+  --panel-glow: rgba(105, 48, 195, 0.3);
+  --gold: #ffbe0b;
+  --gold-glow: rgba(255, 190, 11, 0.5);
+  --purple: #8338ec;
+  --purple-glow: rgba(131, 56, 236, 0.5);
+  --blue: #3a86ff;
+  --cyan: #00f5d4;
+  --red: #ff006e;
+  --green: #38b000;
+  --text-main: #f8f9fa;
+  --text-sub: #a0aec0;
+  --hp-color: #2ec4b6;
+  --enemy-hp: #e71d36;
+  --mp-color: #3a86ff;
+}
 
-.rouletteInfo{margin:14px 0;padding:14px;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(0,0,0,.22);white-space:pre-line;line-height:1.6}
-.rouletteResult{font-size:1.1rem;font-weight:700;min-height:2.5em;white-space:pre-line}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  background: var(--bg-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
 
-.shopBalance{margin:12px 0;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.08);font-size:1.05rem}
-.shopGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:18px 0}
-.shopItem{padding:18px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);text-align:center}
-.shopIcon{font-size:2.3rem;margin-bottom:6px}
-.shopItem h3{margin:8px 0}
-.shopItem p{min-height:40px}
-.shopItem strong{display:block;margin:10px 0}
-.shopBuy{width:100%}
-.villageArt{width:100%;display:block;border-radius:18px;margin-bottom:14px;border:1px solid #91a4d244;transition:background 1.2s ease}
-.villageArt.tod-morning{background:linear-gradient(180deg,#ffd9a0,#ff9f7a 45%,#3a2456)}
-.villageArt.tod-day{background:linear-gradient(180deg,#8fd3ff,#cdeaff 45%,#3a2456)}
-.villageArt.tod-evening{background:linear-gradient(180deg,#4b2f73,#ff7a4a 55%,#3a2456)}
-.villageArt.tod-night{background:linear-gradient(180deg,#1b1240,#2c1b4d 60%,#3a2456)}
-.windowLight,.lampBulb{transition:opacity .8s ease}
-.battleGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.unit{background:#0f1730;border:1px solid #2d3b68;border-radius:18px;padding:16px;text-align:center}.battleBtns{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.hpbar{height:14px;background:#293452;border-radius:99px;overflow:hidden}.hpbar i{display:block;height:100%;width:100%;background:#4dd48a;transition:.2s}.hpbar.enemy i{background:#e85b6b}.battleGrid .big{font-size:4rem}@media(max-width:650px){.battleGrid{grid-template-columns:1fr}}
+/* 배경 우주 캔버스 */
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.65;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: auto;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단 헤더 & 플레이어 HUD */
+header {
+  margin-bottom: 16px;
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.title-area h1 {
+  margin: 0;
+  font-size: clamp(24px, 4.5vw, 40px);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 20%, #a2d2ff 60%, #c77dff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(131, 56, 236, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.title-area .sub {
+  color: #9bb1db;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 2px;
+}
+.header-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.tool-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+}
+
+/* 플레이어 상태 바 */
+.player-hud {
+  background: linear-gradient(135deg, rgba(20, 25, 45, 0.85), rgba(30, 20, 50, 0.75));
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 0 16px rgba(105, 48, 195, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+@media(max-width: 680px) {
+  .player-hud {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+.hud-avatar-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hud-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: radial-gradient(circle, #4338ca, #1e1b4b);
+  border: 2px solid var(--cyan);
+  box-shadow: 0 0 14px rgba(0, 245, 212, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.hud-avatar:hover { transform: scale(1.08); }
+.hud-name-box {
+  display: flex;
+  flex-direction: column;
+}
+.hud-name {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #fff;
+}
+.equipped-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #6930c3, #5390d9);
+  color: #fff;
+  font-weight: 700;
+  margin-top: 3px;
+  width: fit-content;
+  box-shadow: 0 2px 8px rgba(105, 48, 195, 0.4);
+}
+
+.hud-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hud-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.hud-bar-label { width: 34px; color: var(--text-sub); }
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.bar-fill.exp { background: linear-gradient(90deg, #ffd166, #ff9f1c); }
+.bar-fill.hp { background: linear-gradient(90deg, #06d6a0, #1b9aaa); }
+.bar-fill.mp { background: linear-gradient(90deg, #118ab2, #4361ee); }
+.hud-bar-val { font-size: 0.8rem; color: #cbd5e1; width: 68px; text-align: right; }
+
+.hud-currencies {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.currency-item {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.currency-item.tokens { color: var(--gold); border-color: rgba(255, 190, 11, 0.3); }
+.currency-item.level { color: var(--cyan); border-color: rgba(0, 245, 212, 0.3); }
+
+/* 네비게이션 탭 */
+.nav-scroll {
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+}
+.nav-scroll::-webkit-scrollbar { display: none; }
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  width: max-content;
+}
+.nav-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 10px 16px;
+  color: #cbd5e1;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+.nav-btn.active {
+  background: linear-gradient(135deg, #6930c3, #3a86ff);
+  color: #fff;
+  border-color: var(--cyan);
+  box-shadow: 0 4px 16px rgba(58, 134, 255, 0.4);
+}
+
+/* 화면 스위칭 */
+.screen { display: none; animation: fadeIn 0.3s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 범용 카드 스타일 */
+.card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.card h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card p.desc {
+  color: var(--text-sub);
+  margin: 0 0 16px 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* 버튼 시스템 */
+button {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 12px 18px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.95rem;
+}
+button:active { transform: scale(0.97); }
+button.primary {
+  background: linear-gradient(135deg, #7b2cbf, #3a86ff);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(123, 44, 191, 0.4);
+}
+button.primary:hover {
+  box-shadow: 0 6px 24px rgba(58, 134, 255, 0.6);
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+button.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+button.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+button.danger {
+  background: linear-gradient(135deg, #e63946, #c1121f);
+  color: white;
+}
+button.warning {
+  background: linear-gradient(135deg, #f77f00, #fcbf49);
+  color: #0d0a05;
+}
+
+/* ====================================================
+   마을 (HOME) & SVG 일러스트
+   ==================================================== */
+.village-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+.villageArt {
+  width: 100%;
+  display: block;
+  transition: background 1.2s ease;
+}
+.villageArt.tod-morning { background: linear-gradient(180deg, #ffd9a0, #ff9f7a 45%, #2a1b42); }
+.villageArt.tod-day     { background: linear-gradient(180deg, #70c4ff, #c3e5ff 45%, #241d40); }
+.villageArt.tod-evening { background: linear-gradient(180deg, #3d235a, #f77f00 55%, #1d1330); }
+.villageArt.tod-night   { background: linear-gradient(180deg, #0d091e, #1c133a 60%, #150d2c); }
+.windowLight, .lampBulb { transition: opacity 0.8s ease; }
+
+/* 굴뚝 연기 & 별 반짝임 애니메이션 */
+@keyframes smokeRise {
+  0% { transform: translateY(0) scale(1); opacity: 0.7; }
+  100% { transform: translateY(-35px) scale(2.2); opacity: 0; }
+}
+.smoke-particle {
+  animation: smokeRise 2.8s infinite ease-out;
+  transform-origin: center;
+}
+.smoke-2 { animation-delay: 1.4s; }
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+.star-twinkle { animation: starTwinkle 3s infinite ease-in-out; }
+.star-2 { animation-delay: 1s; }
+.star-3 { animation-delay: 2s; }
+
+/* 시간대 오버레이 뱃지 */
+.tod-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.stat-box {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.stat-box h4 { margin: 0; font-size: 0.9rem; color: var(--text-sub); }
+.stat-box .val { font-size: 1.25rem; font-weight: 800; color: #fff; }
+
+/* ====================================================
+   차원 지도 (DIMENSIONS MAP)
+   ==================================================== */
+.dimension-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.dim-card {
+  background: linear-gradient(135deg, rgba(25, 32, 60, 0.75), rgba(15, 18, 35, 0.85));
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dim-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cyan);
+  box-shadow: 0 10px 30px rgba(0, 245, 212, 0.25);
+}
+.dim-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: var(--dim-gradient, linear-gradient(90deg, #6930c3, #5390d9));
+}
+.dim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.dim-title {
+  font-size: 1.3rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dim-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.dim-info {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.dim-specs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.dim-spec-item {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ====================================================
+   차원 탐험 & 룰렛 (EXPLORATION & ROULETTE)
+   ==================================================== */
+.roulette-arena {
+  text-align: center;
+  padding: 30px 20px;
+  background: radial-gradient(circle at center, rgba(105, 48, 195, 0.25) 0%, rgba(10, 15, 30, 0.8) 70%);
+  border-radius: 20px;
+  border: 1px solid var(--panel-border);
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.roulette-slots-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+.roulette-slot {
+  width: 90px;
+  height: 90px;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46px;
+  transition: transform 0.15s ease;
+}
+.roulette-slot.spinning {
+  animation: slotShake 0.1s infinite;
+}
+@keyframes slotShake {
+  0%, 100% { transform: translateY(-3px); }
+  50% { transform: translateY(3px); }
+}
+.roulette-status-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+  min-height: 36px;
+  margin-bottom: 12px;
+  color: #fff;
+}
+.roulette-rewards-text {
+  color: #b8c7e8;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* ====================================================
+   차원 전투 (BATTLE ARENA)
+   ==================================================== */
+.battle-stage {
+  position: relative;
+  background: radial-gradient(circle at center, #1b2038 0%, #0d0f1a 100%);
+  border: 1px solid var(--panel-border);
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.battle-units-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media(max-width: 600px) {
+  .battle-units-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+.unit-card {
+  background: rgba(15, 20, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 18px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+.unit-card.player-unit { border-color: rgba(58, 134, 255, 0.4); }
+.unit-card.enemy-unit { border-color: rgba(231, 29, 54, 0.4); }
+
+.unit-icon-stage {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.unit-big-icon {
+  font-size: 56px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+/* 캐릭터 전투 애니메이션 */
+.unit-big-icon.idle { animation: unitBob 2s infinite ease-in-out; }
+@keyframes unitBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.unit-big-icon.attack-lunge {
+  transform: translateX(35px) scale(1.15) !important;
+}
+.unit-big-icon.enemy-attack-lunge {
+  transform: translateX(-35px) scale(1.15) !important;
+}
+.unit-big-icon.hit-flash {
+  filter: brightness(3) saturate(0.5);
+  animation: unitHurt 0.3s ease;
+}
+@keyframes unitHurt {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* 플로팅 데미지 숫자 */
+.damage-number {
+  position: absolute;
+  font-weight: 900;
+  font-size: 1.6rem;
+  pointer-events: none;
+  animation: floatDamage 0.9s forwards ease-out;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  z-index: 100;
+}
+@keyframes floatDamage {
+  0% { opacity: 0; transform: translateY(0) scale(0.6); }
+  20% { opacity: 1; transform: translateY(-15px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-50px) scale(1); }
+}
+.damage-number.crit { color: #ffbe0b; font-size: 2rem; }
+.damage-number.player-dmg { color: #ff006e; }
+.damage-number.enemy-dmg { color: #00f5d4; }
+.damage-number.heal { color: #38b000; }
+
+.unit-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 6px 0 8px 0;
+}
+.unit-hp-box {
+  margin: 8px 0;
+}
+.hpbar-large {
+  height: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 4px;
+  position: relative;
+}
+.hpbar-large i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #06d6a0, #2ec4b6);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hpbar-large.enemy i {
+  background: linear-gradient(90deg, #ff0054, #ff5400);
+}
+
+.vs-badge {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--gold);
+  text-shadow: 0 0 14px var(--gold-glow);
+  text-align: center;
+}
+
+/* 전투 컨트롤 액션 */
+.battle-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.battle-btn {
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  border-radius: 14px;
+  font-weight: 800;
+}
+.battle-btn.atk { background: linear-gradient(135deg, #e63946, #c1121f); }
+.battle-btn.skill { background: linear-gradient(135deg, #7209b7, #3a0ca3); }
+.battle-btn.def { background: linear-gradient(135deg, #4361ee, #4895ef); }
+.battle-btn.heal { background: linear-gradient(135deg, #2a9d8f, #264653); }
+.battle-btn.ult {
+  background: linear-gradient(135deg, #ffb703, #fb8500);
+  color: #0d0a05;
+  box-shadow: 0 0 16px rgba(255, 183, 3, 0.6);
+}
+
+/* 전투 로그 */
+.battle-log-box {
+  height: 140px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #d1d5db;
+}
+
+/* 보스 레이드 박스 */
+.boss-raid-box {
+  border: 2px solid #ff0054;
+  background: radial-gradient(circle, rgba(255, 0, 84, 0.15), rgba(15, 10, 30, 0.8));
+  box-shadow: 0 0 25px rgba(255, 0, 84, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* ====================================================
+   미니게임 월드 (MINI GAMES)
+   ==================================================== */
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.mini-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.mini-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--cyan);
+  transform: translateY(-3px);
+}
+.mini-btn .mini-icon { font-size: 36px; }
+.mini-btn .mini-name { font-weight: 800; font-size: 1.05rem; }
+.mini-btn .mini-rewards { font-size: 0.8rem; color: #cbd5e1; }
+
+.mini-arena {
+  background: rgba(10, 14, 28, 0.7);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+}
+.mini-prompt {
+  font-size: 48px;
+  margin: 18px 0;
+  min-height: 60px;
+}
+.mini-choices-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.choice-btn {
+  padding: 14px 24px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border-radius: 16px;
+}
+
+/* ====================================================
+   상점 & 대장간 (SHOP & FORGE)
+   ==================================================== */
+.shop-section-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--cyan);
+  margin: 20px 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+.shop-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 18px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+.shop-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255, 190, 11, 0.2);
+}
+.shop-icon { font-size: 38px; }
+.shop-item-name { font-weight: 800; font-size: 1.05rem; }
+.shop-item-desc { font-size: 0.85rem; color: var(--text-sub); line-height: 1.4; }
+.shop-item-price { font-size: 1.1rem; font-weight: 800; color: var(--gold); }
+
+/* ====================================================
+   도감 & 칭호 (TITLES & CODEX)
+   ==================================================== */
+.titles-header-summary {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.rarity-group {
+  margin-bottom: 20px;
+}
+.rarity-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.title-tag-cloud {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.title-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.title-tag:hover { transform: scale(1.05); }
+.title-tag.obtained {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.title-tag.equipped {
+  background: linear-gradient(135deg, #ffbe0b, #fb5607) !important;
+  color: #0d0a05 !important;
+  border-color: #fff !important;
+  font-weight: 900;
+  box-shadow: 0 0 14px var(--gold-glow);
+}
+/* 희귀도별 빛 */
+.rarity-unrare .title-tag.obtained { background: rgba(56, 176, 0, 0.2); border-color: #38b000; }
+.rarity-rare   .title-tag.obtained { background: rgba(58, 134, 255, 0.2); border-color: #3a86ff; }
+.rarity-epic   .title-tag.obtained { background: rgba(131, 56, 236, 0.25); border-color: #8338ec; }
+.rarity-sepic  .title-tag.obtained { background: rgba(255, 190, 11, 0.25); border-color: #ffbe0b; }
+.rarity-legend .title-tag.obtained { background: rgba(255, 0, 110, 0.25); border-color: #ff006e; box-shadow: 0 0 10px rgba(255,0,110,0.4); }
+.rarity-secret .title-tag.obtained { background: linear-gradient(135deg, rgba(0,245,212,0.3), rgba(131,56,236,0.3)); border-color: #00f5d4; }
+.rarity-limit  .title-tag.obtained { background: rgba(247, 127, 0, 0.3); border-color: #f77f00; }
+
+/* ====================================================
+   퀘스트 (QUESTS)
+   ==================================================== */
+.quest-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.quest-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.quest-check {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.quest-check.done {
+  border-color: var(--green);
+  background: rgba(56, 176, 0, 0.25);
+  color: var(--green);
+}
+.quest-title-text { font-weight: 700; font-size: 0.98rem; }
+.quest-reward-tag {
+  font-size: 0.8rem;
+  color: var(--gold);
+  background: rgba(255, 190, 11, 0.12);
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+/* ====================================================
+   모달 결과창 (RESULT OVERLAY)
+   ==================================================== */
+#codexResultOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 15, 0.85);
+  backdrop-filter: blur(12px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+#codexResultBox {
+  max-width: 480px;
+  width: 100%;
+  background: linear-gradient(135deg, #161c30, #101424);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  border-radius: 24px;
+  padding: 32px 24px;
+  text-align: center;
+}
+#codexResultBox.win { border-color: var(--cyan); box-shadow: 0 0 35px rgba(0, 245, 212, 0.35); }
+#codexResultBox.fail { border-color: var(--red); box-shadow: 0 0 35px rgba(255, 0, 110, 0.35); }
+#codexResultTitle {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+.codexResultText {
+  white-space: pre-line;
+  color: #cbd5e1;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* 하단 푸터 */
+footer {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.82rem;
+  padding: 20px 0;
+  margin-top: auto;
+}
 </style>
-<style>
-#codexResultOverlay{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
-#codexResultBox{max-width:520px;width:100%;background:#11182b;border:1px solid #344263;border-radius:22px;padding:28px;text-align:center;box-shadow:0 20px 60px #0008}
-#codexResultBox.win{border-color:#3fa66b}.codexFail{border-color:#a94a5a!important}
-#codexResultTitle{font-size:2rem;font-weight:900;margin-bottom:12px}.codexResultText{white-space:pre-line;color:#c9d3ee;margin-bottom:20px}
-</style>
-</head><body><div class="wrap">
-<div class="sub">🌌 차원이 끝나는 곳까지</div><h1>CODEX: 끝없는 차원의 모험</h1>
-<div class="stats"><div class="stat">🪙 토큰 <b id="tokens">100</b></div><div class="stat">✨ EXP <b id="xp">0</b></div><div class="stat">🆙 Lv.<b id="level">1</b></div></div>
-<div class="nav"><button onclick="show('home')" data-action="home">🏠 마을</button><button onclick="show('map')" data-action="map">🗺️ 차원 탐험</button><button onclick="show('mini')" data-action="minigame">🎮 미니게임 월드</button><button onclick="showBook()" data-action="collection">🏆 도감</button><button onclick="show('quest')">📋 퀘스트</button></div>
-<section id="home" class="screen active"><div class="card">
-<svg class="villageArt" viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="코덱스 마을 일러스트">
-  <defs>
-    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fff6d6"/>
-      <stop offset="100%" stop-color="#ffcf5a" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="mtn1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#3a2a63"/>
-      <stop offset="100%" stop-color="#241a44"/>
-    </linearGradient>
-    <linearGradient id="mtn2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#4a3480"/>
-      <stop offset="100%" stop-color="#2c2054"/>
-    </linearGradient>
-    <linearGradient id="roofGold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffcf5a"/>
-      <stop offset="100%" stop-color="#e08b1f"/>
-    </linearGradient>
-    <filter id="skyBlur" x="-60%" y="-60%" width="220%" height="220%">
-      <feGaussianBlur stdDeviation="8"/>
-    </filter>
-  </defs>
+</head>
+<body>
 
-  <circle id="skyGlow" cx="670" cy="55" r="40" fill="#ffcf5a" opacity="0.55" filter="url(#skyBlur)"/>
-  <circle id="skyBody" cx="670" cy="55" r="20" fill="#fff3c4"/>
+<!-- 우주 배경 파티클 캔버스 -->
+<canvas id="bgCanvas"></canvas>
 
-  <g id="starsGroup">
-  <circle cx="90" cy="35" r="2" fill="#fff"/>
-  <circle cx="150" cy="60" r="1.6" fill="#fff"/>
-  <circle cx="240" cy="30" r="2" fill="#fff"/>
-  <circle cx="330" cy="50" r="1.5" fill="#fff"/>
-  <circle cx="420" cy="25" r="1.8" fill="#fff"/>
-  <circle cx="540" cy="40" r="1.6" fill="#fff"/>
-  <circle cx="60" cy="80" r="1.4" fill="#fff"/>
-  <circle cx="480" cy="70" r="1.3" fill="#fff"/>
-  </g>
-
-  <path d="M0,150 L60,95 L120,140 L180,80 L250,150 L320,100 L400,150 L470,90 L540,150 L610,110 L680,150 L740,100 L800,150 L800,240 L0,240 Z" fill="url(#mtn1)"/>
-  <path d="M0,190 L90,140 L170,180 L260,130 L350,190 L430,150 L520,190 L610,145 L700,190 L800,160 L800,240 L0,240 Z" fill="url(#mtn2)"/>
-
-  <ellipse cx="400" cy="238" rx="420" ry="16" fill="#1a1330"/>
-
-  <!-- 왼쪽 오두막 -->
-  <g>
-    <rect x="70" y="175" width="70" height="50" rx="4" fill="#2c2354" stroke="#5b8fd4" stroke-width="2"/>
-    <polygon points="60,178 105,140 150,178" fill="url(#roofGold)"/>
-    <rect x="95" y="195" width="20" height="30" fill="#1b1638"/>
-    <rect class="windowLight" x="78" y="185" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
-  </g>
-
-  <!-- 가운데 탑 (마을 중심) -->
-  <g>
-    <rect x="355" y="120" width="90" height="105" rx="6" fill="#342a5e" stroke="#6930c3" stroke-width="2.5"/>
-    <polygon points="345,124 400,70 455,124" fill="url(#roofGold)"/>
-    <circle cx="400" cy="78" r="5" fill="#ffcf5a"/>
-    <rect x="385" y="185" width="30" height="40" fill="#1b1638"/>
-    <rect class="windowLight" x="368" y="140" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
-    <rect class="windowLight" x="416" y="140" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
-    <rect class="windowLight" x="392" y="160" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
-  </g>
-
-  <!-- 오른쪽 오두막 -->
-  <g>
-    <rect x="640" y="170" width="80" height="55" rx="4" fill="#2c2354" stroke="#5b8fd4" stroke-width="2"/>
-    <polygon points="628,173 680,132 732,173" fill="url(#roofGold)"/>
-    <rect x="668" y="195" width="22" height="30" fill="#1b1638"/>
-    <rect class="windowLight" x="650" y="182" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
-    <rect class="windowLight" x="696" y="182" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
-  </g>
-
-  <!-- 가로등 -->
-  <g stroke="#b8c7e8" stroke-width="2">
-    <line x1="230" y1="180" x2="230" y2="225"/>
-    <circle class="lampBulb" cx="230" cy="175" r="7" fill="#ffcf5a"/>
-  </g>
-  <g stroke="#b8c7e8" stroke-width="2">
-    <line x1="560" y1="185" x2="560" y2="225"/>
-    <circle class="lampBulb" cx="560" cy="180" r="7" fill="#ffcf5a"/>
-  </g>
-
-  <!-- 깃발 -->
-  <polygon points="400,70 400,55 420,62" fill="#6930c3"/>
-</svg>
-<h2>🏠 코덱스 마을</h2><p>차원을 탐험하고 보물과 칭호를 모아보세요.</p><button class="primary" onclick="show('map')">🗺️ 모험 시작</button><button onclick="show('mini')" data-action="minigame">🎮 미니게임 월드</button></div><div class="grid" style="margin-top:12px"><div class="card"><h3>📖 기록</h3><p id="record">모험을 시작해보세요.</p></div><div class="card"><h3>🎯 성장</h3><p>다음 레벨까지 <b id="need">100</b> EXP</p></div></div>
-<button onclick="showShop()">🛒 상점</button><button onclick="show('battle'); startBattle()">⚔️ 전투</button><button onclick="show('quest')">📋 일일퀘스트</button><button onclick="show('book')">🏆 칭호창</button>
-</section>
-<section id="map" class="screen"><div class="card"><h2>🗺️ 차원 지도</h2><p>지역을 클릭해 탐험하세요.</p><div class="map"><div class="node n1" onclick="adventure(1)">🌳 초원<small>1차원</small></div><div class="node n2" onclick="adventure(2)">🏜️ 사막<small>2차원</small></div><div class="node n3" onclick="adventure(3)">❄️ 얼음왕국<small>3차원</small></div><div class="node n4" onclick="adventure(4)">🌋 화산<small>4차원</small></div><div class="node n5" onclick="adventure(5)">🌌 우주<small>5차원</small></div><div class="node n6" onclick="adventure(6)">🔐 비밀 차원<small>???</small></div></div></div></section>
-<section id="adv" class="screen"><div class="game"><h2 id="zone">🌳 초원</h2><div class="big" id="icon">👾</div><p id="event">탐험 중...</p><button class="primary" onclick="explore()">🔎 계속 탐험</button><button onclick="startBattle()">⚔️ 몬스터 전투</button><button onclick="startBossFight()">👑 보스 도전</button><button onclick="show('map')">🗺️ 지도</button><div class="msg" id="eventMsg"></div></div></section>
-<section id="mini" class="screen"><div class="card"><h2>🎮 미니게임 월드</h2><p>클리어하면 EXP와 토큰을 얻습니다.</p><div class="mini"><button onclick="direction()">⬅️➡️<br>방향 맞추기<br>+10 EXP +15🪙</button><button onclick="memory()">🧠<br>기억력 챌린지<br>+15 EXP +20🪙</button><button onclick="mathGame()">🔢<br>숫자 챌린지<br>+20 EXP +25🪙</button><button onclick="reaction()">⚡<br>반응속도<br>+20 EXP +30🪙</button></div></div><div class="game"><h3 id="mtitle">미니게임을 골라주세요!</h3><div class="big" id="prompt">🎮</div><div id="area"></div><div class="msg" id="mmsg"></div></div></section>
-<section id="book" class="screen"><div class="card"><h2>🏆 모험 도감</h2><p>칭호 <b id="titles">0</b>/10</p><div id="titleList"></div><h3>🌌 발견한 차원</h3><div id="zones"></div></div></section>
-
-<section id="battle" class="screen"><div class="card"><h2>⚔️ 차원 전투</h2><div class="battleGrid"><div class="unit"><div class="big" id="playerIcon">🧙</div><h3>CODEX 탐험가</h3><p>❤️ <b id="playerHp">100/100</b></p><div class="hpbar"><i id="playerHpBar"></i></div><p>⚔️ 공격력 <b id="playerAtk">10</b> · 🛡️ 방어력 <b id="playerDef">3</b></p></div><div class="unit"><div class="big" id="enemyIcon">🐺</div><h3 id="enemyName">초원 늑대</h3><p>❤️ <b id="enemyHp">50/50</b></p><div class="hpbar enemy"><i id="enemyHpBar"></i></div><p>⚔️ 공격력 <b id="enemyAtk">7</b></p></div></div><div class="battleBtns"><button class="primary" id="attackBtn" onclick="attackEnemy()">⚔️ 공격</button><button onclick="defendEnemy()">🛡️ 방어</button><button onclick="healBattle()">❤️ 포션</button><button onclick="battleSkill()">✨ 스킬</button><button onclick="show('home')">🏠 도망</button></div><pre id="battleLog" class="msg"></pre><div id="bossBox" class="card" style="display:none"><h3>👑 보스 등장!</h3><div class="big" id="bossIcon">👑</div><p id="bossName">숲의 수호자</p><p>❤️ <b id="bossHp">300/300</b></p><div class="hpbar enemy"><i id="bossHpBar"></i></div><button class="primary" onclick="bossAttackEnemy()">⚔️ 보스 공격</button></div></div></section>
-<section id="quest" class="screen"><div class="card"><h2>📋 일일퀘스트</h2><p>⬜ 차원 탐험 1회</p><p>⬜ 미니게임 1회</p><p>⬜ EXP 50 획득</p><button class="primary" onclick="questReward()">🎁 보상 받기</button><p id="qmsg"></p></div></section>
-<section id="shop" class="screen">
-  <div class="card">
-    <h2>🛒 CODEX 상점</h2>
-    <p class="sub">보유 🪙 토큰으로 아이템을 구매하세요.</p>
-    <div class="shopBalance">🪙 보유 토큰: <strong id="shopTokens">0</strong></div>
-
-    <div class="shopGrid">
-      <div class="shopItem">
-        <div class="shopIcon">✨</div>
-        <h3>EXP 부스터</h3>
-        <p>즉시 EXP +50</p>
-        <strong>🪙 100</strong>
-        <button class="primary shopBuy" data-shop-item="exp50">구매</button>
+<div class="wrap">
+  <!-- 상단 헤더 & 타이틀 -->
+  <header>
+    <div class="header-top">
+      <div class="title-area">
+        <div class="sub">🌌 차원이 끝나는 곳까지</div>
+        <h1>CODEX <span>끝없는 차원의 모험</span></h1>
       </div>
-
-      <div class="shopItem">
-        <div class="shopIcon">🪙</div>
-        <h3>토큰 보급 상자</h3>
-        <p>토큰 +100</p>
-        <strong>🪙 180</strong>
-        <button class="primary shopBuy" data-shop-item="token100">구매</button>
-      </div>
-
-      <div class="shopItem">
-        <div class="shopIcon">🎰</div>
-        <h3>룰렛 기회 +1</h3>
-        <p>현재 선택한 차원의 룰렛 기회 +1</p>
-        <strong>🪙 120</strong>
-        <button class="primary shopBuy" data-shop-item="roulette1">구매</button>
-      </div>
-
-      <div class="shopItem">
-        <div class="shopIcon">🏆</div>
-        <h3>랜덤 칭호 상자</h3>
-        <p>새로운 칭호 1개 도전</p>
-        <strong>🪙 250</strong>
-        <button class="primary shopBuy" data-shop-item="title">구매</button>
+      <div class="header-tools">
+        <button id="soundToggleBtn" class="tool-btn" onclick="toggleSound()">🔊 사운드 ON</button>
+        <button class="tool-btn" onclick="showHelpModal()">❓ 도움말</button>
       </div>
     </div>
 
-    <p id="shopMsg" class="rouletteResult"></p>
-    <button class="secondary" onclick="show('home')">🏠 마을로 돌아가기</button>
+    <!-- 플레이어 실시간 HUD -->
+    <div class="player-hud">
+      <div class="hud-avatar-box">
+        <div class="hud-avatar" id="playerAvatar" onclick="cycleAvatar()" title="아바타 변경">🧙</div>
+        <div class="hud-name-box">
+          <div class="hud-name">CODEX 탐험가</div>
+          <div class="equipped-title-badge" id="hudTitleBadge">🌱 새싹 탐험가</div>
+        </div>
+      </div>
+
+      <div class="hud-bars">
+        <div class="hud-bar-row">
+          <span class="hud-bar-label">HP</span>
+          <div class="bar-track"><div class="bar-fill hp" id="hudHpBar" style="width: 100%;"></div></div>
+          <span class="hud-bar-val" id="hudHpVal">100/100</span>
+        </div>
+        <div class="hud-bar-row">
+          <span class="hud-bar-label">MP</span>
+          <div class="bar-track"><div class="bar-fill mp" id="hudMpBar" style="width: 100%;"></div></div>
+          <span class="hud-bar-val" id="hudMpVal">50/50</span>
+        </div>
+        <div class="hud-bar-row">
+          <span class="hud-bar-label">EXP</span>
+          <div class="bar-track"><div class="bar-fill exp" id="hudExpBar" style="width: 0%;"></div></div>
+          <span class="hud-bar-val" id="hudExpVal">0/100</span>
+        </div>
+      </div>
+
+      <div class="hud-currencies">
+        <div class="currency-item level">🆙 Lv.<b id="level">1</b></div>
+        <div class="currency-item tokens">🪙 <b id="tokens">100</b></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 네비게이션 탭 바 -->
+  <div class="nav-scroll">
+    <div class="nav-tabs">
+      <button class="nav-btn active" onclick="show('home')" data-tab="home">🏠 마을</button>
+      <button class="nav-btn" onclick="show('map')" data-tab="map">🗺️ 차원 탐험</button>
+      <button class="nav-btn" onclick="show('battle')" data-tab="battle">⚔️ 차원 전투</button>
+      <button class="nav-btn" onclick="show('mini')" data-tab="mini">🎮 미니게임 월드</button>
+      <button class="nav-btn" onclick="show('shop')" data-tab="shop">🛒 상점 & 대장간</button>
+      <button class="nav-btn" onclick="show('book')" data-tab="book">🏆 도감 & 칭호</button>
+      <button class="nav-btn" onclick="show('quest')" data-tab="quest">📋 일일 퀘스트</button>
+    </div>
   </div>
-</section>
-<footer>CODEX • Endless Dimension | ChatGPT: Codex, Claude made</footer></div>
 
+  <!-- ==============================================
+       1. 마을 화면 (HOME)
+       ============================================== -->
+  <section id="home" class="screen active">
+    <div class="village-wrap">
+      <svg class="villageArt tod-day" viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="코덱스 마을 일러스트">
+        <defs>
+          <linearGradient id="mtn1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a2a63"/>
+            <stop offset="100%" stop-color="#241a44"/>
+          </linearGradient>
+          <linearGradient id="mtn2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4a3480"/>
+            <stop offset="100%" stop-color="#2c2054"/>
+          </linearGradient>
+          <linearGradient id="roofGold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffcf5a"/>
+            <stop offset="100%" stop-color="#e08b1f"/>
+          </linearGradient>
+          <radialGradient id="portalGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00f5d4" stop-opacity="0.9"/>
+            <stop offset="70%" stop-color="#7b2cbf" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#05050d" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="skyBlur" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="8"/>
+          </filter>
+        </defs>
 
+        <!-- 하늘 천체 -->
+        <circle id="skyGlow" cx="670" cy="55" r="40" fill="#ffcf5a" opacity="0.55" filter="url(#skyBlur)"/>
+        <circle id="skyBody" cx="670" cy="55" r="20" fill="#fff3c4"/>
 
+        <!-- 반짝이는 별자리 -->
+        <g id="starsGroup">
+          <circle class="star-twinkle" cx="90" cy="35" r="2" fill="#fff"/>
+          <circle class="star-twinkle star-2" cx="150" cy="60" r="1.6" fill="#fff"/>
+          <circle class="star-twinkle star-3" cx="240" cy="30" r="2.2" fill="#fff"/>
+          <circle class="star-twinkle" cx="330" cy="50" r="1.5" fill="#fff"/>
+          <circle class="star-twinkle star-2" cx="420" cy="25" r="2" fill="#fff"/>
+          <circle class="star-twinkle star-3" cx="540" cy="40" r="1.8" fill="#fff"/>
+          <circle class="star-twinkle" cx="60" cy="80" r="1.4" fill="#fff"/>
+          <circle class="star-twinkle star-2" cx="480" cy="70" r="1.6" fill="#fff"/>
+        </g>
+
+        <!-- 산맥 배경 -->
+        <path d="M0,150 L60,95 L120,140 L180,80 L250,150 L320,100 L400,150 L470,90 L540,150 L610,110 L680,150 L740,100 L800,150 L800,240 L0,240 Z" fill="url(#mtn1)"/>
+        <path d="M0,190 L90,140 L170,180 L260,130 L350,190 L430,150 L520,190 L610,145 L700,190 L800,160 L800,240 L0,240 Z" fill="url(#mtn2)"/>
+        <ellipse cx="400" cy="238" rx="420" ry="16" fill="#140f26"/>
+
+        <!-- 왼쪽 오두막 & 굴뚝 연기 -->
+        <g>
+          <rect x="70" y="175" width="70" height="50" rx="4" fill="#2c2354" stroke="#5b8fd4" stroke-width="2"/>
+          <polygon points="60,178 105,140 150,178" fill="url(#roofGold)"/>
+          <rect x="78" y="152" width="10" height="18" fill="#1b1638"/>
+          <!-- 굴뚝 연기 -->
+          <circle class="smoke-particle" cx="83" cy="148" r="4" fill="#cbd5e1"/>
+          <circle class="smoke-particle smoke-2" cx="83" cy="148" r="3.5" fill="#cbd5e1"/>
+          <rect x="95" y="195" width="20" height="30" fill="#1b1638"/>
+          <rect class="windowLight" x="78" y="185" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
+        </g>
+
+        <!-- 가운데 차원 차원문 & 중앙 탑 -->
+        <g>
+          <!-- 마법 차원문 포탈 오라 -->
+          <ellipse cx="400" cy="200" rx="40" ry="32" fill="url(#portalGlow)"/>
+          <rect x="355" y="120" width="90" height="105" rx="6" fill="#342a5e" stroke="#6930c3" stroke-width="2.5"/>
+          <polygon points="345,124 400,70 455,124" fill="url(#roofGold)"/>
+          <circle cx="400" cy="78" r="5" fill="#ffcf5a"/>
+          <rect x="385" y="185" width="30" height="40" fill="#100b24"/>
+          <rect class="windowLight" x="368" y="140" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
+          <rect class="windowLight" x="416" y="140" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
+          <rect class="windowLight" x="392" y="160" width="16" height="16" fill="#ffcf5a" opacity="0.9"/>
+        </g>
+
+        <!-- 오른쪽 오두막 -->
+        <g>
+          <rect x="640" y="170" width="80" height="55" rx="4" fill="#2c2354" stroke="#5b8fd4" stroke-width="2"/>
+          <polygon points="628,173 680,132 732,173" fill="url(#roofGold)"/>
+          <rect x="668" y="195" width="22" height="30" fill="#1b1638"/>
+          <rect class="windowLight" x="650" y="182" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
+          <rect class="windowLight" x="696" y="182" width="14" height="14" fill="#ffcf5a" opacity="0.85"/>
+        </g>
+
+        <!-- 가로등 불빛 -->
+        <g stroke="#b8c7e8" stroke-width="2">
+          <line x1="230" y1="180" x2="230" y2="225"/>
+          <circle class="lampBulb" cx="230" cy="175" r="7" fill="#ffcf5a"/>
+          <line x1="560" y1="185" x2="560" y2="225"/>
+          <circle class="lampBulb" cx="560" cy="180" r="7" fill="#ffcf5a"/>
+        </g>
+      </svg>
+      <div class="tod-badge" id="todBadge">☀️ 낮 (마을 활성화)</div>
+    </div>
+
+    <!-- 마을 메인 메뉴 카드 -->
+    <div class="card">
+      <h2>🏠 코덱스 중앙 마을</h2>
+      <p class="desc">신비로운 차원의 문이 열렸습니다. 끝없는 6개의 차원을 탐험하고 보물과 칭호를 모아보세요.</p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="primary" onclick="show('map')">🗺️ 차원 탐험 시작</button>
+        <button class="secondary" onclick="show('battle'); startBattle()">⚔️ 즉시 몬스터 전투</button>
+        <button class="secondary" onclick="show('shop')">🛒 상점 & 대장간</button>
+      </div>
+    </div>
+
+    <!-- 대시보드 그리드 -->
+    <div class="home-grid">
+      <div class="stat-box">
+        <h4>📖 최근 모험 기록</h4>
+        <div class="val" id="record" style="font-size: 1rem; font-weight: 600; line-height: 1.5;">모험을 시작해보세요.</div>
+      </div>
+      <div class="stat-box">
+        <h4>🎯 캐릭터 전투 스탯</h4>
+        <div class="val" style="font-size: 1.05rem;">
+          ⚔️ 공격력 <b id="homeAtk" style="color:var(--cyan)">10</b> · 🛡️ 방어력 <b id="homeDef" style="color:var(--gold)">3</b>
+        </div>
+      </div>
+      <div class="stat-box">
+        <h4>🏆 도감 달성률</h4>
+        <div class="val" style="font-size: 1.05rem;">
+          획득 칭호 <b id="homeTitlesCount" style="color:var(--purple)">0</b>개 / 92개
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       2. 차원 탐험 지도 (MAP)
+       ============================================== -->
+  <section id="map" class="screen">
+    <div class="card">
+      <h2>🗺️ 차원 균열 지도</h2>
+      <p class="desc">탐험할 차원을 선택하세요. 깊은 차원일수록 강력한 보상과 전설의 칭호가 기다립니다.</p>
+      
+      <div class="dimension-cards" id="dimensionCardsContainer">
+        <!-- JS로 6개 차원 카드 렌더링 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       3. 차원 탐험 & 룰렛 무대 (ADV)
+       ============================================== -->
+  <section id="adv" class="screen">
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 id="advZoneTitle">🌳 에메랄드 초원</h2>
+        <button class="secondary" onclick="show('map')">🗺️ 지도 복귀</button>
+      </div>
+
+      <div class="roulette-arena">
+        <div class="roulette-status-text" id="rouletteStatus">🎰 차원의 룰렛 준비 완료</div>
+        
+        <div class="roulette-slots-box">
+          <div class="roulette-slot" id="slotIcon">🌳</div>
+        </div>
+
+        <div class="roulette-rewards-text" id="rouletteDetail">
+          성공 확률 80% · 남은 기회 10회
+        </div>
+
+        <div style="margin-top: 24px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <button class="primary" id="exploreBtn" onclick="explore()" style="padding: 14px 28px; font-size: 1.1rem;">🎰 차원 룰렛 돌리기</button>
+          <button class="secondary" onclick="startBattle()">⚔️ 이 차원의 몬스터 사냥</button>
+          <button class="warning" onclick="startBossFight()">👑 차원 수호 보스 도전</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       4. 차원 전투 아레나 (BATTLE)
+       ============================================== -->
+  <section id="battle" class="screen">
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2>⚔️ 차원 실시간 전투</h2>
+        <div style="display: flex; gap: 8px;">
+          <button id="autoBattleBtn" class="secondary" onclick="toggleAutoBattle()">⚡ 자동전투: OFF</button>
+          <button class="danger" onclick="escapeBattle()">🏠 전투 도망</button>
+        </div>
+      </div>
+
+      <!-- 전투 스테이지 -->
+      <div class="battle-stage" id="battleStage">
+        <div class="battle-units-row">
+          <!-- 플레이어 유닛 -->
+          <div class="unit-card player-unit">
+            <div class="unit-icon-stage">
+              <span class="unit-big-icon idle" id="battlePlayerIcon">🧙</span>
+            </div>
+            <div class="unit-name">CODEX 탐험가</div>
+            <div class="unit-hp-box">
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700;">
+                <span>❤️ 체력</span>
+                <span id="playerHp">100/100</span>
+              </div>
+              <div class="hpbar-large"><i id="playerHpBar" style="width: 100%;"></i></div>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-sub); margin-top: 6px;">
+              ⚔️ 공격 <b id="playerAtk">10</b> · 🛡️ 방어 <b id="playerDef">3</b>
+            </div>
+          </div>
+
+          <!-- VS 뱃지 -->
+          <div class="vs-badge">VS</div>
+
+          <!-- 적 유닛 -->
+          <div class="unit-card enemy-unit">
+            <div class="unit-icon-stage">
+              <span class="unit-big-icon idle" id="battleEnemyIcon">🐺</span>
+            </div>
+            <div class="unit-name" id="enemyName">초원 늑대</div>
+            <div class="unit-hp-box">
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700;">
+                <span>💀 적 체력</span>
+                <span id="enemyHp">50/50</span>
+              </div>
+              <div class="hpbar-large enemy"><i id="enemyHpBar" style="width: 100%;"></i></div>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-sub); margin-top: 6px;">
+              ⚔️ 공격력 <b id="enemyAtk">7</b>
+            </div>
+          </div>
+        </div>
+
+        <!-- 스킬 & 액션 버튼 -->
+        <div class="battle-controls" id="battleActions">
+          <button class="battle-btn atk" onclick="playerAction('attack')">⚔️ 기본 공격</button>
+          <button class="battle-btn skill" onclick="playerAction('thunder')">⚡ 벼락 일격 (15 MP)</button>
+          <button class="battle-btn def" onclick="playerAction('defend')">🛡️ 방어 & 반격</button>
+          <button class="battle-btn heal" onclick="playerAction('heal')">🧪 치유 포션 (+40 HP)</button>
+          <button class="battle-btn ult" id="ultBtn" onclick="playerAction('ult')">🔥 차원 폭발 (필살기)</button>
+        </div>
+
+        <!-- 전투 로그 콘솔 -->
+        <div class="battle-log-box" id="battleLog"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       5. 미니게임 월드 (MINI)
+       ============================================== -->
+  <section id="mini" class="screen">
+    <div class="card">
+      <h2>🎮 차원 미니게임 월드</h2>
+      <p class="desc">빠른 순발력과 두뇌로 미니게임을 클리어하고 대량의 EXP와 토큰을 획득하세요!</p>
+      
+      <div class="mini-grid">
+        <div class="mini-btn" onclick="startMiniDirection()">
+          <div class="mini-icon">⬅️➡️</div>
+          <div class="mini-name">방향 맞추기</div>
+          <div class="mini-rewards">+15 EXP · +20🪙</div>
+        </div>
+        <div class="mini-btn" onclick="startMiniMemory()">
+          <div class="mini-icon">🧠</div>
+          <div class="mini-name">기억력 챌린지</div>
+          <div class="mini-rewards">+20 EXP · +25🪙</div>
+        </div>
+        <div class="mini-btn" onclick="startMiniReaction()">
+          <div class="mini-icon">⚡</div>
+          <div class="mini-name">광속 반응속도</div>
+          <div class="mini-rewards">+25 EXP · +30🪙</div>
+        </div>
+        <div class="mini-btn" onclick="startMiniMath()">
+          <div class="mini-icon">🔢</div>
+          <div class="mini-name">스피드 암산</div>
+          <div class="mini-rewards">+25 EXP · +35🪙</div>
+        </div>
+      </div>
+
+      <div class="mini-arena" id="miniArena">
+        <h3 id="miniTitle">미니게임을 선택해주세요!</h3>
+        <div class="mini-prompt" id="miniPrompt">🎮</div>
+        <div id="miniContentArea"></div>
+        <div id="miniFeedback" style="font-weight: 800; font-size: 1.15rem; min-height: 28px; margin-top: 12px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       6. 상점 & 대장간 (SHOP)
+       ============================================== -->
+  <section id="shop" class="screen">
+    <div class="card">
+      <h2>🛒 CODEX 마법 상점 & 대장간</h2>
+      <p class="desc">모은 토큰으로 전투 스탯을 영구 강화하거나 특수 아이템을 구매하세요.</p>
+      
+      <div class="shop-section-title">⚔️ 대장간 영구 스탯 강화</div>
+      <div class="shop-grid">
+        <div class="shop-card">
+          <div class="shop-icon">🗡️</div>
+          <div class="shop-item-name">용사의 검 강화</div>
+          <div class="shop-item-desc">영구적으로 캐릭터 공격력 +2 증가</div>
+          <div class="shop-item-price">🪙 150</div>
+          <button class="primary" onclick="buyForge('atk')">강화하기</button>
+        </div>
+        <div class="shop-card">
+          <div class="shop-icon">🛡️</div>
+          <div class="shop-item-name">수호자의 방패</div>
+          <div class="shop-item-desc">영구적으로 캐릭터 방어력 +1 증가</div>
+          <div class="shop-item-price">🪙 120</div>
+          <button class="primary" onclick="buyForge('def')">강화하기</button>
+        </div>
+        <div class="shop-card">
+          <div class="shop-icon">💖</div>
+          <div class="shop-item-name">생명의 영약</div>
+          <div class="shop-item-desc">영구적으로 최대 체력(Max HP) +20 증가</div>
+          <div class="shop-item-price">🪙 180</div>
+          <button class="primary" onclick="buyForge('maxhp')">마시기</button>
+        </div>
+      </div>
+
+      <div class="shop-section-title">✨ 차원 보급품 & 칭호</div>
+      <div class="shop-grid">
+        <div class="shop-card">
+          <div class="shop-icon">✨</div>
+          <div class="shop-item-name">EXP 대형 부스터</div>
+          <div class="shop-item-desc">즉시 EXP +60 획득</div>
+          <div class="shop-item-price">🪙 100</div>
+          <button class="secondary" onclick="buyShopItem('exp50')">구매</button>
+        </div>
+        <div class="shop-card">
+          <div class="shop-icon">🎰</div>
+          <div class="shop-item-name">차원 룰렛 충전권</div>
+          <div class="shop-item-desc">현재 선택된 차원 룰렛 기회 +2회 충전</div>
+          <div class="shop-item-price">🪙 120</div>
+          <button class="secondary" onclick="buyShopItem('roulette1')">충전</button>
+        </div>
+        <div class="shop-card">
+          <div class="shop-icon">🏆</div>
+          <div class="shop-item-name">신비한 랜덤 칭호 상자</div>
+          <div class="shop-item-desc">새로운 칭호 1개 확정 뽑기</div>
+          <div class="shop-item-price">🪙 250</div>
+          <button class="warning" onclick="buyShopItem('title')">상자 개봉</button>
+        </div>
+      </div>
+
+      <div id="shopNotice" style="margin-top: 16px; font-weight: 800; font-size: 1.05rem; text-align: center; min-height: 24px;"></div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       7. 도감 & 칭호창 (BOOK)
+       ============================================== -->
+  <section id="book" class="screen">
+    <div class="card">
+      <h2>🏆 CODEX 모험 도감 & 칭호</h2>
+      <p class="desc">칭호를 클릭하면 프로필에 장착할 수 있습니다! 더 많은 칭호를 모을수록 칭호 컬렉션 보너스가 부여됩니다.</p>
+      
+      <div class="titles-header-summary">
+        <div class="dim-spec-item">획득 칭호: <b id="bookObtainedCount" style="color:var(--cyan)">0</b> / <span id="bookTotalCount">92</span></div>
+        <div class="dim-spec-item">현재 장착 중: <b id="bookEquippedTitle" style="color:var(--gold)">🌱 새싹 탐험가</b></div>
+      </div>
+
+      <div id="titleCategoriesList"></div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       8. 일일 퀘스트 (QUEST)
+       ============================================== -->
+  <section id="quest" class="screen">
+    <div class="card">
+      <h2>📋 일일 모험 퀘스트</h2>
+      <p class="desc">매일 자정 갱신되는 퀘스트를 완료하고 푸짐한 보상을 획득하세요.</p>
+
+      <div class="quest-item">
+        <div class="quest-info">
+          <div class="quest-check" id="qCheck1">⬜</div>
+          <div>
+            <div class="quest-title-text">차원 룰렛 탐험 1회 완료</div>
+            <div style="font-size: 0.8rem; color: var(--text-sub);">차원 탐험에서 룰렛 돌리기</div>
+          </div>
+        </div>
+        <span class="quest-reward-tag">+20 EXP · 20🪙</span>
+      </div>
+
+      <div class="quest-item">
+        <div class="quest-info">
+          <div class="quest-check" id="qCheck2">⬜</div>
+          <div>
+            <div class="quest-title-text">몬스터 전투 승리 1회</div>
+            <div style="font-size: 0.8rem; color: var(--text-sub);">차원 전투에서 몬스터 처치</div>
+          </div>
+        </div>
+        <span class="quest-reward-tag">+25 EXP · 25🪙</span>
+      </div>
+
+      <div class="quest-item">
+        <div class="quest-info">
+          <div class="quest-check" id="qCheck3">⬜</div>
+          <div>
+            <div class="quest-title-text">미니게임 1회 클리어</div>
+            <div style="font-size: 0.8rem; color: var(--text-sub);">미니게임 월드에서 1승 달성</div>
+          </div>
+        </div>
+        <span class="quest-reward-tag">+25 EXP · 25🪙</span>
+      </div>
+
+      <div style="margin-top: 20px; text-align: center;">
+        <button class="primary" id="questClaimBtn" onclick="claimDailyQuest()" style="padding: 14px 28px; font-size: 1.05rem;">🎁 일일 퀘스트 일괄 보상 받기</button>
+        <div id="questMsg" style="margin-top: 10px; font-weight: 800; font-size: 1.05rem;"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    CODEX • Endless Dimension Evolution | Designed & Powered by Pickle Agent
+  </footer>
+</div>
+
+<!-- ==============================================
+     결과 오버레이 모달 (RESULT MODAL)
+     ============================================== -->
+<div id="codexResultOverlay">
+  <div id="codexResultBox">
+    <div id="codexResultTitle">🎉 승리!</div>
+    <div id="codexResultText" class="codexResultText">전투에서 승리했습니다.</div>
+    <button class="primary" onclick="closeResultOverlay()" style="padding: 12px 28px;">확인</button>
+  </div>
+</div>
+
+<!-- ==============================================
+     GAME JAVASCRIPT ENGINE
+     ============================================== -->
 <script>
 (() => {
   "use strict";
 
   const STORAGE_KEY = "codexEndless";
+
+  // 1. Web Audio API 사운드 신시사이저 (무외부 의존성, 100% 브라우저 즉시 재생)
+  let soundEnabled = true;
+  let audioCtx = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) audioCtx = new AudioContext();
+    }
+    if (audioCtx && audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+  }
+
+  const Sound = {
+    click() {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.05);
+    },
+    hit() {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.15);
+    },
+    crit() {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(280, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    },
+    heal() {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      [440, 554, 659, 880].forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime + idx * 0.06);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.06 + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + idx * 0.06);
+        osc.stop(audioCtx.currentTime + idx * 0.06 + 0.15);
+      });
+    },
+    levelUp() {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      [523, 659, 784, 1046].forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.1);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.1 + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + idx * 0.1);
+        osc.stop(audioCtx.currentTime + idx * 0.1 + 0.3);
+      });
+    },
+    win() {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      [440, 659, 880].forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.18, audioCtx.currentTime + idx * 0.09);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.09 + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + idx * 0.09);
+        osc.stop(audioCtx.currentTime + idx * 0.09 + 0.25);
+      });
+    }
+  };
+
+  window.toggleSound = function() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById("soundToggleBtn");
+    if (btn) btn.textContent = soundEnabled ? "🔊 사운드 ON" : "🔇 사운드 OFF";
+    if (soundEnabled) Sound.click();
+  };
+
+  // 2. 칭호 도감 DB
   const TITLE_CATEGORIES = {
     "언레어": ["🌱 새싹 탐험가","🪶 첫걸음","🍀 행운의 초보","🗺️ 길잡이 견습","🔦 어둠의 탐색자","🎒 작은 모험가","🧭 방향 감각","🌿 숲의 친구","🪵 캠프 초보","🐾 발자국 추적자","🪨 돌멩이 수집가","🌙 밤길 입문자","☀️ 첫 햇살","💧 샘물 발견자","🍎 간식 수집가","📜 첫 기록","🔔 차원의 종소리","🕯️ 작은 불빛","🌼 들꽃 수집가","🧩 퍼즐 입문자"],
     "레어": ["💎 보물 사냥꾼","⚡ 번개 반응자","🏹 정밀 사냥꾼","🛡️ 수호자 견습","🎯 명중 전문가","🗝️ 비밀열쇠 수집가","🧪 포션 연구가","🧱 성벽 돌파자","🦅 하늘 정찰자","🐺 야생 추적자","🏜️ 사막 방랑자","❄️ 얼음 정찰자","🌋 화산 탐사자","🌌 별빛 여행자","🌊 파도 항해자"],
@@ -187,28 +1609,40 @@
     "시크릿": ["🤫 숨겨진 차원의 주인","🕳️ 공허를 본 자","👁️ CODEX의 선택","🌑 검은 별의 방문자","🌀 무한 루프 탈출자","🔮 금지된 예언자","🪐 미지의 관찰자","🗝️ 차원의 문지기","🌘 그림자 너머","💫 시간의 흔적","🧿 잊힌 수호자","⚫ 공허의 핵","🌌 무한 성운","👑 시크릿 로드","🌀 경계의 여행자","🕯️ 마지막 불꽃","📡 차원 신호 수신자","🪽 초월의 방문자"],
     "리미트": ["🔒 최초의 기록자","🔒 개발자의 친구"]
   };
-  const TITLES = Object.values(TITLE_CATEGORIES).flat();
+  const ALL_TITLES = Object.values(TITLE_CATEGORIES).flat();
 
-  // 차원마다 성공 확률과 보상 범위를 다르게 설정
+  // 3. 차원 구성 데이터
   const DIMENSIONS = {
-    1: { name:"🌳 초원", icon:"🌳", chance:80, exp:[8,18], tokens:[8,20] },
-    2: { name:"🏜️ 사막", icon:"🏜️", chance:70, exp:[12,25], tokens:[12,30] },
-    3: { name:"❄️ 얼음왕국", icon:"❄️", chance:60, exp:[18,35], tokens:[18,45] },
-    4: { name:"🌋 화산", icon:"🌋", chance:50, exp:[25,45], tokens:[25,60] },
-    5: { name:"🌌 우주", icon:"🌌", chance:40, exp:[35,60], tokens:[35,80] },
-    6: { name:"🔐 비밀 차원", icon:"🔐", chance:25, exp:[50,100], tokens:[60,150] }
+    1: { id:1, name:"🌳 에메랄드 초원", icon:"🌳", levelReq:1, chance:80, exp:[10,22], tokens:[10,25], gradient:"linear-gradient(90deg, #38b000, #00f5d4)", desc:"온화한 바람과 싱그러운 풀내음이 가득한 차원입니다." },
+    2: { id:2, name:"🏜️ 황금 사막", icon:"🏜️", levelReq:3, chance:70, exp:[15,30], tokens:[15,35], gradient:"linear-gradient(90deg, #ffbe0b, #fb5607)", desc:"태양이 작열하며 고대 유적의 비밀이 묻힌 사막 차원입니다." },
+    3: { id:3, name:"❄️ 서리 빙결 왕국", icon:"❄️", levelReq:5, chance:60, exp:[22,40], tokens:[22,50], gradient:"linear-gradient(90deg, #a2d2ff, #3a86ff)", desc:"모든 것이 얼어붙은 극저온의 차원입니다." },
+    4: { id:4, name:"🌋 인페르노 화산", icon:"🌋", levelReq:8, chance:50, exp:[30,55], tokens:[30,70], gradient:"linear-gradient(90deg, #ff0054, #ff5400)", desc:"용암이 끓어오르는 위험하고 뜨거운 차원입니다." },
+    5: { id:5, name:"🌌 네뷸라 심우주", icon:"🌌", levelReq:12, chance:40, exp:[45,75], tokens:[45,95], gradient:"linear-gradient(90deg, #8338ec, #3a86ff)", desc:"시공간이 뒤틀린 별들의 바다, 미지의 우주 차원입니다." },
+    6: { id:6, name:"🔐 공허의 비밀 차원", icon:"🔐", levelReq:15, chance:30, exp:[65,120], tokens:[70,180], gradient:"linear-gradient(90deg, #00f5d4, #7b2cbf)", desc:"CODEX의 궁극적 진실이 잠든 태초의 공허 차원입니다." }
   };
 
+  // 4. 상태 관리 (localStorage 완벽 호환 및 확장)
   const defaultState = {
     tokens: 100,
     exp: 0,
     level: 1,
-    titles: [],
-    zones: [],
+    titles: ["🌱 새싹 탐험가"],
+    equippedTitle: "🌱 새싹 탐험가",
+    avatar: "🧙",
+    zones: ["🌳 에메랄드 초원"],
     dailyDone: false,
-    lastEvent: "아직 모험을 시작하지 않았습니다.",
+    questProgress: { explore: 0, battle: 0, mini: 0 },
+    lastEvent: "코덱스 차원에 입장했습니다.",
     roulette: { dimension: 1, tries: 10 },
-    lastRouletteRefill: null
+    lastRouletteRefill: null,
+    // 전투 관련
+    hp: 100,
+    maxHp: 100,
+    mp: 50,
+    maxMp: 50,
+    atk: 10,
+    def: 3,
+    bosses: []
   };
 
   let state = loadState();
@@ -219,30 +1653,21 @@
       const merged = Object.assign({}, defaultState, saved || {});
       merged.roulette = Object.assign({}, defaultState.roulette, (saved && saved.roulette) || {});
       if (typeof merged.roulette.tries !== "number") merged.roulette.tries = 10;
+      if (!Array.isArray(merged.titles)) merged.titles = ["🌱 새싹 탐험가"];
+      if (!merged.titles.length) merged.titles.push("🌱 새싹 탐험가");
+      if (!merged.equippedTitle) merged.equippedTitle = merged.titles[0];
+      if (!merged.questProgress) merged.questProgress = { explore: 0, battle: 0, mini: 0 };
+      if (typeof merged.maxHp !== "number") merged.maxHp = Math.max(100, (merged.level || 1) * 15 + 100);
+      if (typeof merged.hp !== "number" || merged.hp <= 0) merged.hp = merged.maxHp;
+      if (typeof merged.maxMp !== "number") merged.maxMp = 50;
+      if (typeof merged.mp !== "number") merged.mp = merged.maxMp;
+      if (typeof merged.atk !== "number") merged.atk = 10;
+      if (typeof merged.def !== "number") merged.def = 3;
       return merged;
     } catch (e) {
       return Object.assign({}, defaultState);
     }
   }
-
-  function todayStr() {
-    const d = new Date();
-    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-  }
-
-  // 매일(기기 실제 날짜 기준) 자정이 지나면 룰렛 기회를 10회로 자동 충전
-  function dailyRouletteRefillCheck() {
-    const today = todayStr();
-    if (state.lastRouletteRefill !== today) {
-      state.roulette.tries = 10;
-      state.lastRouletteRefill = today;
-      save();
-    }
-  }
-
-  dailyRouletteRefillCheck();
-  setInterval(dailyRouletteRefillCheck, 60 * 1000);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) dailyRouletteRefillCheck(); });
 
   function save() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -257,601 +1682,985 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  function updateUI() {
-    const tokens = document.getElementById("tokens");
-    const xp = document.getElementById("xp");
-    const level = document.getElementById("level");
-    const need = document.getElementById("need");
-    const record = document.getElementById("record");
-    const titles = document.getElementById("titles");
-    const titleList = document.getElementById("titleList");
-    const zones = document.getElementById("zones");
-    const shopTokens = document.getElementById("shopTokens");
-    if (tokens) tokens.textContent = state.tokens;
-    if (xp) xp.textContent = state.exp + "/" + nextLevelExp();
-    if (level) level.textContent = state.level;
-    if (need) need.textContent = Math.max(0, nextLevelExp() - state.exp);
-    if (record) record.textContent = state.lastEvent;
-    if (titles) titles.textContent = state.titles.length;
-    if (titleList) {
-      titleList.innerHTML = Object.entries(TITLE_CATEGORIES).map(([cat,list]) => {
-        const rows = list.map(t => '<span class="tag">' + (state.titles.includes(t) ? '✅ ' : '⬜ ') + escapeHtml(t) + '</span>').join("");
-        return '<h3>' + cat + ' (' + list.filter(t => state.titles.includes(t)).length + '/' + list.length + ')</h3>' + rows;
-      }).join("");
-    }
-    if (shopTokens) shopTokens.textContent = state.tokens;
-    if (zones) {
-      zones.innerHTML = state.zones.length
-        ? state.zones.map(z => '<span class="tag">' + escapeHtml(z) + '</span>').join("")
-        : '<span class="sub">아직 발견한 차원이 없습니다.</span>';
-    }
-  }
-
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, ch => ({
       "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
     }[ch]));
   }
 
-  function reward(exp, tokens) {
-    state.exp += exp;
-    state.tokens += tokens;
+  // 일일 리필 & 퀘스트 날짜 체크
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function dailyCheck() {
+    const today = todayStr();
+    if (state.lastRouletteRefill !== today) {
+      state.roulette.tries = 10;
+      state.dailyDone = false;
+      state.questProgress = { explore: 0, battle: 0, mini: 0 };
+      state.lastRouletteRefill = today;
+      save();
+    }
+  }
+  dailyCheck();
+  setInterval(dailyCheck, 60 * 1000);
+
+  // 5. 보상 및 성장
+  function gainReward(expGain, tokenGain, triggerMsg) {
+    state.exp += expGain;
+    state.tokens += tokenGain;
+    Sound.win();
+
+    let leveledUp = false;
     while (state.exp >= nextLevelExp()) {
       state.exp -= nextLevelExp();
       state.level++;
-      alert("🎉 LEVEL UP!\nLv." + state.level + " 달성!");
+      state.maxHp += 15;
+      state.hp = state.maxHp;
+      state.maxMp += 5;
+      state.mp = state.maxMp;
+      state.atk += 2;
+      state.def += 1;
+      leveledUp = true;
+    }
+
+    if (leveledUp) {
+      Sound.levelUp();
+      showResultModal(true, "🎉 LEVEL UP!\nLv." + state.level + " 달성!\n(최대 체력 +15 · 공격력 +2 · 방어력 +1 증가)");
+    } else if (triggerMsg) {
+      state.lastEvent = triggerMsg;
     }
     save();
   }
 
-  window.show = function(id) {
+  // 6. UI 동기화 함수
+  function updateUI() {
+    // HUD 통화 및 바
+    const tokensEl = document.getElementById("tokens");
+    const levelEl = document.getElementById("level");
+    if (tokensEl) tokensEl.textContent = state.tokens.toLocaleString();
+    if (levelEl) levelEl.textContent = state.level;
+
+    const hpPercent = Math.max(0, Math.min(100, (state.hp / state.maxHp) * 100));
+    const mpPercent = Math.max(0, Math.min(100, (state.mp / state.maxMp) * 100));
+    const expPercent = Math.max(0, Math.min(100, (state.exp / nextLevelExp()) * 100));
+
+    const hudHpBar = document.getElementById("hudHpBar");
+    const hudHpVal = document.getElementById("hudHpVal");
+    if (hudHpBar) hudHpBar.style.width = hpPercent + "%";
+    if (hudHpVal) hudHpVal.textContent = Math.round(state.hp) + "/" + state.maxHp;
+
+    const hudMpBar = document.getElementById("hudMpBar");
+    const hudMpVal = document.getElementById("hudMpVal");
+    if (hudMpBar) hudMpBar.style.width = mpPercent + "%";
+    if (hudMpVal) hudMpVal.textContent = Math.round(state.mp) + "/" + state.maxMp;
+
+    const hudExpBar = document.getElementById("hudExpBar");
+    const hudExpVal = document.getElementById("hudExpVal");
+    if (hudExpBar) hudExpBar.style.width = expPercent + "%";
+    if (hudExpVal) hudExpVal.textContent = state.exp + "/" + nextLevelExp();
+
+    const hudTitleBadge = document.getElementById("hudTitleBadge");
+    if (hudTitleBadge) hudTitleBadge.textContent = state.equippedTitle || "🌱 새싹 탐험가";
+
+    const playerAvatar = document.getElementById("playerAvatar");
+    if (playerAvatar) playerAvatar.textContent = state.avatar || "🧙";
+
+    // 마을 대시보드
+    const record = document.getElementById("record");
+    const homeAtk = document.getElementById("homeAtk");
+    const homeDef = document.getElementById("homeDef");
+    const homeTitlesCount = document.getElementById("homeTitlesCount");
+    if (record) record.textContent = state.lastEvent || "모험을 시작해보세요.";
+    if (homeAtk) homeAtk.textContent = state.atk;
+    if (homeDef) homeDef.textContent = state.def;
+    if (homeTitlesCount) homeTitlesCount.textContent = state.titles.length;
+
+    // 퀘스트 체크마크
+    const q1 = document.getElementById("qCheck1");
+    const q2 = document.getElementById("qCheck2");
+    const q3 = document.getElementById("qCheck3");
+    if (q1) {
+      const ok = state.questProgress.explore >= 1;
+      q1.textContent = ok ? "✅" : "⬜";
+      q1.className = "quest-check " + (ok ? "done" : "");
+    }
+    if (q2) {
+      const ok = state.questProgress.battle >= 1;
+      q2.textContent = ok ? "✅" : "⬜";
+      q2.className = "quest-check " + (ok ? "done" : "");
+    }
+    if (q3) {
+      const ok = state.questProgress.mini >= 1;
+      q3.textContent = ok ? "✅" : "⬜";
+      q3.className = "quest-check " + (ok ? "done" : "");
+    }
+
+    // 도감 렌더링
+    renderTitlesBook();
+  }
+
+  // 7. 아바타 변경
+  const AVATARS = ["🧙", "⚔️", "🏹", "🥷", "🛡️", "👑"];
+  window.cycleAvatar = function() {
+    Sound.click();
+    const curr = AVATARS.indexOf(state.avatar || "🧙");
+    state.avatar = AVATARS[(curr + 1) % AVATARS.length];
+    save();
+  };
+
+  // 8. 탭 전환
+  window.show = function(screenId) {
+    Sound.click();
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    const target = document.getElementById(id);
-    if (!target) return;
-    target.classList.add("active");
-    window.scrollTo({top:0, behavior:"smooth"});
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    
+    const target = document.getElementById(screenId);
+    if (target) target.classList.add("active");
+
+    const tabBtn = document.querySelector(`.nav-btn[data-tab="${screenId}"]`);
+    if (tabBtn) tabBtn.classList.add("active");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
     updateUI();
   };
 
-  window.adventure = function(number) {
-    const d = DIMENSIONS[number] || DIMENSIONS[1];
-    state.roulette.dimension = number;
+  // 9. 차원 카드 렌더링
+  function renderDimensionCards() {
+    const container = document.getElementById("dimensionCardsContainer");
+    if (!container) return;
+    container.innerHTML = Object.values(DIMENSIONS).map(d => {
+      const isLocked = state.level < d.levelReq;
+      return `
+        <div class="dim-card" style="--dim-gradient: ${d.gradient}; opacity: ${isLocked ? 0.6 : 1}" onclick="enterDimension(${d.id})">
+          <div class="dim-header">
+            <div class="dim-title">${d.icon} ${escapeHtml(d.name)}</div>
+            <div class="dim-tag">${isLocked ? '🔒 Lv.' + d.levelReq + ' 필요' : '입장 가능'}</div>
+          </div>
+          <div class="dim-info">${escapeHtml(d.desc)}</div>
+          <div class="dim-specs">
+            <span class="dim-spec-item">성공 확률 ${d.chance}%</span>
+            <span class="dim-spec-item">✨ EXP +${d.exp[0]}~${d.exp[1]}</span>
+            <span class="dim-spec-item">🪙 토큰 +${d.tokens[0]}~${d.tokens[1]}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  window.enterDimension = function(num) {
+    const d = DIMENSIONS[num] || DIMENSIONS[1];
+    if (state.level < d.levelReq) {
+      Sound.hit();
+      alert("🔒 레벨이 부족합니다! 필요 레벨: Lv." + d.levelReq);
+      return;
+    }
+    Sound.click();
+    state.roulette.dimension = num;
     if (!state.zones.includes(d.name)) state.zones.push(d.name);
 
-    const zone = document.getElementById("zone");
-    const icon = document.getElementById("icon");
-    const event = document.getElementById("event");
-    const msg = document.getElementById("eventMsg");
+    const titleEl = document.getElementById("advZoneTitle");
+    const iconEl = document.getElementById("slotIcon");
+    const statusEl = document.getElementById("rouletteStatus");
+    const detailEl = document.getElementById("rouletteDetail");
 
-    if (zone) zone.textContent = d.name;
-    if (icon) icon.textContent = d.icon;
-    if (event) event.textContent = "🎰 " + d.name + " 룰렛";
-    if (msg) {
-      msg.textContent =
-        "성공 확률 " + d.chance + "% · 기회 " + state.roulette.tries + "회\n" +
-        "EXP +" + d.exp[0] + "~" + d.exp[1] +
-        " · 🪙 토큰 +" + d.tokens[0] + "~" + d.tokens[1];
+    if (titleEl) titleEl.textContent = d.name;
+    if (iconEl) iconEl.textContent = d.icon;
+    if (statusEl) statusEl.textContent = "🎰 " + d.name + " 탐험 룰렛";
+    if (detailEl) {
+      detailEl.textContent = `성공 확률 ${d.chance}% · 남은 기회 ${state.roulette.tries}/10회\n✨ EXP +${d.exp[0]}~${d.exp[1]} · 🪙 토큰 +${d.tokens[0]}~${d.tokens[1]}`;
     }
-    state.lastEvent = d.name + " 룰렛을 선택했습니다.";
+
+    state.lastEvent = d.name + " 차원에 진입했습니다.";
     save();
     window.show("adv");
   };
 
-  // 차원별 룰렛: 기회는 총 10회. 성공/실패를 룰렛으로 결정한다.
+  // 10. 차원 탐험 룰렛
   window.explore = function() {
-    const number = Number(state.roulette.dimension) || 1;
-    const d = DIMENSIONS[number] || DIMENSIONS[1];
+    const d = DIMENSIONS[state.roulette.dimension] || DIMENSIONS[1];
 
     if (state.roulette.tries <= 0) {
-      alert("🎰 이 차원의 룰렛 기회 10회를 모두 사용했습니다!\n다른 차원을 선택하거나 게임을 새로 시작해 주세요.");
+      Sound.hit();
+      alert("🎰 이 차원의 룰렛 기회 10회를 모두 사용했습니다!\n매일 자정에 리필되거나 상점에서 충전권을 구매할 수 있습니다.");
       return;
     }
 
     state.roulette.tries--;
+    state.questProgress.explore = (state.questProgress.explore || 0) + 1;
 
-    // 룰렛 회전 연출
-    const icon = document.getElementById("icon");
-    const event = document.getElementById("event");
-    const msg = document.getElementById("eventMsg");
+    const slot = document.getElementById("slotIcon");
+    const status = document.getElementById("rouletteStatus");
+    const detail = document.getElementById("rouletteDetail");
+    const btn = document.getElementById("exploreBtn");
 
-    if (event) event.textContent = "🎰 룰렛 돌리는 중...";
-    if (msg) msg.textContent = "기회 " + state.roulette.tries + "회 남음";
+    if (btn) btn.disabled = true;
+    if (slot) slot.classList.add("spinning");
+    if (status) status.textContent = "🎰 차원의 기운을 회전시키는 중...";
 
     let ticks = 0;
+    const icons = ["✨", "💎", "⭐", "🌀", "🎲", "🎯", d.icon];
     const timer = setInterval(() => {
-      if (icon) icon.textContent = ["🎰","✨","⭐","🎯"][ticks % 4];
+      Sound.click();
+      if (slot) slot.textContent = icons[ticks % icons.length];
       ticks++;
-      if (ticks >= 8) {
+      if (ticks >= 12) {
         clearInterval(timer);
-        const success = Math.random() * 100 < d.chance;
+        if (slot) slot.classList.remove("spinning");
+        if (btn) btn.disabled = false;
 
-        if (success) {
-          const expGain = rand(d.exp[0], d.exp[1]);
-          const tokenGain = rand(d.tokens[0], d.tokens[1]);
-          if (icon) icon.textContent = "🎉";
-          if (event) event.textContent = "🎰 룰렛 결과: 성공!";
-          if (msg) msg.textContent =
-            "SUCCESS ✅\n✨ EXP +" + expGain +
-            " · 🪙 토큰 +" + tokenGain +
-            "\n남은 기회: " + state.roulette.tries + "/10";
+        const roll = Math.random() * 100;
+        const isSuccess = roll < d.chance;
 
-          state.lastEvent = d.name + " 룰렛 성공! EXP +" + expGain + ", 토큰 +" + tokenGain;
-          reward(expGain, tokenGain);
-          maybeTitle();
+        if (isSuccess) {
+          const isCrit = roll < (d.chance * 0.2); // 20% 대성공
+          const multiplier = isCrit ? 1.8 : 1;
+          const expGain = Math.round(rand(d.exp[0], d.exp[1]) * multiplier);
+          const tokenGain = Math.round(rand(d.tokens[0], d.tokens[1]) * multiplier);
+
+          if (slot) slot.textContent = isCrit ? "🌟" : "🎉";
+          if (status) status.textContent = isCrit ? "💥 차원 대성공 (CRITICAL)!" : "🎉 탐험 룰렛 성공!";
+          if (detail) {
+            detail.textContent = `${isCrit ? '🌟 대성공 보너스 발동!' : 'SUCCESS ✅'}\n✨ EXP +${expGain} · 🪙 토큰 +${tokenGain}\n남은 기회: ${state.roulette.tries}/10`;
+          }
+
+          gainReward(expGain, tokenGain, `${d.name} 탐험 성공! (+${expGain} EXP, +${tokenGain} 토큰)`);
+          checkNewTitle();
         } else {
-          if (icon) icon.textContent = "❌";
-          if (event) event.textContent = "🎰 룰렛 결과: 실패!";
-          if (msg) msg.textContent =
-            "FAIL ❌\n보상 없음\n남은 기회: " + state.roulette.tries + "/10";
-          state.lastEvent = d.name + " 룰렛 실패!";
+          Sound.hit();
+          if (slot) slot.textContent = "❌";
+          if (status) status.textContent = "💀 룰렛 실패...";
+          if (detail) {
+            detail.textContent = `아쉽게도 보상을 얻지 못했습니다.\n남은 기회: ${state.roulette.tries}/10`;
+          }
+          state.lastEvent = `${d.name} 탐험 룰렛 실패`;
           save();
         }
-        updateUI();
       }
-    }, 100);
+    }, 90);
   };
 
-  function maybeTitle() {
-    if (Math.random() > 0.25) return;
-    const available = TITLES.filter(t => !TITLE_CATEGORIES["리미트"].includes(t) && !state.titles.includes(t));
-    if (!available.length) return;
-    const title = available[Math.floor(Math.random() * available.length)];
-    state.titles.push(title);
-    alert("🏆 새로운 칭호 획득!\n" + title);
+  // 11. 랜덤 칭호 획득
+  function checkNewTitle() {
+    if (Math.random() > 0.3) return; // 30% 확률로 칭호 도전
+    const unobtained = ALL_TITLES.filter(t => !TITLE_CATEGORIES["리미트"].includes(t) && !state.titles.includes(t));
+    if (!unobtained.length) return;
+    const newTitle = unobtained[Math.floor(Math.random() * unobtained.length)];
+    state.titles.push(newTitle);
     save();
+    showResultModal(true, `🏆 새로운 칭호 획득!\n【 ${newTitle} 】\n(도감 메뉴에서 장착할 수 있습니다!)`);
   }
 
-  // 미니게임도 기존 버튼이 계속 작동하도록 유지
-  window.direction = function() {
-    window.show("mini");
-    const choices = ["⬆️ 위","⬇️ 아래","⬅️ 왼쪽","➡️ 오른쪽"];
-    const answer = choices[rand(0,3)];
-    document.getElementById("mtitle").textContent = "⬅️➡️ 방향 맞추기";
-    document.getElementById("prompt").textContent = answer;
-    document.getElementById("area").innerHTML =
-      '<p>위에 표시된 방향을 선택하세요.</p>' +
-      choices.map(c => '<button class="answerBtn" data-answer="' +
-      escapeHtml(c) + '">' + c + '</button>').join("");
-    document.getElementById("mmsg").textContent = "";
-    document.querySelectorAll(".answerBtn").forEach(btn => {
-      btn.addEventListener("click", function() {
-        if (this.dataset.answer === answer) {
-          reward(10,15);
-          document.getElementById("mmsg").textContent = "🎉 성공! EXP +10 · 토큰 +15";
-        } else {
-          document.getElementById("mmsg").textContent = "❌ 실패! 정답은 " + answer;
-        }
-      }, {once:true});
+  // 12. 전투 엔진 (전면 개편: 수동 스킬, 데미지 팝업, 화면 흔들림, 자동전투)
+  let combat = null;
+  let autoBattleTimer = null;
+  let playerGuarding = false;
+
+  const MONSTERS = {
+    1: [{ name:"초원 늑대", icon:"🐺", hp:60, atk:8 }, { name:"풀숲 슬라임", icon:"🐌", hp:45, atk:6 }, { name:"돌멧돼지", icon:"🐗", hp:80, atk:10 }],
+    2: [{ name:"사막 전갈", icon:"🦂", hp:90, atk:12 }, { name:"모래 독사", icon:"🐍", hp:75, atk:15 }, { name:"모래 골렘", icon:"🪨", hp:130, atk:11 }],
+    3: [{ name:"서리 늑대", icon:"🐺", hp:120, atk:18 }, { name:"빙결 정령", icon:"🧊", hp:110, atk:22 }, { name:"설인 예티", icon:"❄️", hp:170, atk:16 }],
+    4: [{ name:"화염 슬라임", icon:"🔥", hp:160, atk:24 }, { name:"용암 골렘", icon:"🪨", hp:220, atk:20 }, { name:"화산 샐러맨더", icon:"🦎", hp:180, atk:28 }],
+    5: [{ name:"스타 몬스터", icon:"👾", hp:250, atk:32 }, { name:"혜성 파편체", icon:"☄️", hp:220, atk:38 }, { name:"보이드 레이더", icon:"🛸", hp:280, atk:34 }],
+    6: [{ name:"공허의 괴물", icon:"🌀", hp:350, atk:45 }, { name:"차원 감시자", icon:"👁️", hp:320, atk:52 }, { name:"혼돈의 지배체", icon:"🧿", hp:420, atk:48 }]
+  };
+
+  const BOSSES = {
+    1: { name:"고대 숲의 수호거수", icon:"👑", hp:300, atk:18 },
+    2: { name:"사막의 제왕 스콜피온", icon:"🦂", hp:450, atk:25 },
+    3: { name:"빙하의 지배자 프로스트", icon:"🧊", hp:600, atk:35 },
+    4: { name:"화염군주 이그니스", icon:"🔥", hp:850, atk:46 },
+    5: { name:"성운의 지배자 코스모스", icon:"🌌", hp:1200, atk:60 },
+    6: { name:"차원의 파멸자 네메시스", icon:"👑", hp:1800, atk:75 }
+  };
+
+  function combatLog(msg) {
+    const el = document.getElementById("battleLog");
+    if (el) {
+      el.innerHTML += `<div>${msg}</div>`;
+      el.scrollTop = el.scrollHeight;
+    }
+  }
+
+  function spawnDamageNumber(targetEl, text, type) {
+    if (!targetEl) return;
+    const rect = targetEl.getBoundingClientRect();
+    const num = document.createElement("div");
+    num.className = `damage-number ${type}`;
+    num.textContent = text;
+    num.style.left = (rect.left + rect.width / 2 + (Math.random() * 30 - 15)) + "px";
+    num.style.top = (rect.top + (Math.random() * 20 - 10)) + "px";
+    document.body.appendChild(num);
+    setTimeout(() => num.remove(), 950);
+  }
+
+  function syncBattleUI() {
+    if (!combat) return;
+    const pHpEl = document.getElementById("playerHp");
+    const eHpEl = document.getElementById("enemyHp");
+    const pHpBar = document.getElementById("playerHpBar");
+    const eHpBar = document.getElementById("enemyHpBar");
+
+    const pPct = Math.max(0, Math.min(100, (state.hp / state.maxHp) * 100));
+    const ePct = Math.max(0, Math.min(100, (combat.hp / combat.maxHp) * 100));
+
+    if (pHpEl) pHpEl.textContent = `${Math.round(state.hp)}/${state.maxHp}`;
+    if (eHpEl) eHpEl.textContent = `${Math.round(combat.hp)}/${combat.maxHp}`;
+    if (pHpBar) pHpBar.style.width = pPct + "%";
+    if (eHpBar) eHpBar.style.width = ePct + "%";
+
+    const pAtkEl = document.getElementById("playerAtk");
+    const pDefEl = document.getElementById("playerDef");
+    const eAtkEl = document.getElementById("enemyAtk");
+    if (pAtkEl) pAtkEl.textContent = state.atk;
+    if (pDefEl) pDefEl.textContent = state.def;
+    if (eAtkEl) eAtkEl.textContent = combat.atk;
+  }
+
+  window.startBattle = function(customEnemy) {
+    stopAutoBattle();
+    window.show("battle");
+
+    const dim = state.roulette.dimension || 1;
+    let enemyData = customEnemy;
+    if (!enemyData) {
+      const list = MONSTERS[dim] || MONSTERS[1];
+      const template = list[rand(0, list.length - 1)];
+      const scale = 1 + (state.level * 0.08);
+      enemyData = {
+        name: template.name,
+        icon: template.icon,
+        hp: Math.round(template.hp * scale),
+        maxHp: Math.round(template.hp * scale),
+        atk: Math.round(template.atk * scale),
+        isBoss: false
+      };
+    }
+
+    combat = enemyData;
+    playerGuarding = false;
+
+    const eName = document.getElementById("enemyName");
+    const eIcon = document.getElementById("battleEnemyIcon");
+    const pIcon = document.getElementById("battlePlayerIcon");
+    const log = document.getElementById("battleLog");
+
+    if (eName) eName.textContent = combat.name;
+    if (eIcon) eIcon.textContent = combat.icon;
+    if (pIcon) pIcon.textContent = state.avatar || "🧙";
+    if (log) log.innerHTML = "";
+
+    combatLog(`⚔️ <b>${combat.name}</b>이(가) 나타났습니다! 전투를 시작합니다.`);
+    syncBattleUI();
+  };
+
+  window.startBossFight = function() {
+    const dim = state.roulette.dimension || 1;
+    const b = BOSSES[dim] || BOSSES[1];
+    Sound.crit();
+    startBattle({
+      name: `👑 [${DIMENSIONS[dim].name}] ${b.name}`,
+      icon: b.icon,
+      hp: b.hp,
+      maxHp: b.hp,
+      atk: b.atk,
+      isBoss: true
     });
   };
 
-  window.memory = function() {
-    window.show("mini");
-    const nums = [1,2,3,4,5].sort(() => Math.random()-0.5);
-    document.getElementById("mtitle").textContent = "🧠 기억력 챌린지";
-    document.getElementById("prompt").textContent = nums.join(" ");
-    document.getElementById("area").innerHTML =
-      '<p>숫자를 기억한 뒤 입력하세요.</p><input id="memoryInput" inputmode="numeric">' +
-      '<button id="memorySubmit" class="primary">정답 확인</button>';
-    document.getElementById("mmsg").textContent = "";
-    setTimeout(() => {
-      const p = document.getElementById("prompt");
-      if (p) p.textContent = "❓";
-    }, 2000);
-    document.getElementById("memorySubmit").onclick = function() {
-      const ok = document.getElementById("memoryInput").value.replace(/\s/g,"") === nums.join("");
-      if (ok) {
-        reward(15,20);
-        document.getElementById("mmsg").textContent = "🎉 성공! EXP +15 · 토큰 +20";
-      } else document.getElementById("mmsg").textContent = "❌ 실패! 정답은 " + nums.join("");
-      this.disabled = true;
-    };
-  };
+  window.playerAction = function(act) {
+    if (!combat || combat.hp <= 0 || state.hp <= 0) return;
 
-  window.mathGame = function() {
-    window.show("mini");
-    const answer = rand(1,50);
-    document.getElementById("mtitle").textContent = "🔢 숫자 챌린지";
-    document.getElementById("prompt").textContent = "1 ~ 50";
-    document.getElementById("area").innerHTML =
-      '<p>숫자를 맞혀보세요.</p><input id="numberInput" type="number">' +
-      '<button id="numberSubmit" class="primary">정답 확인</button>';
-    document.getElementById("mmsg").textContent = "";
-    document.getElementById("numberSubmit").onclick = function() {
-      const ok = Number(document.getElementById("numberInput").value) === answer;
-      if (ok) {
-        reward(20,25);
-        document.getElementById("mmsg").textContent = "🎉 성공! EXP +20 · 토큰 +25";
-      } else document.getElementById("mmsg").textContent = "❌ 실패! 정답은 " + answer;
-      this.disabled = true;
-    };
-  };
+    const pIcon = document.getElementById("battlePlayerIcon");
+    const eIcon = document.getElementById("battleEnemyIcon");
 
-  window.reaction = function() {
-    window.show("mini");
-    document.getElementById("mtitle").textContent = "⚡ 반응속도";
-    document.getElementById("prompt").textContent = "준비...";
-    document.getElementById("area").innerHTML =
-      '<p id="reactionInfo">잠시 기다리세요.</p><button id="reactionBtn" class="primary" disabled>대기 중...</button>';
-    document.getElementById("mmsg").textContent = "";
-    const delay = rand(1000,3500);
-    let start = 0;
-    const timer = setTimeout(() => {
-      start = performance.now();
-      document.getElementById("prompt").textContent = "⚡ 지금!";
-      document.getElementById("reactionBtn").disabled = false;
-      document.getElementById("reactionBtn").textContent = "지금 클릭!";
-    }, delay);
-    document.getElementById("reactionBtn").onclick = function() {
-      if (!start) return;
-      clearTimeout(timer);
-      const ms = Math.round(performance.now()-start);
-      reward(20,30);
-      document.getElementById("mmsg").textContent = "⚡ 성공! " + ms + "ms · EXP +20 · 토큰 +30";
-      this.disabled = true;
-    };
-  };
+    if (act === "attack") {
+      Sound.hit();
+      if (pIcon) {
+        pIcon.classList.add("attack-lunge");
+        setTimeout(() => pIcon.classList.remove("attack-lunge"), 250);
+      }
+      const isCrit = Math.random() < 0.25;
+      const baseDmg = state.atk + rand(0, 4);
+      const dmg = isCrit ? Math.round(baseDmg * 1.8) : baseDmg;
+      combat.hp = Math.max(0, combat.hp - dmg);
 
-  window.questReward = function() {
-    if (state.dailyDone) {
-      document.getElementById("qmsg").textContent = "✅ 오늘 보상은 이미 받았습니다.";
+      if (eIcon) {
+        eIcon.classList.add("hit-flash");
+        setTimeout(() => eIcon.classList.remove("hit-flash"), 300);
+      }
+      spawnDamageNumber(eIcon, (isCrit ? "💥 " : "-") + dmg, isCrit ? "crit" : "player-dmg");
+      combatLog(`🗡️ 탐험가의 공격! ${isCrit ? '<b>[치명타!]</b> ' : ''}<b>${dmg}</b> 피해를 입혔습니다.`);
+
+    } else if (act === "thunder") {
+      if (state.mp < 15) {
+        alert("💧 MP가 부족합니다! (필요 MP: 15)");
+        return;
+      }
+      state.mp -= 15;
+      Sound.crit();
+      const dmg = Math.round(state.atk * 2.2 + rand(5, 10));
+      combat.hp = Math.max(0, combat.hp - dmg);
+      spawnDamageNumber(eIcon, "⚡ -" + dmg, "crit");
+      combatLog(`⚡ <b>[벼락 일격]</b> 시전! 벼락이 적을 강타하여 <b>${dmg}</b> 마법 피해를 입혔습니다.`);
+
+    } else if (act === "defend") {
+      Sound.click();
+      playerGuarding = true;
+      combatLog(`🛡️ <b>[방어 태세]</b> 다음 턴 받는 피해가 70% 감소하며 반격을 준비합니다.`);
+
+    } else if (act === "heal") {
+      if (state.hp >= state.maxHp) {
+        combatLog(`❤️ 체력이 이미 가득 차 있습니다.`);
+        return;
+      }
+      Sound.heal();
+      const healAmt = 40;
+      state.hp = Math.min(state.maxHp, state.hp + healAmt);
+      spawnDamageNumber(pIcon, "+ " + healAmt, "heal");
+      combatLog(`🧪 <b>[치유 포션]</b> 체력을 <b>+${healAmt}</b> 회복했습니다.`);
+
+    } else if (act === "ult") {
+      if (state.mp < 30) {
+        alert("💧 필살기를 쓰려면 MP가 최소 30 필요합니다!");
+        return;
+      }
+      state.mp -= 30;
+      Sound.crit();
+      const dmg = Math.round(state.atk * 3.5 + 20);
+      combat.hp = Math.max(0, combat.hp - dmg);
+      spawnDamageNumber(eIcon, "🔥 -" + dmg, "crit");
+      combatLog(`🔥 <b>[차원 폭발]</b> 시전!! 차원의 균열을 폭발시켜 <b>${dmg}</b> 극대 피해를 입혔습니다!`);
+    }
+
+    syncBattleUI();
+    save();
+
+    // 적 처치 확인
+    if (combat.hp <= 0) {
+      endBattleWin();
       return;
     }
+
+    // 적 반격 턴 (0.5초 뒤)
+    setTimeout(enemyTurn, 500);
+  };
+
+  function enemyTurn() {
+    if (!combat || combat.hp <= 0 || state.hp <= 0) return;
+
+    const pIcon = document.getElementById("battlePlayerIcon");
+    const eIcon = document.getElementById("battleEnemyIcon");
+
+    if (eIcon) {
+      eIcon.classList.add("enemy-attack-lunge");
+      setTimeout(() => eIcon.classList.remove("enemy-attack-lunge"), 250);
+    }
+
+    Sound.hit();
+    let dmg = Math.max(1, Math.round(combat.atk - (state.def * 0.7)));
+    if (playerGuarding) {
+      dmg = Math.max(1, Math.round(dmg * 0.3));
+      playerGuarding = false;
+      combatLog(`🛡️ 방어 성공! 피해가 대폭 경감되어 <b>${dmg}</b>만 입었습니다.`);
+      // 반격 공격
+      const counterDmg = Math.round(state.atk * 0.8);
+      combat.hp = Math.max(0, combat.hp - counterDmg);
+      spawnDamageNumber(eIcon, "💥 반격! -" + counterDmg, "crit");
+      combatLog(`⚔️ <b>[카운터 반격!]</b> 적에게 <b>${counterDmg}</b> 반격 피해를 되돌려주었습니다!`);
+    } else {
+      combatLog(`💥 ${combat.name}의 반격! <b>${dmg}</b> 피해를 입었습니다.`);
+    }
+
+    state.hp = Math.max(0, state.hp - dmg);
+    if (pIcon) {
+      pIcon.classList.add("hit-flash");
+      setTimeout(() => pIcon.classList.remove("hit-flash"), 300);
+    }
+    spawnDamageNumber(pIcon, "-" + dmg, "player-dmg");
+
+    syncBattleUI();
+    save();
+
+    if (combat.hp <= 0) {
+      endBattleWin();
+      return;
+    }
+
+    if (state.hp <= 0) {
+      endBattleLose();
+    }
+  }
+
+  function endBattleWin() {
+    stopAutoBattle();
+    Sound.win();
+    const isBoss = combat.isBoss;
+    const expGain = isBoss ? rand(70, 140) : rand(18, 35);
+    const tokenGain = isBoss ? rand(60, 120) : rand(15, 30);
+    const defeatedName = combat.name;
+
+    state.questProgress.battle = (state.questProgress.battle || 0) + 1;
+    combat = null;
+
+    gainReward(expGain, tokenGain, `⚔️ ${defeatedName} 처치 성공! (+${expGain} EXP, +${tokenGain} 토큰)`);
+    showResultModal(true, `🎉 전투 승리!\n${defeatedName}을(를) 격파했습니다!\n✨ EXP +${expGain} · 🪙 토큰 +${tokenGain}`);
+    checkNewTitle();
+  }
+
+  function endBattleLose() {
+    stopAutoBattle();
+    Sound.hit();
+    const enemyName = combat ? combat.name : "적";
+    combat = null;
+    state.hp = Math.round(state.maxHp * 0.3); // 30% 부활
+    state.lastEvent = `전투에서 쓰러져 마을로 귀환했습니다.`;
+    save();
+    showResultModal(false, `💀 전투 패배!\n${enemyName}에게 쓰러졌습니다...\n마을로 귀환하여 체력을 정비하세요.`);
+  }
+
+  window.escapeBattle = function() {
+    stopAutoBattle();
+    combat = null;
+    Sound.click();
+    window.show("home");
+  };
+
+  // 자동전투 토글
+  window.toggleAutoBattle = function() {
+    Sound.click();
+    if (autoBattleTimer) {
+      stopAutoBattle();
+    } else {
+      if (!combat) {
+        startBattle();
+      }
+      autoBattleTimer = setInterval(() => {
+        if (!combat || combat.hp <= 0 || state.hp <= 0) {
+          stopAutoBattle();
+          return;
+        }
+        // MP 여유가 있으면 스킬, 아니면 일반 공격
+        if (state.mp >= 15 && Math.random() < 0.5) {
+          playerAction('thunder');
+        } else {
+          playerAction('attack');
+        }
+      }, 1000);
+      const btn = document.getElementById("autoBattleBtn");
+      if (btn) {
+        btn.textContent = "⚡ 자동전투: ON (작동 중)";
+        btn.className = "warning";
+      }
+    }
+  };
+
+  function stopAutoBattle() {
+    if (autoBattleTimer) {
+      clearInterval(autoBattleTimer);
+      autoBattleTimer = null;
+    }
+    const btn = document.getElementById("autoBattleBtn");
+    if (btn) {
+      btn.textContent = "⚡ 자동전투: OFF";
+      btn.className = "secondary";
+    }
+  }
+
+  // 13. 미니게임 월드 엔진 (디테일 100배 강화: 콤보, 시각 피드백, 사운드)
+  window.startMiniDirection = function() {
+    Sound.click();
+    const choices = ["⬆️ 위", "⬇️ 아래", "⬅️ 왼쪽", "➡️ 오른쪽"];
+    const answer = choices[rand(0, 3)];
+
+    document.getElementById("miniTitle").textContent = "⬅️➡️ 초고속 방향 맞추기";
+    document.getElementById("miniPrompt").textContent = answer;
+    document.getElementById("miniContentArea").innerHTML = `
+      <p style="color:var(--text-sub);">표시된 화살표와 일치하는 버튼을 탭하세요!</p>
+      <div class="mini-choices-row">
+        ${choices.map(c => `<button class="choice-btn secondary" onclick="checkMiniDirection('${c}', '${answer}')">${c}</button>`).join("")}
+      </div>
+    `;
+    document.getElementById("miniFeedback").textContent = "";
+  };
+
+  window.checkMiniDirection = function(picked, answer) {
+    if (picked === answer) {
+      Sound.win();
+      gainReward(15, 20, "방향 맞추기 미니게임 성공!");
+      document.getElementById("miniFeedback").innerHTML = `<span style="color:var(--cyan)">🎉 완벽합니다! 성공 (+15 EXP · +20🪙)</span>`;
+      state.questProgress.mini = (state.questProgress.mini || 0) + 1;
+      save();
+    } else {
+      Sound.hit();
+      document.getElementById("miniFeedback").innerHTML = `<span style="color:var(--red)">❌ 오답입니다! 정답: ${answer}</span>`;
+    }
+  };
+
+  window.startMiniMemory = function() {
+    Sound.click();
+    const numbers = [1, 2, 3, 4, 5, 6].sort(() => Math.random() - 0.5).slice(0, 4);
+    const ansStr = numbers.join("");
+
+    document.getElementById("miniTitle").textContent = "🧠 순간 기억력 챌린지";
+    document.getElementById("miniPrompt").textContent = numbers.join(" ");
+    document.getElementById("miniContentArea").innerHTML = `
+      <p style="color:var(--text-sub);">숫자가 1.5초 뒤 사라집니다! 외워두세요.</p>
+    `;
+    document.getElementById("miniFeedback").textContent = "";
+
+    setTimeout(() => {
+      document.getElementById("miniPrompt").textContent = "❓ ❓ ❓ ❓";
+      document.getElementById("miniContentArea").innerHTML = `
+        <div style="display:flex; justify-content:center; gap:8px; margin-top:14px;">
+          <input type="number" id="memInput" placeholder="기억한 4자리 숫자" style="padding:12px; border-radius:12px; font-size:1.1rem; text-align:center; background:#111528; border:1px solid #4338ca; color:#fff; width:200px;">
+          <button class="primary" onclick="checkMiniMemory('${ansStr}')">제출</button>
+        </div>
+      `;
+    }, 1500);
+  };
+
+  window.checkMiniMemory = function(ans) {
+    const input = document.getElementById("memInput");
+    if (!input) return;
+    if (input.value.trim() === ans) {
+      Sound.win();
+      gainReward(20, 25, "기억력 챌린지 성공!");
+      document.getElementById("miniFeedback").innerHTML = `<span style="color:var(--cyan)">🎉 정답! 엄청난 두뇌입니다! (+20 EXP · +25🪙)</span>`;
+      state.questProgress.mini = (state.questProgress.mini || 0) + 1;
+      save();
+    } else {
+      Sound.hit();
+      document.getElementById("miniFeedback").innerHTML = `<span style="color:var(--red)">❌ 실패! 정답은 [${ans}] 였습니다.</span>`;
+    }
+  };
+
+  window.startMiniReaction = function() {
+    Sound.click();
+    document.getElementById("miniTitle").textContent = "⚡ 광속 반응속도 측정";
+    document.getElementById("miniPrompt").textContent = "준비...";
+    document.getElementById("miniContentArea").innerHTML = `
+      <button class="primary" id="reactBtn" disabled style="padding:16px 36px; font-size:1.15rem; background:#334155;">화면이 번쩍이면 즉시 클릭!</button>
+    `;
+    document.getElementById("miniFeedback").textContent = "";
+
+    const delay = rand(1200, 3200);
+    let startTime = 0;
+    const timer = setTimeout(() => {
+      startTime = performance.now();
+      const p = document.getElementById("miniPrompt");
+      const btn = document.getElementById("reactBtn");
+      if (p) p.textContent = "⚡ 지금 당장 클릭!!";
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "🔥 CLICK NOW!!";
+        btn.style.background = "linear-gradient(135deg, #00f5d4, #3a86ff)";
+        btn.onclick = () => {
+          const ms = Math.round(performance.now() - startTime);
+          Sound.win();
+          gainReward(25, 30, `반응속도 ${ms}ms 달성!`);
+          document.getElementById("miniFeedback").innerHTML = `<span style="color:var(--gold)">⚡ 반응속도: <b>${ms}ms</b>! 대단합니다! (+25 EXP · +30🪙)</span>`;
+          state.questProgress.mini = (state.questProgress.mini || 0) + 1;
+          save();
+          btn.disabled = true;
+        };
+      }
+    }, delay);
+  };
+
+  window.startMiniMath = function() {
+    Sound.click();
+    const a = rand(10, 50);
+    const b = rand(5, 45);
+    const ans = a + b;
+
+    document.getElementById("miniTitle").textContent = "🔢 스피드 덧셈 암산";
+    document.getElementById("miniPrompt").textContent = `${a} + ${b} = ?`;
+    document.getElementById("miniContentArea").innerHTML = `
+      <div style="display:flex; justify-content:center; gap:8px; margin-top:14px;">
+        <input type="number" id="mathInput" placeholder="정답 입력" style="padding:12px; border-radius:12px; font-size:1.1rem; text-align:center; background:#111528; border:1px solid #4338ca; color:#fff; width:160px;">
+        <button class="primary" onclick="checkMiniMath(${ans})">확인</button>
+      </div>
+    `;
+    document.getElementById("miniFeedback").textContent = "";
+  };
+
+  window.checkMiniMath = function(ans) {
+    const input = document.getElementById("mathInput");
+    if (!input) return;
+    if (Number(input.value) === ans) {
+      Sound.win();
+      gainReward(25, 35, "스피드 암산 성공!");
+      document.getElementById("miniFeedback").innerHTML = `<span style="color:var(--cyan)">🎉 정답입니다! 계산 천재! (+25 EXP · +35🪙)</span>`;
+      state.questProgress.mini = (state.questProgress.mini || 0) + 1;
+      save();
+    } else {
+      Sound.hit();
+      document.getElementById("miniFeedback").innerHTML = `<span style="color:var(--red)">❌ 오답입니다! 정답은 ${ans}</span>`;
+    }
+  };
+
+  // 14. 상점 & 대장간 구매 처리
+  window.buyForge = function(type) {
+    Sound.click();
+    const prices = { atk: 150, def: 120, maxhp: 180 };
+    const cost = prices[type];
+    const notice = document.getElementById("shopNotice");
+
+    if (state.tokens < cost) {
+      Sound.hit();
+      if (notice) notice.innerHTML = `<span style="color:var(--red)">❌ 토큰이 부족합니다! 필요 토큰: 🪙 ${cost}</span>`;
+      return;
+    }
+
+    state.tokens -= cost;
+    Sound.win();
+
+    if (type === "atk") {
+      state.atk += 2;
+      if (notice) notice.innerHTML = `<span style="color:var(--cyan)">🗡️ 용사의 검 강화 완료! 공격력 +2 (현재 공격력: ${state.atk})</span>`;
+    } else if (type === "def") {
+      state.def += 1;
+      if (notice) notice.innerHTML = `<span style="color:var(--gold)">🛡️ 수호자의 방패 강화 완료! 방어력 +1 (현재 방어력: ${state.def})</span>`;
+    } else if (type === "maxhp") {
+      state.maxHp += 20;
+      state.hp = state.maxHp;
+      if (notice) notice.innerHTML = `<span style="color:var(--green)">💖 생명의 영약 복용! 최대 체력 +20 (현재 HP: ${state.maxHp})</span>`;
+    }
+    save();
+  };
+
+  window.buyShopItem = function(item) {
+    Sound.click();
+    const prices = { exp50: 100, roulette1: 120, title: 250 };
+    const cost = prices[item];
+    const notice = document.getElementById("shopNotice");
+
+    if (state.tokens < cost) {
+      Sound.hit();
+      if (notice) notice.innerHTML = `<span style="color:var(--red)">❌ 토큰이 부족합니다! 필요 토큰: 🪙 ${cost}</span>`;
+      return;
+    }
+
+    state.tokens -= cost;
+
+    if (item === "exp50") {
+      gainReward(60, 0, "상점에서 EXP 대형 부스터 구매!");
+      if (notice) notice.innerHTML = `<span style="color:var(--cyan)">✨ EXP 대형 부스터 사용! EXP +60</span>`;
+    } else if (item === "roulette1") {
+      state.roulette.tries += 2;
+      Sound.win();
+      save();
+      if (notice) notice.innerHTML = `<span style="color:var(--gold)">🎰 차원 룰렛 충전권 사용! 룰렛 기회 +2회 충전</span>`;
+    } else if (item === "title") {
+      const unobtained = ALL_TITLES.filter(t => !TITLE_CATEGORIES["리미트"].includes(t) && !state.titles.includes(t));
+      if (!unobtained.length) {
+        state.tokens += cost; // 환불
+        save();
+        if (notice) notice.textContent = "🏆 모든 칭호를 이미 수집하셨습니다!";
+        return;
+      }
+      const newTitle = unobtained[Math.floor(Math.random() * unobtained.length)];
+      state.titles.push(newTitle);
+      Sound.levelUp();
+      save();
+      showResultModal(true, `🏆 신비한 칭호 상자 개봉!\n새 칭호: 【 ${newTitle} 】 획득!`);
+      if (notice) notice.innerHTML = `<span style="color:var(--purple)">🏆 새로운 칭호 [${newTitle}] 획득!</span>`;
+    }
+  };
+
+  // 15. 도감 렌더링 & 칭호 장착
+  function renderTitlesBook() {
+    const listEl = document.getElementById("titleCategoriesList");
+    const countEl = document.getElementById("bookObtainedCount");
+    const equipEl = document.getElementById("bookEquippedTitle");
+    if (countEl) countEl.textContent = state.titles.length;
+    if (equipEl) equipEl.textContent = state.equippedTitle || "🌱 새싹 탐험가";
+    if (!listEl) return;
+
+    listEl.innerHTML = Object.entries(TITLE_CATEGORIES).map(([cat, list]) => {
+      const rarityClass = {
+        "언레어": "rarity-unrare", "레어": "rarity-rare", "에픽": "rarity-epic",
+        "슈퍼에픽": "rarity-sepic", "전설": "rarity-legend", "시크릿": "rarity-secret", "리미트": "rarity-limit"
+      }[cat] || "";
+
+      const obtainedInCat = list.filter(t => state.titles.includes(t)).length;
+      return `
+        <div class="rarity-group ${rarityClass}">
+          <div class="rarity-title">
+            <span>✨ ${cat}</span>
+            <span style="font-size:0.8rem; color:var(--text-sub);">(${obtainedInCat} / ${list.length})</span>
+          </div>
+          <div class="title-tag-cloud">
+            ${list.map(t => {
+              const hasIt = state.titles.includes(t);
+              const isEquipped = state.equippedTitle === t;
+              return `
+                <div class="title-tag ${hasIt ? 'obtained' : ''} ${isEquipped ? 'equipped' : ''}" onclick="equipTitle('${escapeHtml(t)}')">
+                  ${isEquipped ? '👑 ' : (hasIt ? '✅ ' : '🔒 ')}${escapeHtml(t)}
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  window.equipTitle = function(title) {
+    if (!state.titles.includes(title)) {
+      Sound.hit();
+      alert("🔒 아직 획득하지 않은 칭호입니다!");
+      return;
+    }
+    Sound.click();
+    state.equippedTitle = title;
+    save();
+    showResultModal(true, `👑 칭호 장착 완료!\n현재 칭호: 【 ${title} 】\n프로필과 HUD에 적용되었습니다.`);
+  };
+
+  // 16. 일일 퀘스트 보상
+  window.claimDailyQuest = function() {
+    Sound.click();
+    if (state.dailyDone) {
+      alert("✅ 오늘 일일 퀘스트 보상은 이미 수령했습니다!");
+      return;
+    }
+    const q1 = state.questProgress.explore >= 1;
+    const q2 = state.questProgress.battle >= 1;
+    const q3 = state.questProgress.mini >= 1;
+
+    if (!q1 || !q2 || !q3) {
+      alert("⚠️ 아직 완료되지 않은 퀘스트가 있습니다!\n차원 탐험, 전투, 미니게임을 각각 1회 이상 완료해주세요.");
+      return;
+    }
+
     state.dailyDone = true;
-    reward(30,30);
-    document.getElementById("qmsg").textContent = "🎉 성공! EXP +30 · 토큰 +30";
+    gainReward(70, 75, "📋 일일 퀘스트 올클리어 보상 획득!");
+    showResultModal(true, "🎉 일일 퀘스트 완료 보상!\n✨ EXP +70 · 🪙 토큰 +75 획득!");
+    const msg = document.getElementById("questMsg");
+    if (msg) msg.innerHTML = "<span style=\"color:var(--green)\">✅ 오늘 퀘스트를 모두 완료했습니다!</span>";
+    save();
   };
 
-  window.showBook = function() {
-    window.show("book");
-    updateUI();
+  // 17. 결과 모달 팝업
+  function showResultModal(isWin, text) {
+    const overlay = document.getElementById("codexResultOverlay");
+    const box = document.getElementById("codexResultBox");
+    const title = document.getElementById("codexResultTitle");
+    const body = document.getElementById("codexResultText");
+    if (!overlay || !box) return;
+
+    box.className = isWin ? "win" : "fail";
+    if (title) title.textContent = isWin ? "🎉 성공 / 승리!" : "💀 결과 안내";
+    if (body) body.textContent = text;
+    overlay.style.display = "flex";
+  }
+  window.closeResultOverlay = function() {
+    Sound.click();
+    const overlay = document.getElementById("codexResultOverlay");
+    if (overlay) overlay.style.display = "none";
+  };
+  window.codexResult = showResultModal;
+
+  window.showHelpModal = function() {
+    showResultModal(true, "📖 CODEX 게임 가이드\n\n1. 🗺️ [차원 탐험]: 6개의 차원을 열고 룰렛을 돌려 보상과 칭호를 얻으세요.\n2. ⚔️ [차원 전투]: 강력한 몬스터 및 보스와 전투하고 자동전투를 활용해보세요.\n3. 🎮 [미니게임]: 순발력과 기억력 게임으로 빠르게 성장할 수 있습니다.\n4. 🛒 [상점 & 대장간]: 공격력, 방어력, 체력을 영구 강화하세요.\n5. 🏆 [도감]: 획득한 칭호를 클릭해 프로필에 장착할 수 있습니다!");
   };
 
-  // ── 실제 시간에 따른 마을 낮/밤 연출 ─────────────────────
+  // 18. 우주 파티클 캔버스 배경 엔진
+  function initBgParticles() {
+    const canvas = document.getElementById("bgCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    for (let i = 0; i < 60; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.8 + 0.4,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        color: ["#ffffff", "#6930c3", "#00f5d4", "#ffbe0b"][Math.floor(Math.random() * 4)],
+        alpha: Math.random() * 0.7 + 0.3
+      });
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = p.color;
+        ctx.fill();
+      });
+      requestAnimationFrame(render);
+    }
+    render();
+  }
+
+  // 19. 마을 낮/밤 시간대 연동
   const TOD_CONFIG = {
-    morning: { cx:150, cy:140, r:24, body:"#ffe3b0", glow:"#ffb37a", starOp:0, winOp:0.15, lampOp:0.15 },
-    day:     { cx:400, cy:55,  r:30, body:"#fff6cf", glow:"#fff0b0", starOp:0, winOp:0.05, lampOp:0.05 },
-    evening: { cx:640, cy:150, r:26, body:"#ffcf8a", glow:"#ff8a5c", starOp:0.5, winOp:0.7, lampOp:0.7 },
-    night:   { cx:670, cy:55,  r:20, body:"#fff3c4", glow:"#ffcf5a", starOp:1, winOp:0.9, lampOp:1 }
+    morning: { badge: "🌅 아침 (해돋이)", body: "#ffe3b0", glow: "#ffb37a", cx: 150, cy: 140, winOp: 0.2, lampOp: 0.2 },
+    day:     { badge: "☀️ 낮 (마을 활성화)", body: "#fff6cf", glow: "#fff0b0", cx: 400, cy: 55,  winOp: 0.1, lampOp: 0.1 },
+    evening: { badge: "🌇 노을 저녁 (마을 황혼)", body: "#ffcf8a", glow: "#ff8a5c", cx: 640, cy: 150, winOp: 0.75, lampOp: 0.8 },
+    night:   { badge: "🌙 깊은 밤 (별빛 활성화)", body: "#fff3c4", glow: "#ffcf5a", cx: 670, cy: 55,  winOp: 0.95, lampOp: 1.0 }
   };
-
-  function timeOfDayPeriod(hour) {
+  function getTodPeriod(hour) {
     if (hour >= 5 && hour < 8) return "morning";
     if (hour >= 8 && hour < 17) return "day";
     if (hour >= 17 && hour < 20) return "evening";
     return "night";
   }
-
-  function applyTimeOfDay() {
+  function updateVillageDayNight() {
     const svg = document.querySelector(".villageArt");
+    const badge = document.getElementById("todBadge");
     if (!svg) return;
-    const period = timeOfDayPeriod(new Date().getHours());
+    const period = getTodPeriod(new Date().getHours());
     const c = TOD_CONFIG[period];
 
     svg.classList.remove("tod-morning", "tod-day", "tod-evening", "tod-night");
     svg.classList.add("tod-" + period);
 
+    if (badge) badge.textContent = c.badge;
     const body = document.getElementById("skyBody");
     const glow = document.getElementById("skyGlow");
-    const stars = document.getElementById("starsGroup");
-    if (body) { body.setAttribute("cx", c.cx); body.setAttribute("cy", c.cy); body.setAttribute("r", c.r); body.setAttribute("fill", c.body); }
-    if (glow) { glow.setAttribute("cx", c.cx); glow.setAttribute("cy", c.cy); glow.setAttribute("r", c.r * 2); glow.setAttribute("fill", c.glow); }
-    if (stars) stars.style.opacity = c.starOp;
+    if (body) { body.setAttribute("cx", c.cx); body.setAttribute("cy", c.cy); body.setAttribute("fill", c.body); }
+    if (glow) { glow.setAttribute("cx", c.cx); glow.setAttribute("cy", c.cy); glow.setAttribute("fill", c.glow); }
     document.querySelectorAll(".windowLight").forEach(el => el.style.opacity = c.winOp);
     document.querySelectorAll(".lampBulb").forEach(el => el.style.opacity = c.lampOp);
   }
 
-  applyTimeOfDay();
-  setInterval(applyTimeOfDay, 60 * 1000);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) applyTimeOfDay(); });
-  // ──────────────────────────────────────────────────
-
-  window.showShop = function() {
-    window.show("shop");
-    const balance = document.getElementById("shopTokens");
-    if (balance) balance.textContent = state.tokens;
-    const msg = document.getElementById("shopMsg");
-    if (msg) msg.textContent = "";
-  };
-
-  function shopMessage(text) {
-    const msg = document.getElementById("shopMsg");
-    if (msg) msg.textContent = text;
-    const balance = document.getElementById("shopTokens");
-    if (balance) balance.textContent = state.tokens;
-    updateUI();
-  }
-
-  function buyShopItem(item) {
-    const prices = {
-      exp50: 100,
-      token100: 180,
-      roulette1: 120,
-      title: 250
-    };
-    const price = prices[item];
-
-    if (typeof price !== "number") return;
-
-    if (state.tokens < price) {
-      shopMessage("❌ 토큰이 부족합니다. 필요한 토큰: " + price);
-      return;
-    }
-
-    if (item === "exp50") {
-      state.tokens -= price;
-      state.exp += 50;
-      while (state.exp >= nextLevelExp()) {
-        state.exp -= nextLevelExp();
-        state.level++;
-        alert("🎉 LEVEL UP!\nLv." + state.level + " 달성!");
-      }
-      save();
-      shopMessage("✅ EXP 부스터 구매!\n✨ EXP +50");
-      return;
-    }
-
-    if (item === "token100") {
-      state.tokens -= price;
-      state.tokens += 100;
-      save();
-      shopMessage("✅ 토큰 보급 상자 구매!\n🪙 토큰 +100");
-      return;
-    }
-
-    if (item === "roulette1") {
-      state.tokens -= price;
-      state.roulette.tries += 1;
-      save();
-      shopMessage("✅ 룰렛 기회 +1!\n🎰 현재 기회: " + state.roulette.tries + "회");
-      return;
-    }
-
-    if (item === "title") {
-      state.tokens -= price;
-      const available = TITLES.filter(t => !TITLE_CATEGORIES["리미트"].includes(t) && !state.titles.includes(t));
-      if (!available.length) {
-        state.tokens += price;
-        save();
-        shopMessage("🏆 모든 칭호를 이미 획득했습니다!");
-        return;
-      }
-      const title = available[Math.floor(Math.random() * available.length)];
-      state.titles.push(title);
-      save();
-      alert("🏆 랜덤 칭호 상자!\n새 칭호: " + title);
-      shopMessage("✅ 랜덤 칭호를 획득했습니다!");
-    }
-  }
-
-  document.addEventListener("click", function(e) {
-    const btn = e.target.closest(".shopBuy");
-    if (!btn) return;
-    buyShopItem(btn.dataset.shopItem);
-  });
-
-
-  // ===== 전투/보스 시스템: 버튼을 누르면 반드시 실행되도록 상태를 직접 관리 =====
-  let combat = null;
-  let bossCombat = null;
-  let guarding = false;
-  let autoBattleTimer = null;
-  let lowHpPrompted = false;
-  let battleFinished = false;
-
-  function combatLog(text){
-    const el=document.getElementById("battleLog");
-    if(el){ el.textContent += text + "\n"; el.scrollTop=el.scrollHeight; }
-  }
-  function clearAutoBattle(){
-    if(autoBattleTimer){ clearInterval(autoBattleTimer); autoBattleTimer=null; }
-  }
-  function setAutoBattleUI(){
-    const box=document.querySelector("#battle .battleBtns");
-    if(box){
-      box.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:12px;border:1px solid #344263;border-radius:14px;background:#101a2d;color:#dbe5ff;font-weight:800">⚡ 자동전투 진행 중...<br><span style="font-size:.82rem;color:#9eafd2">전투가 자동으로 진행됩니다.</span></div><button onclick="show(\'home\')">🏠 전투 포기</button>';
-    }
-    const bossBtn=document.querySelector("#bossBox button");
-    if(bossBtn){ bossBtn.style.display="none"; }
-  }
-  function syncCombat(){
-    if(!combat) return;
-    const ph=Math.max(0,state.hp||0), eh=Math.max(0,combat.hp);
-    const playerHp=document.getElementById("playerHp"), enemyHp=document.getElementById("enemyHp");
-    if(playerHp) playerHp.textContent=ph+"/"+combat.playerMax;
-    if(enemyHp) enemyHp.textContent=eh+"/"+combat.maxHp;
-    const phb=document.getElementById("playerHpBar"), ehb=document.getElementById("enemyHpBar");
-    if(phb) phb.style.width=Math.max(0,Math.min(100,ph/combat.playerMax*100))+"%";
-    if(ehb) ehb.style.width=Math.max(0,Math.min(100,eh/combat.maxHp*100))+"%";
-    const atk=document.getElementById("playerAtk"), def=document.getElementById("playerDef"), eatk=document.getElementById("enemyAtk");
-    if(atk) atk.textContent=state.atk||10;
-    if(def) def.textContent=state.def||3;
-    if(eatk) eatk.textContent=Math.round(combat.atk);
-  }
-  function checkLowHp(){
-    if(!combat || battleFinished) return false;
-    const hp=state.hp||0, max=combat.playerMax;
-    if(hp<=0) return false;
-    if(hp<=max*0.3 && !lowHpPrompted){
-      lowHpPrompted=true;
-      const yes=confirm("❤️ HP가 거의 없습니다!\n피를 회복하시겠습니까?");
-      if(yes){
-        state.hp=Math.min(max,hp+40);
-        combatLog("❤️ 자동전투 중 HP를 회복했습니다! +40 HP");
-        save();
-        syncCombat();
-        if(state.hp>max*0.3) lowHpPrompted=false;
-        return true;
-      }
-      combatLog("⚠️ 회복하지 않고 자동전투를 계속합니다.");
-    }
-    return false;
-  }
-  function winBattle(rewardExp,rewardTokens,message){
-    if(battleFinished)return;
-    battleFinished=true; clearAutoBattle();
-    reward(rewardExp,rewardTokens);
-    state.lastEvent=message;
-    save();
-    maybeTitle();
-    syncCombat();
-    if(typeof codexResult==="function") codexResult(true,"전투에서 적을 쓰러뜨렸습니다!\n✨ EXP +"+rewardExp+" · 🪙 "+rewardTokens+"\n\n자동전투가 종료되었습니다.");
-  }
-  function loseBattle(message){
-    if(battleFinished)return;
-    battleFinished=true; clearAutoBattle();
-    state.hp=0;
-    state.lastEvent=message;
-    save();
-    syncCombat();
-    if(typeof codexResult==="function") codexResult(false,message+"\n\nHP가 모두 소진되었습니다. 차원으로 돌아가 다시 도전하세요.");
-  }
-  function autoBattleTick(){
-    if(!combat || battleFinished)return;
-    checkLowHp();
-    if(state.hp<=0){ loseBattle("💀 패배! 적에게 쓰러졌습니다."); return; }
-
-    // 플레이어 자동 공격
-    const dmg=Math.max(1,(state.atk||10)+rand(0,5));
-    combat.hp=Math.max(0,combat.hp-dmg);
-    combatLog("⚔️ 자동 공격! "+dmg+" 피해");
-    syncCombat();
-    if(combat.hp<=0){
-      if(bossCombat){
-        const d=DIMENSIONS[state.roulette.dimension]||DIMENSIONS[1];
-        const e=80+d.exp[1], t=60+d.tokens[1];
-        state.bosses=(state.bosses||[]);
-        if(!state.bosses.includes(state.roulette.dimension)) state.bosses.push(state.roulette.dimension);
-        const defeated=bossCombat.name;
-        bossCombat=null;
-        const bb=document.getElementById("bossBox");
-        if(bb) bb.style.display="none";
-        winBattle(e,t,"👑 "+defeated+" 격파!");
-      }else{
-        const e=rand(15,30), t=rand(10,25);
-        winBattle(e,t,"🎉 "+combat.name+" 처치!");
-      }
-      return;
-    }
-
-    // 적 자동 반격
-    const enemyDmg=Math.max(1,Math.round(combat.atk-(state.def||3)));
-    state.hp=Math.max(0,state.hp-enemyDmg);
-    combatLog("💥 "+combat.name+" 자동 반격! "+enemyDmg+" 피해");
-    syncCombat();
-    if(state.hp<=0){ loseBattle("💀 패배! "+combat.name+"에게 쓰러졌습니다."); return; }
-    checkLowHp();
-    save();
-  }
-  function beginAutoBattle(){
-    clearAutoBattle();
-    autoBattleTimer=setInterval(autoBattleTick,900);
-    setAutoBattleUI();
-  }
-  window.startBattle=function(){
-    clearAutoBattle();
-    const d=DIMENSIONS[state.roulette.dimension]||DIMENSIONS[1];
-    const names={1:["🐺 초원 늑대","🐌 슬라임","🐗 돌멧돼지"],2:["🦂 사막 전갈","🐍 모래뱀","🪨 사막 골렘"],3:["🐺 설원 늑대","🧊 얼음 정령"],4:["🔥 화염 슬라임","🪨 용암 골렘"],5:["👾 스타 몬스터","☄️ 혜성 정령"],6:["🌀 공허의 괴물","👁️ 차원 감시자"]};
-    const list=names[state.roulette.dimension]||names[1], name=list[rand(0,list.length-1)];
-    const hp=40+d.exp[1]*3;
-    combat={name,hp,maxHp:hp,atk:Math.max(5,Math.floor(hp/8)),playerMax:Math.max(100,state.level*15+100)};
-    state.hp=Math.min(combat.playerMax,state.hp||combat.playerMax);
-    guarding=false; lowHpPrompted=false; battleFinished=false; bossCombat=null;
-    document.getElementById("enemyName").textContent=name;
-    document.getElementById("enemyIcon").textContent=name.slice(0,2);
-    document.getElementById("battleLog").textContent="";
-    document.getElementById("bossBox").style.display="none";
-    show("battle");
-    combatLog("⚔️ "+name+" 등장! 자동전투를 시작합니다.");
-    syncCombat();
-    beginAutoBattle();
-  };
-  // 기존 공격 버튼과 호환되도록 유지하되, 이제 자동전투를 시작합니다.
-  window.attackEnemy=function(){ if(!combat || battleFinished) startBattle(); };
-  window.defendEnemy=function(){ if(!combat || battleFinished) startBattle(); };
-  window.healBattle=function(){
-    if(!combat || battleFinished)return;
-    const hp=Math.min(combat.playerMax,(state.hp||0)+40);
-    state.hp=hp; lowHpPrompted=false;
-    combatLog("❤️ HP 포션 사용! +40 HP"); save(); syncCombat();
-  };
-  window.battleSkill=function(){ if(!combat || battleFinished) startBattle(); };
-  window.bossAttackEnemy=function(){ if(!bossCombat || battleFinished)return; autoBattleTick(); };
-  window.startBossFight=function(){
-    clearAutoBattle();
-    const d=DIMENSIONS[state.roulette.dimension]||DIMENSIONS[1];
-    const maxHp=Math.max(250,d.exp[1]*15);
-    bossCombat={name:d.name+" 보스",hp:maxHp,maxHp:maxHp,atk:Math.max(8,d.exp[1]/2),phase:1};
-    combat={name:""+bossCombat.name,hp:bossCombat.hp,maxHp:bossCombat.maxHp,atk:bossCombat.atk,playerMax:Math.max(100,state.level*15+100)};
-    state.hp=Math.min(combat.playerMax,state.hp||combat.playerMax);
-    lowHpPrompted=false; battleFinished=false;
-    show("battle");
-    document.getElementById("bossBox").style.display="block";
-    document.getElementById("bossName").textContent=bossCombat.name;
-    document.getElementById("bossIcon").textContent="👑";
-    document.getElementById("battleLog").textContent="👑 "+bossCombat.name+" 등장! 자동전투를 시작합니다.";
-    document.getElementById("bossHp").textContent=Math.round(bossCombat.hp)+"/"+Math.round(bossCombat.maxHp);
-    document.getElementById("bossHpBar").style.width="100%";
-    syncCombat();
-    beginAutoBattle();
-  };
-  // 전역 오류를 잡아 화면을 멈추지 않고 콘솔에 기록
-  window.addEventListener("error", e => console.error("[CODEX 오류 catch]", e.error || e.message));
-  window.addEventListener("unhandledrejection", e => console.error("[CODEX Promise 오류 catch]", e.reason));
-
+  // 20. 초기화 구동
   document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    const home = document.getElementById("home");
-    if (home) home.classList.add("active");
+    initBgParticles();
+    renderDimensionCards();
+    updateVillageDayNight();
+    setInterval(updateVillageDayNight, 60 * 1000);
     updateUI();
   });
 
-  updateUI();
+  // 전역 오류 처리 (게임 멈춤 방지)
+  window.addEventListener("error", e => console.warn("[CODEX Guard]", e.error || e.message));
 })();
 </script>
-
-<div id="codexResultOverlay">
-  <div id="codexResultBox">
-    <div id="codexResultTitle"></div>
-    <div id="codexResultText" class="codexResultText"></div>
-    <button id="codexDimensionReturn" class="primary">🗺️ 차원으로 돌아가기</button>
-  </div>
-</div>
-
-<script>
-(function(){
-"use strict";
-function codexResult(win,text){
- const o=document.getElementById("codexResultOverlay");
- const b=document.getElementById("codexResultBox");
- const t=document.getElementById("codexResultTitle");
- const x=document.getElementById("codexResultText");
- if(!o||!b||!t||!x)return;
- b.className=win?"":"codexFail";
- t.textContent=win?"🎉 승리!":"💀 패배!";
- x.textContent=text;
- o.style.display="flex";
-}
-function codexReturnDimension(){
- const o=document.getElementById("codexResultOverlay");
- if(o)o.style.display="none";
- if(typeof clearAutoBattle==="function")clearAutoBattle();
- if(typeof combat!=="undefined")combat=null;
- if(typeof bossCombat!=="undefined")bossCombat=null;
- if(typeof battleFinished!=="undefined")battleFinished=false;
- if(typeof state!=="undefined"){
-   state.hp=Math.max(1,Math.max(100,state.level*15+100));
-   save();
- }
- if(typeof show==="function")show("map");
- else if(typeof showScreen==="function")showScreen("dimensions");
-}
-window.codexResult=codexResult;
-window.codexReturnDimension=codexReturnDimension;
-document.addEventListener("DOMContentLoaded",function(){
- const b=document.getElementById("codexDimensionReturn");
- if(b)b.addEventListener("click",codexReturnDimension);
-});
-})();
-</script>
-</body></html>
+</body>
+</html>
