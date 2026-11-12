@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CODEX 이벤트 센터 - 경험치 2배 & 무한 룰렛 페스티벌</title>
+<meta name="description" content="CODEX: 끝없는 차원의 모험 공식 이벤트 센터! 경험치 2배 버닝 이벤트와 무한 룰렛 이벤트를 켜고 게임을 더욱 강력하게 즐겨보세요.">
+<meta name="keywords" content="CODEX, 코덱스, 이벤트, 웹게임, 차원의 모험, RPG 웹게임, 경험치 2배, 무한 룰렛">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://i01041303261.github.io/Codex/event.html">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://i01041303261.github.io/Codex/event.html">
+<meta property="og:title" content="CODEX 이벤트 센터 - 경험치 2배 & 무한 룰렛 페스티벌">
+<meta property="og:description" content="CODEX 공식 이벤트 센터! 경험치 2배와 무한 룰렛 버프를 활성화하고 차원을 정복하세요.">
+
+<style>
+:root {
+  --bg-dark: #070913;
+  --panel-bg: rgba(20, 26, 46, 0.78);
+  --panel-border: rgba(100, 140, 240, 0.28);
+  --gold: #ffbe0b;
+  --gold-glow: rgba(255, 190, 11, 0.55);
+  --purple: #8338ec;
+  --purple-glow: rgba(131, 56, 236, 0.55);
+  --pink: #ff006e;
+  --pink-glow: rgba(255, 0, 110, 0.55);
+  --blue: #3a86ff;
+  --cyan: #00f5d4;
+  --green: #38b000;
+  --green-glow: rgba(56, 176, 0, 0.55);
+  --text-main: #f8f9fa;
+  --text-sub: #a0aec0;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  background: var(--bg-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 18px 60px 18px;
+}
+
+/* 상단 헤더 */
+header {
+  margin-bottom: 24px;
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.title-area .sub {
+  font-size: 0.85rem;
+  color: var(--pink);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.title-area h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff, #ffd166 40%, #ff006e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tool-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
+  padding: 9px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+}
+.tool-btn.primary {
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  border-color: rgba(131, 56, 236, 0.5);
+  box-shadow: 0 4px 14px rgba(131, 56, 236, 0.35);
+}
+
+/* 카드 기본 스타일 */
+.card {
+  background: var(--panel-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 유저 상태 바 */
+.user-status-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(22, 28, 52, 0.85), rgba(30, 20, 50, 0.85));
+  border: 1px solid rgba(255, 190, 11, 0.3);
+}
+.user-info-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.user-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #8338ec, #3a86ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 14px var(--gold-glow);
+}
+.user-details h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.15rem;
+}
+.user-details p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+.user-buff-summary {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.buff-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.buff-pill.active {
+  background: rgba(56, 176, 0, 0.2);
+  border: 1px solid var(--green);
+  color: #70e000;
+  box-shadow: 0 0 10px var(--green-glow);
+}
+.buff-pill.inactive {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-sub);
+}
+
+/* 마스터 퀵 컨트롤 */
+.master-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 24px;
+}
+.master-title {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.master-btns {
+  display: flex;
+  gap: 10px;
+}
+.btn-master {
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 0;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-master.all-on {
+  background: linear-gradient(135deg, #ff006e, #ffbe0b);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(255, 0, 110, 0.35);
+}
+.btn-master.all-on:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 110, 0.5);
+}
+.btn-master.all-off {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-sub);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.btn-master.all-off:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+/* 이벤트 카드 목록 */
+.event-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+}
+
+.event-card {
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+.event-card.active {
+  border-color: rgba(255, 0, 110, 0.6);
+  box-shadow: 0 8px 32px rgba(255, 0, 110, 0.25);
+  background: linear-gradient(135deg, rgba(28, 22, 50, 0.85), rgba(40, 20, 48, 0.85));
+}
+.event-card.roulette.active {
+  border-color: rgba(131, 56, 236, 0.7);
+  box-shadow: 0 8px 32px rgba(131, 56, 236, 0.25);
+  background: linear-gradient(135deg, rgba(20, 28, 56, 0.85), rgba(30, 20, 60, 0.85));
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.event-title-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.event-icon {
+  font-size: 2.5rem;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.event-card.active .event-icon {
+  background: linear-gradient(135deg, rgba(255,0,110,0.3), rgba(255,190,11,0.2));
+  border-color: var(--pink);
+  box-shadow: 0 0 20px var(--pink-glow);
+}
+.event-card.roulette.active .event-icon {
+  background: linear-gradient(135deg, rgba(131,56,236,0.3), rgba(0,245,212,0.2));
+  border-color: var(--purple);
+  box-shadow: 0 0 20px var(--purple-glow);
+}
+
+.event-title-text h2 {
+  margin: 0 0 6px 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+.event-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.event-badge.live {
+  background: rgba(56, 176, 0, 0.25);
+  color: #70e000;
+  border: 1px solid var(--green);
+  animation: pulseGreen 2s infinite;
+}
+.event-badge.ready {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-sub);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+@keyframes pulseGreen {
+  0%, 100% { box-shadow: 0 0 8px rgba(56, 176, 0, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(56, 176, 0, 0.7); }
+}
+
+.event-desc {
+  font-size: 0.96rem;
+  color: #d1d5db;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.event-perks {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.perk-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #f3f4f6;
+  padding: 6px 0;
+}
+.perk-item:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.perk-item span.highlight {
+  color: var(--gold);
+  font-weight: 800;
+}
+
+/* 스위치 / 토글 버튼 */
+.event-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.status-indicator-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-indicator-text.active {
+  color: #38b000;
+}
+.status-indicator-text.inactive {
+  color: var(--text-sub);
+}
+
+.btn-toggle {
+  padding: 12px 26px;
+  border-radius: 14px;
+  border: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.btn-toggle.turn-on {
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255, 0, 110, 0.35);
+}
+.btn-toggle.turn-on:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 24px rgba(255, 0, 110, 0.55);
+}
+.btn-toggle.turn-off {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffbe0b;
+  border: 1px solid rgba(255, 190, 11, 0.4);
+}
+.btn-toggle.turn-off:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 하단 플레이 버튼 */
+.cta-box {
+  text-align: center;
+  margin-top: 36px;
+  padding: 30px 20px;
+  background: radial-gradient(circle at center, rgba(131, 56, 236, 0.25), rgba(7, 9, 19, 0.9) 70%);
+  border-radius: 24px;
+  border: 1px solid rgba(131, 56, 236, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+.btn-play-large {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 42px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, #ff006e, #8338ec 50%, #3a86ff);
+  border: 0;
+  border-radius: 18px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(255, 0, 110, 0.45);
+  transition: all 0.25s ease;
+}
+.btn-play-large:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(255, 0, 110, 0.65);
+}
+
+/* FAQ 섹션 */
+.faq-section {
+  margin-top: 36px;
+}
+.faq-section h3 {
+  font-size: 1.15rem;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.faq-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+}
+.faq-q {
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  font-size: 0.93rem;
+}
+.faq-a {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+  <!-- 헤더 -->
+  <header>
+    <div class="header-top">
+      <div class="title-area">
+        <div class="sub">✨ CODEX OFFICIAL EVENT CENTER</div>
+        <h1>🎉 CODEX 이벤트 센터</h1>
+      </div>
+      <div class="header-tools">
+        <a href="index.html" class="tool-btn primary">🎮 게임으로 돌아가기</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 유저 현황 카드 -->
+  <div class="card user-status-card">
+    <div class="user-info-box">
+      <div class="user-avatar" id="avatarDisplay">🧙</div>
+      <div class="user-details">
+        <h3 id="nicknameDisplay">CODEX 모험가</h3>
+        <p id="userStatsDisplay">현재 진행 상황을 불러오는 중...</p>
+      </div>
+    </div>
+    <div class="user-buff-summary">
+      <div class="buff-pill inactive" id="pillExp2">⚡ 경험치 2배: OFF</div>
+      <div class="buff-pill inactive" id="pillRoulette">🎰 무한 룰렛: OFF</div>
+    </div>
+  </div>
+
+  <!-- 마스터 퀵 컨트롤 -->
+  <div class="master-bar">
+    <div class="master-title">
+      <span>⚡ 이벤트 원클릭 제어</span>
+    </div>
+    <div class="master-btns">
+      <button class="btn-master all-on" onclick="setAllEvents(true)">🔥 모든 이벤트 켜기 (ALL ON)</button>
+      <button class="btn-master all-off" onclick="setAllEvents(false)">🛑 전체 끄기</button>
+    </div>
+  </div>
+
+  <!-- 이벤트 카드 리스트 -->
+  <div class="event-grid">
+
+    <!-- 1. 경험치 2배 이벤트 -->
+    <div class="card event-card" id="cardExp2">
+      <div class="event-header">
+        <div class="event-title-box">
+          <div class="event-icon">⚡</div>
+          <div class="event-title-text">
+            <h2>1. 경험치 2배 (EXP 2x) 버닝 이벤트</h2>
+            <span class="event-badge ready" id="badgeExp2">⚪ 대기 중</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-desc">
+        차원의 몬스터 사냥, 룰렛 탐험, 보스 격파 시 획득하는 모든 경험치가 즉시 <b>2배(200%)</b>로 뻥튀기됩니다! 300레벨 공허 차원 도달을 위한 초고속 레벨업 기회!
+      </div>
+
+      <div class="event-perks">
+        <div class="perk-item">
+          <span>⚔️</span>
+          <div>일반 몬스터 사냥 승리 시 <span class="highlight">EXP 200% 지급</span></div>
+        </div>
+        <div class="perk-item">
+          <span>🎰</span>
+          <div>차원 탐험 룰렛 성공 시 <span class="highlight">경험치 보상 2배 지급</span></div>
+        </div>
+        <div class="perk-item">
+          <span>👑</span>
+          <div>차원 보스 레이드 격파 시 <span class="highlight">대량의 경험치 2배 폭풍 획득</span></div>
+        </div>
+      </div>
+
+      <div class="event-action-row">
+        <div class="status-indicator-text inactive" id="statusTextExp2">
+          <span>⚪ 현재 상태: 꺼짐 (1배 정상)</span>
+        </div>
+        <button class="btn-toggle turn-on" id="btnToggleExp2" onclick="toggleExp2Event()">
+          🔥 경험치 2배 이벤트 켜기
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. 무한 룰렛 이벤트 -->
+    <div class="card event-card roulette" id="cardRoulette">
+      <div class="event-header">
+        <div class="event-title-box">
+          <div class="event-icon">🎰</div>
+          <div class="event-title-text">
+            <h2>2. 룰렛 돌리기 무한 이벤트</h2>
+            <span class="event-badge ready" id="badgeRoulette">⚪ 대기 중</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-desc">
+        차원 탐험 룰렛 횟수 제한(10회)을 전면 해제하고, 50개 직업소의 각성 룰렛 토큰 소모를 0으로 만듭니다! 원하는 직업과 보상을 얻을 때까지 무한으로 회전하세요!
+      </div>
+
+      <div class="event-perks">
+        <div class="perk-item">
+          <span>♾️</span>
+          <div>차원 탐험 룰렛 10회 제한 없음: <span class="highlight">무제한 회전 가능</span></div>
+        </div>
+        <div class="perk-item">
+          <span>🪙</span>
+          <div>50개 직업 각성 룰렛: <span class="highlight">토큰 100개 소모 면제 (0🪙 무료 무한 뽑기)</span></div>
+        </div>
+        <div class="perk-item">
+          <span>🌟</span>
+          <div>신화·전설 등급 직업을 뽑을 때까지 <span class="highlight">패널티 없이 연속 도전!</span></div>
+        </div>
+      </div>
+
+      <div class="event-action-row">
+        <div class="status-indicator-text inactive" id="statusTextRoulette">
+          <span>⚪ 현재 상태: 꺼짐 (일반 모드)</span>
+        </div>
+        <button class="btn-toggle turn-on" id="btnToggleRoulette" onclick="toggleRouletteEvent()">
+          🎲 무한 룰렛 이벤트 켜기
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 하단 플레이 CTA -->
+  <div class="cta-box">
+    <h2 style="margin:0 0 10px 0; font-size:1.6rem; color:#fff;">✨ 이벤트 설정 완료!</h2>
+    <p style="margin:0 0 24px 0; color:var(--text-sub); font-size:0.95rem;">
+      버프가 적용된 상태로 CODEX 게임에 바로 입장해 모험을 즐기세요!
+    </p>
+    <a href="index.html" class="btn-play-large">
+      <span>🚀 이벤트 적용하고 게임 시작하기</span>
+    </a>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h3>💡 이벤트 이용 안내</h3>
+    <div class="faq-item">
+      <div class="faq-q">Q. 이벤트는 어떻게 게임에 적용되나요?</div>
+      <div class="faq-a">이 사이트에서 이벤트를 '켜기'로 설정해 두면, 같은 기기 브라우저에서 CODEX 게임을 실행할 때 자동으로 경험치 2배 및 무한 룰렛 혜택이 적용됩니다!</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Q. 언제든 끄거나 다시 켤 수 있나요?</div>
+      <div class="faq-a">네! 원할 때 언제든지 이 이벤트 센터에 들어와서 [이벤트 켜기/끄기] 버튼을 눌러 자유롭게 전환할 수 있습니다.</div>
+    </div>
+  </div>
+
+  <footer>
+    CODEX Event Portal • Made for i01041303261 • Endless Dimension
+  </footer>
+</div>
+
+<script>
+// ==========================================
+// 사운드 엔진 (Web Audio API)
+// ==========================================
+const Sound = (() => {
+  let ctx = null;
+  function getCtx() {
+    if (!ctx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) ctx = new AudioContext();
+    }
+    if (ctx && ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+
+  function playTone(freq, type, duration, gainVal = 0.1) {
+    const c = getCtx();
+    if (!c) return;
+    try {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, c.currentTime);
+      gain.gain.setValueAtTime(gainVal, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start();
+      osc.stop(c.currentTime + duration);
+    } catch(e){}
+  }
+
+  return {
+    powerOn: () => {
+      // 팡파르 아르페지오
+      playTone(440, "sine", 0.15, 0.1);
+      setTimeout(() => playTone(554.37, "sine", 0.18, 0.12), 60);
+      setTimeout(() => playTone(659.25, "sine", 0.22, 0.14), 130);
+      setTimeout(() => playTone(880, "triangle", 0.35, 0.16), 200);
+    },
+    click: () => playTone(600, "triangle", 0.06, 0.08),
+    powerOff: () => {
+      playTone(400, "sine", 0.12, 0.08);
+      setTimeout(() => playTone(280, "sine", 0.18, 0.06), 70);
+    }
+  };
+})();
+
+// ==========================================
+// 이벤트 상태 관리
+// ==========================================
+const KEY_EXP2 = "codex_event_exp2";
+const KEY_INF_ROULETTE = "codex_event_inf_roulette";
+
+function getExp2() {
+  return localStorage.getItem(KEY_EXP2) === "true";
+}
+function setExp2(val) {
+  localStorage.setItem(KEY_EXP2, val ? "true" : "false");
+}
+
+function getRoulette() {
+  return localStorage.getItem(KEY_INF_ROULETTE) === "true";
+}
+function setRoulette(val) {
+  localStorage.setItem(KEY_INF_ROULETTE, val ? "true" : "false");
+}
+
+// 토글 함수
+function toggleExp2Event() {
+  const current = getExp2();
+  setExp2(!current);
+  if (!current) Sound.powerOn();
+  else Sound.powerOff();
+  render();
+}
+
+function toggleRouletteEvent() {
+  const current = getRoulette();
+  setRoulette(!current);
+  if (!current) Sound.powerOn();
+  else Sound.powerOff();
+  render();
+}
+
+function setAllEvents(enable) {
+  setExp2(enable);
+  setRoulette(enable);
+  if (enable) Sound.powerOn();
+  else Sound.powerOff();
+  render();
+}
+
+// 렌더링
+function render() {
+  const exp2 = getExp2();
+  const roulette = getRoulette();
+
+  // 1. 경험치 2배 카드
+  const cardExp2 = document.getElementById("cardExp2");
+  const badgeExp2 = document.getElementById("badgeExp2");
+  const statusTextExp2 = document.getElementById("statusTextExp2");
+  const btnToggleExp2 = document.getElementById("btnToggleExp2");
+  const pillExp2 = document.getElementById("pillExp2");
+
+  if (exp2) {
+    cardExp2.classList.add("active");
+    badgeExp2.className = "event-badge live";
+    badgeExp2.textContent = "🟢 실시간 이벤트 진행 중!";
+    statusTextExp2.className = "status-indicator-text active";
+    statusTextExp2.innerHTML = "<span>🔥 현재 상태: <b>EXP 2배 버닝 활성화됨</b></span>";
+    btnToggleExp2.className = "btn-toggle turn-off";
+    btnToggleExp2.textContent = "⏹️ 이벤트 끄기";
+    pillExp2.className = "buff-pill active";
+    pillExp2.textContent = "⚡ 경험치 2배: ON";
+  } else {
+    cardExp2.classList.remove("active");
+    badgeExp2.className = "event-badge ready";
+    badgeExp2.textContent = "⚪ 대기 중";
+    statusTextExp2.className = "status-indicator-text inactive";
+    statusTextExp2.innerHTML = "<span>⚪ 현재 상태: 꺼짐 (1배 정상)</span>";
+    btnToggleExp2.className = "btn-toggle turn-on";
+    btnToggleExp2.textContent = "🔥 경험치 2배 이벤트 켜기";
+    pillExp2.className = "buff-pill inactive";
+    pillExp2.textContent = "⚡ 경험치 2배: OFF";
+  }
+
+  // 2. 무한 룰렛 카드
+  const cardRoulette = document.getElementById("cardRoulette");
+  const badgeRoulette = document.getElementById("badgeRoulette");
+  const statusTextRoulette = document.getElementById("statusTextRoulette");
+  const btnToggleRoulette = document.getElementById("btnToggleRoulette");
+  const pillRoulette = document.getElementById("pillRoulette");
+
+  if (roulette) {
+    cardRoulette.classList.add("active");
+    badgeRoulette.className = "event-badge live";
+    badgeRoulette.textContent = "🟢 실시간 이벤트 진행 중!";
+    statusTextRoulette.className = "status-indicator-text active";
+    statusTextRoulette.innerHTML = "<span>🎰 현재 상태: <b>무한 룰렛 모드 가동 중</b></span>";
+    btnToggleRoulette.className = "btn-toggle turn-off";
+    btnToggleRoulette.textContent = "⏹️ 이벤트 끄기";
+    pillRoulette.className = "buff-pill active";
+    pillRoulette.textContent = "🎰 무한 룰렛: ON";
+  } else {
+    cardRoulette.classList.remove("active");
+    badgeRoulette.className = "event-badge ready";
+    badgeRoulette.textContent = "⚪ 대기 중";
+    statusTextRoulette.className = "status-indicator-text inactive";
+    statusTextRoulette.innerHTML = "<span>⚪ 현재 상태: 꺼짐 (일반 모드)</span>";
+    btnToggleRoulette.className = "btn-toggle turn-on";
+    btnToggleRoulette.textContent = "🎲 무한 룰렛 이벤트 켜기";
+    pillRoulette.className = "buff-pill inactive";
+    pillRoulette.textContent = "🎰 무한 룰렛: OFF";
+  }
+
+  // 3. 유저 정보 표시
+  loadUserInfo();
+}
+
+function loadUserInfo() {
+  const currentSession = localStorage.getItem("codex_current_session");
+  const usersDbRaw = localStorage.getItem("codex_users_db");
+  const avatarEl = document.getElementById("avatarDisplay");
+  const nameEl = document.getElementById("nicknameDisplay");
+  const statsEl = document.getElementById("userStatsDisplay");
+
+  if (currentSession && usersDbRaw) {
+    try {
+      const db = JSON.parse(usersDbRaw);
+      const user = db[currentSession];
+      if (user) {
+        if (nameEl) nameEl.textContent = `${user.nickname} (@${user.username})`;
+        if (avatarEl && user.data && user.data.avatar) avatarEl.textContent = user.data.avatar;
+        if (statsEl && user.data) {
+          statsEl.textContent = `Lv.${user.data.level || 1} · 보유 토큰: 🪙 ${(user.data.tokens || 0).toLocaleString()}`;
+        }
+        return;
+      }
+    } catch(e){}
+  }
+
+  // 비로그인 또는 단일 세이브
+  const singleSave = localStorage.getItem("codex_save_v1");
+  if (singleSave) {
+    try {
+      const data = JSON.parse(singleSave);
+      if (nameEl) nameEl.textContent = "CODEX 탐험가 (로컬 세이브)";
+      if (avatarEl && data.avatar) avatarEl.textContent = data.avatar;
+      if (statsEl) statsEl.textContent = `Lv.${data.level || 1} · 보유 토큰: 🪙 ${(data.tokens || 0).toLocaleString()}`;
+      return;
+    } catch(e){}
+  }
+
+  if (nameEl) nameEl.textContent = "CODEX 모험가";
+  if (statsEl) statsEl.textContent = "게임을 실행하면 세이브 데이터가 자동 동기화됩니다.";
+}
+
+// ==========================================
+// 배경 파티클 캔버스
+// ==========================================
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+for (let i = 0; i < 60; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 0.6,
+    dx: (Math.random() - 0.5) * 0.4,
+    dy: (Math.random() - 0.5) * 0.4,
+    color: Math.random() > 0.5 ? "#8338ec" : "#ff006e",
+    alpha: Math.random() * 0.6 + 0.2
+  });
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.dx;
+    p.y += p.dy;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+  });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// 초기 렌더링
+window.addEventListener("DOMContentLoaded", () => {
+  render();
+});
+</script>
+
+</body>
+</html>

@@ -1215,11 +1215,21 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         <h1>CODEX <span>끝없는 차원의 모험</span></h1>
       </div>
       <div class="header-tools">
+        <a href="event.html" class="tool-btn event-btn" style="text-decoration:none; background: linear-gradient(135deg, #ff006e, #8338ec); color:#fff; font-weight:700; border: 1px solid rgba(255,0,110,0.5); box-shadow: 0 0 12px rgba(255,0,110,0.4);" title="실시간 이벤트 센터">🎉 이벤트 센터</a>
         <button id="authBtn" class="tool-btn auth-btn" onclick="openAuthModal('login')">🔑 로그인</button>
         <button id="registerBtn" class="tool-btn auth-btn highlight" onclick="openAuthModal('register')">✨ 회원가입</button>
         <button id="soundToggleBtn" class="tool-btn" onclick="toggleSound()">🔊 사운드 ON</button>
         <button class="tool-btn" onclick="showHelpModal()">❓ 가이드</button>
       </div>
+    </div>
+
+    <!-- 이벤트 실시간 알림 배너 -->
+    <div id="codexEventBanner" style="display:none; margin: 12px 0 10px 0; padding: 12px 18px; border-radius: 14px; background: linear-gradient(135deg, rgba(255,0,110,0.22), rgba(131,56,236,0.3)); border: 1px solid rgba(255,0,110,0.5); box-shadow: 0 4px 20px rgba(255,0,110,0.2); align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.3rem;">⚡</span>
+        <div id="codexEventBannerText" style="font-size: 0.95rem; color: #fff;"></div>
+      </div>
+      <a href="event.html" style="color: #ffbe0b; font-size: 0.85rem; font-weight: 700; text-decoration: none; padding: 6px 12px; border-radius: 8px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,190,11,0.4);">⚙️ 이벤트 설정 ➔</a>
     </div>
 
     <!-- 플레이어 HUD -->
@@ -2235,8 +2245,42 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   dailyCheck();
   setInterval(dailyCheck, 60 * 1000);
 
+  // ----------------------------------------------------
+  // 실시간 이벤트 시스템 (EXP 2배 / 무한 룰렛)
+  // ----------------------------------------------------
+  function isExp2EventActive() {
+    return localStorage.getItem("codex_event_exp2") === "true";
+  }
+
+  function isInfRouletteEventActive() {
+    return localStorage.getItem("codex_event_inf_roulette") === "true";
+  }
+
+  function updateEventBanner() {
+    const banner = document.getElementById("codexEventBanner");
+    const bannerText = document.getElementById("codexEventBannerText");
+    if (!banner || !bannerText) return;
+
+    const exp2 = isExp2EventActive();
+    const infR = isInfRouletteEventActive();
+
+    if (exp2 || infR) {
+      banner.style.display = "flex";
+      const tags = [];
+      if (exp2) tags.push("⚡ [경험치 2배 버닝 중]");
+      if (infR) tags.push("🎰 [무한 룰렛 페스티벌 중]");
+      bannerText.innerHTML = `<span style="color:var(--gold); font-weight:800;">🔥 SPECIAL EVENT ACTIVE:</span> ${tags.join(" · ")}`;
+    } else {
+      banner.style.display = "none";
+    }
+  }
+
   // 7. 보상 및 성장
   function gainReward(expGain, tokenGain, triggerMsg) {
+    if (isExp2EventActive() && expGain > 0) {
+      expGain = expGain * 2;
+      triggerMsg = (triggerMsg ? triggerMsg + " " : "") + "🔥(EXP 2배 이벤트!)";
+    }
     state.exp += expGain;
     state.tokens += tokenGain;
     Sound.win();
@@ -2312,6 +2356,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const homeDef = document.getElementById("homeDef");
     const homeJobText = document.getElementById("homeJobText");
     if (record) record.textContent = state.lastEvent || "모험을 시작해보세요.";
+
+    updateEventBanner();
     if (homeAtk) homeAtk.textContent = stats.atk;
     if (homeDef) homeDef.textContent = stats.def;
     if (homeJobText) homeJobText.textContent = `${job.icon} ${job.name} (${job.tier})`;
@@ -2332,12 +2378,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   // 9. 직업 50개 룰렛 및 선택
   window.spinRandomJob = function() {
-    if (state.tokens < 100) {
+    const infRoulette = isInfRouletteEventActive();
+    if (!infRoulette && state.tokens < 100) {
       Sound.hit();
       alert("❌ 토큰이 부족합니다! 직업 각성에는 🪙 100 토큰이 필요합니다.");
       return;
     }
-    state.tokens -= 100;
+    if (!infRoulette) {
+      state.tokens -= 100;
+    }
     Sound.click();
 
     const btn = document.getElementById("spinJobBtn");
@@ -2469,7 +2518,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (iconEl) iconEl.textContent = d.icon;
     if (statusEl) statusEl.textContent = "🎰 " + d.name + " 탐험 룰렛";
     if (detailEl) {
-      detailEl.textContent = `성공 확률 ${d.chance}% · 남은 기회 ${state.roulette.tries}/10회\n✨ EXP +${d.exp[0].toLocaleString()}~${d.exp[1].toLocaleString()} · 🪙 토큰 +${d.tokens[0].toLocaleString()}~${d.tokens[1].toLocaleString()}`;
+      const triesStr = isInfRouletteEventActive() ? "무제한 ♾️ (이벤트 ON)" : `${state.roulette.tries}/10회`;
+      const expStr = isExp2EventActive()
+        ? `${(d.exp[0]*2).toLocaleString()}~${(d.exp[1]*2).toLocaleString()} (2배🔥)`
+        : `${d.exp[0].toLocaleString()}~${d.exp[1].toLocaleString()}`;
+      detailEl.textContent = `성공 확률 ${d.chance}% · 남은 기회 ${triesStr}\n✨ EXP +${expStr} · 🪙 토큰 +${d.tokens[0].toLocaleString()}~${d.tokens[1].toLocaleString()}`;
     }
 
     state.lastEvent = `${d.name} 차원에 진입했습니다.`;
@@ -2533,13 +2586,16 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   // 12. 룰렛 탐험
   window.explore = function() {
     const d = DIMENSIONS[state.roulette.dimension] || DIMENSIONS[1];
-    if (state.roulette.tries <= 0) {
+    const infRoulette = isInfRouletteEventActive();
+    if (!infRoulette && state.roulette.tries <= 0) {
       Sound.hit();
       alert("🎰 이 차원의 룰렛 기회 10회를 모두 사용했습니다!\n매일 자정에 리필되거나 상점에서 충전권을 구매할 수 있습니다.");
       return;
     }
 
-    state.roulette.tries--;
+    if (!infRoulette) {
+      state.roulette.tries--;
+    }
     state.questProgress.explore = (state.questProgress.explore || 0) + 1;
 
     const slot = document.getElementById("slotIcon");
