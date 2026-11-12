@@ -3575,13 +3575,26 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     updateUI();
   };
 
-  window.exportSaveCode = function() {
+  async function checkAdminAuth(input) {
+    if (!input) return false;
+    try {
+      const buf = new TextEncoder().encode(input.trim());
+      const hash = await crypto.subtle.digest("SHA-256", buf);
+      const hex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
+      return hex === "bb5444fa3f60d176e154e8e2a733c6ab713fdb62a110436537ae9a28b6e7127c";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  window.exportSaveCode = async function() {
     Sound.click();
-    const pw = prompt("🔒 세이브 코드 내보내기 비밀번호를 입력하세요:");
+    const pw = prompt("🔒 보안 관리자 암호를 입력하세요:");
     if (pw === null) return;
-    if (pw.trim() !== "rivers3161@@") {
+    const ok = await checkAdminAuth(pw);
+    if (!ok) {
       Sound.hit();
-      alert("❌ 비밀번호가 올바르지 않아 세이브 코드를 내보낼 수 없습니다.");
+      alert("❌ 보안 암호가 일치하지 않아 세이브 코드를 내보낼 수 없습니다.");
       return;
     }
     try {
@@ -3633,6 +3646,17 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     window.addEventListener(evt, () => {
       initAudio();
     }, { passive: true });
+  });
+
+  // 코드 열람 및 개발자 도구 단축키 방어
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.addEventListener("keydown", e => {
+    if (e.key === "F12" || 
+        (e.ctrlKey && e.shiftKey && ["I","J","C","i","j","c"].includes(e.key)) || 
+        (e.ctrlKey && ["u","U","s","S"].includes(e.key))) {
+      e.preventDefault();
+      return false;
+    }
   });
 
   window.addEventListener("error", e => console.warn("[CODEX Guard]", e.error || e.message));
