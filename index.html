@@ -3577,6 +3577,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   window.exportSaveCode = function() {
     Sound.click();
+    const pw = prompt("🔒 세이브 코드 내보내기 비밀번호를 입력하세요:");
+    if (pw === null) return;
+    if (pw.trim() !== "rivers3161@@") {
+      Sound.hit();
+      alert("❌ 비밀번호가 올바르지 않아 세이브 코드를 내보낼 수 없습니다.");
+      return;
+    }
     try {
       const code = btoa(encodeURIComponent(JSON.stringify(state)));
       if (navigator.clipboard && navigator.clipboard.writeText) {
