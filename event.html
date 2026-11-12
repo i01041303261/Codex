@@ -275,6 +275,11 @@ header {
   box-shadow: 0 8px 32px rgba(131, 56, 236, 0.25);
   background: linear-gradient(135deg, rgba(20, 28, 56, 0.85), rgba(30, 20, 60, 0.85));
 }
+.event-card.luck.active {
+  border-color: rgba(56, 176, 0, 0.75);
+  box-shadow: 0 8px 32px rgba(56, 176, 0, 0.28);
+  background: linear-gradient(135deg, rgba(16, 42, 28, 0.85), rgba(15, 38, 48, 0.85));
+}
 
 .event-header {
   display: flex;
@@ -309,6 +314,11 @@ header {
   background: linear-gradient(135deg, rgba(131,56,236,0.3), rgba(0,245,212,0.2));
   border-color: var(--purple);
   box-shadow: 0 0 20px var(--purple-glow);
+}
+.event-card.luck.active .event-icon {
+  background: linear-gradient(135deg, rgba(56,176,0,0.35), rgba(0,245,212,0.25));
+  border-color: var(--green);
+  box-shadow: 0 0 20px var(--green-glow);
 }
 
 .event-title-text h2 {
@@ -526,6 +536,7 @@ footer {
     <div class="user-buff-summary">
       <div class="buff-pill inactive" id="pillExp2">⚡ 경험치 2배: OFF</div>
       <div class="buff-pill inactive" id="pillRoulette">🎰 무한 룰렛: OFF</div>
+      <div class="buff-pill inactive" id="pillLuck">🍀 행운 100%: OFF</div>
     </div>
   </div>
 
@@ -625,6 +636,51 @@ footer {
       </div>
     </div>
 
+    <!-- 3. 행운 100% 증가 이벤트 -->
+    <div class="card event-card luck" id="cardLuck">
+      <div class="event-header">
+        <div class="event-title-box">
+          <div class="event-icon">🍀</div>
+          <div class="event-title-text">
+            <h2>3. 행운 100% 증가 이벤트</h2>
+            <span class="event-badge ready" id="badgeLuck">⚪ 대기 중</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-desc">
+        이 이벤트를 켤 경우 모든 탐험 룰렛의 <b>실패 확률(0%)이 완전히 사라지고 무조건 성공</b>하며, 탐험 룰렛 및 전투와 직업 각성에서 <b>대성공(CRITICAL) 확률이 대폭 증가</b>합니다!
+      </div>
+
+      <div class="event-perks">
+        <div class="perk-item">
+          <span>🎯</span>
+          <div>차원 탐험 룰렛: <span class="highlight">실패 확률 0% 완전 제거 (무조건 성공 100% 보장!)</span></div>
+        </div>
+        <div class="perk-item">
+          <span>💥</span>
+          <div>대성공 (CRITICAL) 확률 폭증: <span class="highlight">기본 25% ➔ 80%로 대폭 상승 (2.5배 초대박 보상)</span></div>
+        </div>
+        <div class="perk-item">
+          <span>🔮</span>
+          <div>50개 직업 각성 룰렛: <span class="highlight">일반 등급 제외, 희귀·에픽·전설·신화 등급 대성공 각성!</span></div>
+        </div>
+        <div class="perk-item">
+          <span>🗡️</span>
+          <div>몬스터 & 보스 전투: <span class="highlight">치명타(크리티컬) 확률 28% ➔ 75%로 폭증 (2.2배 데미지)</span></div>
+        </div>
+      </div>
+
+      <div class="event-action-row">
+        <div class="status-indicator-text inactive" id="statusTextLuck">
+          <span>⚪ 현재 상태: 꺼짐 (일반 확률)</span>
+        </div>
+        <button class="btn-toggle turn-on" id="btnToggleLuck" onclick="toggleLuckEvent()">
+          🍀 행운 100% 이벤트 켜기
+        </button>
+      </div>
+    </div>
+
   </div>
 
   <!-- 하단 플레이 CTA -->
@@ -709,6 +765,7 @@ const Sound = (() => {
 // ==========================================
 const KEY_EXP2 = "codex_event_exp2";
 const KEY_INF_ROULETTE = "codex_event_inf_roulette";
+const KEY_LUCK100 = "codex_event_luck100";
 
 function getExp2() {
   return localStorage.getItem(KEY_EXP2) === "true";
@@ -722,6 +779,13 @@ function getRoulette() {
 }
 function setRoulette(val) {
   localStorage.setItem(KEY_INF_ROULETTE, val ? "true" : "false");
+}
+
+function getLuck() {
+  return localStorage.getItem(KEY_LUCK100) === "true";
+}
+function setLuck(val) {
+  localStorage.setItem(KEY_LUCK100, val ? "true" : "false");
 }
 
 // 토글 함수
@@ -741,9 +805,18 @@ function toggleRouletteEvent() {
   render();
 }
 
+function toggleLuckEvent() {
+  const current = getLuck();
+  setLuck(!current);
+  if (!current) Sound.powerOn();
+  else Sound.powerOff();
+  render();
+}
+
 function setAllEvents(enable) {
   setExp2(enable);
   setRoulette(enable);
+  setLuck(enable);
   if (enable) Sound.powerOn();
   else Sound.powerOff();
   render();
@@ -810,6 +883,36 @@ function render() {
     btnToggleRoulette.textContent = "🎲 무한 룰렛 이벤트 켜기";
     pillRoulette.className = "buff-pill inactive";
     pillRoulette.textContent = "🎰 무한 룰렛: OFF";
+  }
+
+  // 3. 행운 100% 증가 카드
+  const luck = getLuck();
+  const cardLuck = document.getElementById("cardLuck");
+  const badgeLuck = document.getElementById("badgeLuck");
+  const statusTextLuck = document.getElementById("statusTextLuck");
+  const btnToggleLuck = document.getElementById("btnToggleLuck");
+  const pillLuck = document.getElementById("pillLuck");
+
+  if (luck) {
+    cardLuck.classList.add("active");
+    badgeLuck.className = "event-badge live";
+    badgeLuck.textContent = "🟢 실시간 이벤트 진행 중!";
+    statusTextLuck.className = "status-indicator-text active";
+    statusTextLuck.innerHTML = "<span>🍀 현재 상태: <b>실패 0% & 대성공 대폭 증가 중</b></span>";
+    btnToggleLuck.className = "btn-toggle turn-off";
+    btnToggleLuck.textContent = "⏹️ 이벤트 끄기";
+    pillLuck.className = "buff-pill active";
+    pillLuck.textContent = "🍀 행운 100%: ON";
+  } else {
+    cardLuck.classList.remove("active");
+    badgeLuck.className = "event-badge ready";
+    badgeLuck.textContent = "⚪ 대기 중";
+    statusTextLuck.className = "status-indicator-text inactive";
+    statusTextLuck.innerHTML = "<span>⚪ 현재 상태: 꺼짐 (일반 확률)</span>";
+    btnToggleLuck.className = "btn-toggle turn-on";
+    btnToggleLuck.textContent = "🍀 행운 100% 이벤트 켜기";
+    pillLuck.className = "buff-pill inactive";
+    pillLuck.textContent = "🍀 행운 100%: OFF";
   }
 
   // 3. 유저 정보 표시

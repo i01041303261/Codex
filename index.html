@@ -2246,7 +2246,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   setInterval(dailyCheck, 60 * 1000);
 
   // ----------------------------------------------------
-  // 실시간 이벤트 시스템 (EXP 2배 / 무한 룰렛)
+  // 실시간 이벤트 시스템 (EXP 2배 / 무한 룰렛 / 행운 100%)
   // ----------------------------------------------------
   function isExp2EventActive() {
     return localStorage.getItem("codex_event_exp2") === "true";
@@ -2256,6 +2256,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     return localStorage.getItem("codex_event_inf_roulette") === "true";
   }
 
+  function isLuckEventActive() {
+    return localStorage.getItem("codex_event_luck100") === "true";
+  }
+
   function updateEventBanner() {
     const banner = document.getElementById("codexEventBanner");
     const bannerText = document.getElementById("codexEventBannerText");
@@ -2263,12 +2267,14 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     const exp2 = isExp2EventActive();
     const infR = isInfRouletteEventActive();
+    const luck = isLuckEventActive();
 
-    if (exp2 || infR) {
+    if (exp2 || infR || luck) {
       banner.style.display = "flex";
       const tags = [];
       if (exp2) tags.push("⚡ [경험치 2배 버닝 중]");
       if (infR) tags.push("🎰 [무한 룰렛 페스티벌 중]");
+      if (luck) tags.push("🍀 [행운 100% 증가: 실패 없음/대성공 UP]");
       bannerText.innerHTML = `<span style="color:var(--gold); font-weight:800;">🔥 SPECIAL EVENT ACTIVE:</span> ${tags.join(" · ")}`;
     } else {
       banner.style.display = "none";
@@ -2413,7 +2419,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         if (btn) btn.disabled = false;
 
         // 최종 직업 결정
-        const finalJob = JOBS[rand(0, JOBS.length - 1)];
+        let pool = JOBS;
+        if (isLuckEventActive()) {
+          const highTierPool = JOBS.filter(j => ["레어", "에픽", "슈퍼에픽", "전설", "신화"].includes(j.tier));
+          if (highTierPool.length) pool = highTierPool;
+        }
+        const finalJob = pool[rand(0, pool.length - 1)];
         state.jobId = finalJob.id;
         Sound.levelUp();
 
@@ -2522,7 +2533,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const expStr = isExp2EventActive()
         ? `${(d.exp[0]*2).toLocaleString()}~${(d.exp[1]*2).toLocaleString()} (2배🔥)`
         : `${d.exp[0].toLocaleString()}~${d.exp[1].toLocaleString()}`;
-      detailEl.textContent = `성공 확률 ${d.chance}% · 남은 기회 ${triesStr}\n✨ EXP +${expStr} · 🪙 토큰 +${d.tokens[0].toLocaleString()}~${d.tokens[1].toLocaleString()}`;
+      const chanceStr = isLuckEventActive()
+        ? "100% (실패 없음🍀 대성공 UP)"
+        : `${d.chance}%`;
+      detailEl.textContent = `성공 확률 ${chanceStr} · 남은 기회 ${triesStr}\n✨ EXP +${expStr} · 🪙 토큰 +${d.tokens[0].toLocaleString()}~${d.tokens[1].toLocaleString()}`;
     }
 
     state.lastEvent = `${d.name} 차원에 진입했습니다.`;
@@ -2618,22 +2632,25 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         if (slot) slot.classList.remove("spinning");
         if (btn) btn.disabled = false;
 
+        const isLuck = isLuckEventActive();
         const roll = Math.random() * 100;
-        const isSuccess = roll < d.chance;
+        // 행운 100% 이벤트: 실패 확률 0% (무조건 성공)
+        const isSuccess = isLuck ? true : (roll < d.chance);
 
         if (isSuccess) {
-          const isCrit = roll < (d.chance * 0.25);
-          const mult = isCrit ? 2.0 : 1.0;
+          // 행운 100% 이벤트: 대성공 확률 대폭 증가 (75% 확률로 대성공!)
+          const isCrit = isLuck ? (roll < 75) : (roll < (d.chance * 0.25));
+          const mult = isCrit ? (isLuck ? 2.5 : 2.0) : 1.0;
           const expGain = Math.round(rand(d.exp[0], d.exp[1]) * mult);
           const tokenGain = Math.round(rand(d.tokens[0], d.tokens[1]) * mult);
 
           if (slot) slot.textContent = isCrit ? "🌟" : "🎉";
-          if (status) status.textContent = isCrit ? "💥 차원 대성공 (CRITICAL)!" : "🎉 탐험 룰렛 성공!";
+          if (status) status.textContent = isCrit ? (isLuck ? "💥 차원 초대성공 (CRITICAL 🍀)!" : "💥 차원 대성공 (CRITICAL)!") : "🎉 탐험 룰렛 성공!";
           if (detail) {
-            detail.textContent = `${isCrit ? '🌟 대성공 보너스 발동!' : 'SUCCESS ✅'}\n✨ EXP +${expGain.toLocaleString()} · 🪙 토큰 +${tokenGain.toLocaleString()}\n남은 기회: ${state.roulette.tries}/10`;
+            detail.textContent = `${isCrit ? (isLuck ? '🍀 행운 100% 초대성공 발동!' : '🌟 대성공 보너스 발동!') : 'SUCCESS ✅'}\n✨ EXP +${expGain.toLocaleString()}${isExp2EventActive() ? ' (2배🔥)' : ''} · 🪙 토큰 +${tokenGain.toLocaleString()}\n남은 기회: ${infRoulette ? '무제한 ♾️ (이벤트)' : state.roulette.tries + '/10'}`;
           }
 
-          gainReward(expGain, tokenGain, `${d.name} 탐험 성공! (+${expGain} EXP, +${tokenGain} 토큰)`);
+          gainReward(expGain, tokenGain, `${d.name} 탐험 ${isCrit ? '대성공' : '성공'}! (+${expGain} EXP, +${tokenGain} 토큰)`);
         } else {
           Sound.hit();
           if (slot) slot.textContent = "❌";
@@ -2764,9 +2781,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (act === "attack") {
       Sound.hit();
       if (pIcon) { pIcon.classList.add("attack-lunge"); setTimeout(() => pIcon.classList.remove("attack-lunge"), 250); }
-      const isCrit = Math.random() < 0.28;
+      const isLuck = isLuckEventActive();
+      const isCrit = isLuck ? (Math.random() < 0.75) : (Math.random() < 0.28);
       const baseDmg = stats.atk + rand(0, 6);
-      const dmg = isCrit ? Math.round(baseDmg * 1.9) : baseDmg;
+      const dmg = isCrit ? Math.round(baseDmg * (isLuck ? 2.2 : 1.9)) : baseDmg;
       combat.hp = Math.max(0, combat.hp - dmg);
 
       if (eIcon) { eIcon.classList.add("hit-flash"); setTimeout(() => eIcon.classList.remove("hit-flash"), 300); }
