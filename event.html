@@ -701,6 +701,137 @@ footer {
   margin-top: 4px;
 }
 
+/* 선택지 뷰 및 네비게이션 스타일 */
+.admin-choice-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.admin-status-notice {
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  border-radius: 10px;
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+.admin-status-notice.has-pw {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #a7f3d0;
+}
+.admin-status-notice.no-pw {
+  background: rgba(255, 190, 11, 0.12);
+  border: 1px solid rgba(255, 190, 11, 0.35);
+  color: #fde68a;
+}
+.admin-choice-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  width: 100%;
+}
+.admin-choice-card:hover {
+  transform: translateY(-2px);
+}
+.admin-choice-card.reg-card {
+  border-color: rgba(255, 0, 110, 0.45);
+  background: linear-gradient(135deg, rgba(255, 0, 110, 0.15), rgba(131, 56, 236, 0.15));
+}
+.admin-choice-card.reg-card:hover {
+  border-color: #ff006e;
+  box-shadow: 0 4px 20px rgba(255, 0, 110, 0.4);
+}
+.admin-choice-card.login-card {
+  border-color: rgba(255, 190, 11, 0.45);
+  background: linear-gradient(135deg, rgba(255, 190, 11, 0.15), rgba(58, 134, 255, 0.15));
+}
+.admin-choice-card.login-card:hover {
+  border-color: #ffbe0b;
+  box-shadow: 0 4px 20px rgba(255, 190, 11, 0.4);
+}
+.choice-icon {
+  font-size: 1.8rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+.choice-content {
+  flex: 1;
+}
+.choice-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+.choice-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+}
+.choice-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+.choice-badge.badge-new {
+  background: rgba(255, 0, 110, 0.25);
+  color: #ff70a6;
+  border: 1px solid rgba(255, 0, 110, 0.45);
+}
+.choice-badge.badge-login {
+  background: rgba(255, 190, 11, 0.25);
+  color: #ffd166;
+  border: 1px solid rgba(255, 190, 11, 0.45);
+}
+.choice-desc {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  line-height: 1.35;
+}
+.choice-arrow {
+  font-size: 1.1rem;
+  color: #ffd166;
+  font-weight: 800;
+  padding-left: 6px;
+}
+.admin-back-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+.admin-back-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
 </style>
 </head>
 <body>
@@ -1041,16 +1172,16 @@ function requireDeveloperAuth(action) {
   }
   Sound.hit();
   pendingAdminAction = action;
-  openAdminModal("login", "🔒 이벤트 열기는 개발자(어드민)만 가능합니다! 비밀번호를 인증해주세요.");
+  openAdminModal("choice", "🔒 이벤트 열기는 관리자만 가능합니다!<br>먼저 관리자 비밀번호를 이미 만드셨는지 선택해주세요.");
 }
 
 // 모달 조작
-window.openAdminModal = function(tab = 'login', customDesc = null) {
+window.openAdminModal = function(tab = 'choice', customDesc = null) {
   Sound.click();
   const overlay = document.getElementById("adminModalOverlay");
   const descEl = document.getElementById("adminModalDesc");
   if (descEl) {
-    descEl.textContent = customDesc || "이벤트를 열고 활성화하려면 개발자(어드민) 인증이 필요합니다.";
+    descEl.innerHTML = customDesc || "이벤트를 열고 활성화하려면 관리자 인증이 필요합니다.<br>먼저 관리자 비밀번호를 이미 만드셨나요, 아니면 새로 만드시겠습니까?";
   }
   switchAdminTab(tab);
   if (overlay) overlay.style.display = "flex";
@@ -1058,7 +1189,7 @@ window.openAdminModal = function(tab = 'login', customDesc = null) {
     if (tab === 'login') {
       const p = document.getElementById("adminPasswordInput");
       if (p) p.focus();
-    } else {
+    } else if (tab === 'register') {
       const u = document.getElementById("adminRegUsername");
       if (u) u.focus();
     }
@@ -1083,24 +1214,57 @@ window.handleAdminOverlayClick = function(e) {
 
 window.switchAdminTab = function(tab) {
   Sound.click();
+  const tChoice = document.getElementById("adminTabChoiceBtn");
   const tLogin = document.getElementById("adminTabLoginBtn");
   const tReg = document.getElementById("adminTabRegBtn");
+  const vChoice = document.getElementById("adminChoiceView");
   const fLogin = document.getElementById("adminLoginForm");
   const fReg = document.getElementById("adminRegisterForm");
   const title = document.getElementById("adminModalTitle");
+  const desc = document.getElementById("adminModalDesc");
 
-  if (tab === 'login') {
-    if (tLogin) tLogin.className = "admin-tab-btn active";
-    if (tReg) tReg.className = "admin-tab-btn";
-    if (fLogin) fLogin.className = "admin-form active";
-    if (fReg) fReg.className = "admin-form";
-    if (title) title.textContent = "🔒 개발자 보안 로그인";
-  } else {
-    if (tLogin) tLogin.className = "admin-tab-btn";
+  if (tChoice) tChoice.className = "admin-tab-btn";
+  if (tLogin) tLogin.className = "admin-tab-btn";
+  if (tReg) tReg.className = "admin-tab-btn";
+  if (vChoice) vChoice.style.display = "none";
+  if (fLogin) fLogin.style.display = "none";
+  if (fReg) fReg.style.display = "none";
+
+  const hasCustomPw = !!localStorage.getItem(KEY_CUSTOM_ADMIN_HASH);
+  const statusNotice = document.getElementById("adminStatusNotice");
+  if (statusNotice) {
+    if (hasCustomPw) {
+      statusNotice.className = "admin-status-notice has-pw";
+      statusNotice.innerHTML = "💡 <b>등록된 관리자 비밀번호가 있습니다.</b><br>이미 만드신 관리자 비밀번호로 로그인하시거나, 비밀번호를 새로 바꾸려면 [새로 만들기]를 선택하세요.";
+    } else {
+      statusNotice.className = "admin-status-notice no-pw";
+      statusNotice.innerHTML = "⚠️ <b>아직 등록된 관리자 비밀번호가 없습니다!</b><br>아래 [✨ 아직 비밀번호를 안 만들었어요]를 눌러 먼저 비밀번호를 생성해주세요.";
+    }
+  }
+
+  if (tab === 'choice') {
+    if (tChoice) tChoice.className = "admin-tab-btn active";
+    if (vChoice) vChoice.style.display = "flex";
+    if (title) title.innerHTML = "👑 관리자 확인 & 비밀번호 설정";
+    if (desc) desc.innerHTML = "이벤트를 열려면 관리자 비밀번호가 필요합니다.<br>먼저 비밀번호를 만드셨나요? 아래에서 선택해주세요.";
+  } else if (tab === 'register') {
     if (tReg) tReg.className = "admin-tab-btn active";
-    if (fLogin) fLogin.className = "admin-form";
-    if (fReg) fReg.className = "admin-form active";
-    if (title) title.textContent = "✨ 개발자 비밀번호 등록 (회원가입)";
+    if (fReg) fReg.style.display = "flex";
+    if (title) title.innerHTML = "✨ 관리자 비밀번호 만들기 (회원가입)";
+    if (desc) desc.innerHTML = "이벤트를 열 수 있는 새로운 관리자 계정과 비밀번호를 설정합니다.";
+    setTimeout(() => {
+      const u = document.getElementById("adminRegUsername");
+      if (u) u.focus();
+    }, 50);
+  } else {
+    if (tLogin) tLogin.className = "admin-tab-btn active";
+    if (fLogin) fLogin.style.display = "flex";
+    if (title) title.innerHTML = "🔑 관리자 보안 로그인 (인증)";
+    if (desc) desc.innerHTML = "기존에 등록한 관리자 비밀번호를 입력하고 이벤트를 즉시 활성화합니다.";
+    setTimeout(() => {
+      const p = document.getElementById("adminPasswordInput");
+      if (p) p.focus();
+    }, 50);
   }
 };
 
@@ -1114,8 +1278,9 @@ window.handleAdminLoginSubmit = async function(e) {
   if (!check.ok) {
     Sound.hit();
     if (msg) {
-      msg.textContent = "❌ 개발자 비밀번호가 올바르지 않습니다. 권한이 없습니다.";
+      msg.innerHTML = "❌ 관리자 비밀번호가 올바르지 않습니다.<br>아직 비밀번호를 안 만드셨다면 <a href='javascript:void(0)' onclick='switchAdminTab(\"register\")' style='color:#ffd166; font-weight:800; text-decoration:underline;'>[✨ 여기서 비밀번호 새로 만들기 (가입)]</a>를 눌러주세요.";
       msg.className = "admin-msg error";
+      msg.style.display = "block";
     }
     return;
   }
@@ -1125,7 +1290,7 @@ window.handleAdminLoginSubmit = async function(e) {
   if (pInput) pInput.value = "";
   Sound.powerOn();
   closeAdminModal();
-  alert(`👑 개발자 어드민 인증 완료!\n[${check.name}] 모드로 이벤트 제어 권한이 활성화되었습니다.`);
+  alert(`👑 관리자 어드민 인증 완료!\n[${check.name}] 모드로 이벤트 제어 권한이 활성화되었습니다.`);
   render();
 
   if (pendingAdminAction) {
@@ -1151,6 +1316,7 @@ window.handleAdminRegisterSubmit = async function(e) {
     if (msg) {
       msg.textContent = "❌ 비밀번호는 4자 이상으로 입력해주세요.";
       msg.className = "admin-msg error";
+      msg.style.display = "block";
     }
     return;
   }
@@ -1159,6 +1325,7 @@ window.handleAdminRegisterSubmit = async function(e) {
     if (msg) {
       msg.textContent = "❌ 비밀번호와 비밀번호 확인이 일치하지 않습니다.";
       msg.className = "admin-msg error";
+      msg.style.display = "block";
     }
     return;
   }
@@ -1173,7 +1340,7 @@ window.handleAdminRegisterSubmit = async function(e) {
   if (cInput) cInput.value = "";
   Sound.powerOn();
   closeAdminModal();
-  alert(`✨ 개발자 비밀번호 등록 완료!\n[${username}] 계정으로 개발자 권한이 활성화되었습니다.\n이제 자유롭게 이벤트를 켜고 끌 수 있습니다!`);
+  alert(`✨ 관리자 비밀번호 등록 완료!\n[${username}] 계정으로 관리자 권한이 활성화되었습니다.\n이제 자유롭게 이벤트를 켜고 끌 수 있습니다!`);
   render();
 
   if (pendingAdminAction) {
@@ -1290,12 +1457,12 @@ function render() {
       adminBtn.onclick = handleAdminLogout;
       adminBtn.title = "개발자 어드민 세션 로그아웃";
     } else {
-      adminBtn.innerHTML = "👑 개발자 로그인";
+      adminBtn.innerHTML = "👑 관리자 로그인";
       adminBtn.style.background = "linear-gradient(135deg, #ffd166, #ff006e)";
       adminBtn.style.color = "#0b0c16";
       adminBtn.style.boxShadow = "0 0 12px rgba(255, 209, 102, 0.4)";
-      adminBtn.onclick = () => openAdminModal('login');
-      adminBtn.title = "개발자 어드민 로그인 및 비밀번호 등록";
+      adminBtn.onclick = () => openAdminModal('choice');
+      adminBtn.title = "관리자 로그인 및 비밀번호 등록";
     }
   }
 
@@ -1498,34 +1665,69 @@ window.addEventListener("DOMContentLoaded", () => {
     <button type="button" class="admin-modal-close" onclick="closeAdminModal()">&times;</button>
     <div class="admin-modal-header">
       <div class="admin-modal-tag">👑 CODEX DEVELOPER ADMIN GATE</div>
-      <h2 class="admin-modal-title" id="adminModalTitle">🔒 개발자 보안 로그인</h2>
-      <p class="admin-modal-desc" id="adminModalDesc">이벤트를 열고 활성화하려면 개발자(어드민) 인증이 필요합니다.</p>
+      <h2 class="admin-modal-title" id="adminModalTitle">👑 관리자 확인 & 비밀번호 설정</h2>
+      <p class="admin-modal-desc" id="adminModalDesc">이벤트를 열려면 관리자 비밀번호가 필요합니다.<br>먼저 비밀번호를 만드셨나요? 아래에서 선택해주세요.</p>
     </div>
 
     <div class="admin-modal-tabs">
-      <button type="button" id="adminTabLoginBtn" class="admin-tab-btn active" onclick="switchAdminTab('login')">🔑 개발자 로그인</button>
-      <button type="button" id="adminTabRegBtn" class="admin-tab-btn" onclick="switchAdminTab('register')">✨ 비밀번호 등록 (회원가입)</button>
+      <button type="button" id="adminTabChoiceBtn" class="admin-tab-btn active" onclick="switchAdminTab('choice')">⚖️ 시작 선택</button>
+      <button type="button" id="adminTabRegBtn" class="admin-tab-btn" onclick="switchAdminTab('register')">✨ 비밀번호 생성 (가입)</button>
+      <button type="button" id="adminTabLoginBtn" class="admin-tab-btn" onclick="switchAdminTab('login')">🔑 로그인 인증</button>
+    </div>
+
+    <!-- 0. 선택지 뷰 (기본) -->
+    <div id="adminChoiceView" class="admin-choice-container">
+      <div id="adminStatusNotice" class="admin-status-notice no-pw"></div>
+
+      <button type="button" class="admin-choice-card reg-card" onclick="switchAdminTab('register')">
+        <div class="choice-icon">✨</div>
+        <div class="choice-content">
+          <div class="choice-title-row">
+            <span class="choice-title">아직 비밀번호를 안 만들었어요</span>
+            <span class="choice-badge badge-new">먼저 하기 / 가입</span>
+          </div>
+          <div class="choice-desc">관리자 회원가입 창으로 이동하여 새 관리자 비밀번호를 먼저 만듭니다.</div>
+        </div>
+        <div class="choice-arrow">➔</div>
+      </button>
+
+      <button type="button" class="admin-choice-card login-card" onclick="switchAdminTab('login')">
+        <div class="choice-icon">🔑</div>
+        <div class="choice-content">
+          <div class="choice-title-row">
+            <span class="choice-title">이미 관리자 비밀번호가 있어요</span>
+            <span class="choice-badge badge-login">로그인 인증</span>
+          </div>
+          <div class="choice-desc">이미 만든 관리자 비밀번호를 입력하고 즉시 이벤트를 켭니다.</div>
+        </div>
+        <div class="choice-arrow">➔</div>
+      </button>
     </div>
 
     <!-- 1. 로그인 폼 -->
-    <form id="adminLoginForm" class="admin-form active" onsubmit="handleAdminLoginSubmit(event)">
+    <form id="adminLoginForm" class="admin-form" onsubmit="handleAdminLoginSubmit(event)" style="display:none;">
+      <button type="button" class="admin-back-btn" onclick="switchAdminTab('choice')">⬅️ 처음 선택지로 돌아가기</button>
       <div class="admin-form-group">
-        <label class="admin-label" for="adminPasswordInput">개발자 어드민 비밀번호</label>
+        <label class="admin-label" for="adminPasswordInput">관리자 어드민 비밀번호</label>
         <input type="password" id="adminPasswordInput" class="admin-input" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
       </div>
       <div id="adminLoginMsg" class="admin-msg"></div>
       <button type="submit" class="admin-submit-btn">🔑 인증하고 이벤트 열기</button>
-      <div class="admin-subtext">기존 세이브 관리자 암호 또는 등록한 비밀번호로 즉시 인증됩니다.</div>
+      <div class="admin-subtext">
+        아직 비밀번호를 안 만드셨나요? 
+        <button type="button" onclick="switchAdminTab('register')" style="background:none; border:none; color:#ffd166; font-weight:800; cursor:pointer; text-decoration:underline; font-size:inherit;">[✨ 비밀번호 먼저 만들기]</button>
+      </div>
     </form>
 
     <!-- 2. 회원가입 / 비밀번호 생성 폼 -->
-    <form id="adminRegisterForm" class="admin-form" onsubmit="handleAdminRegisterSubmit(event)">
+    <form id="adminRegisterForm" class="admin-form" onsubmit="handleAdminRegisterSubmit(event)" style="display:none;">
+      <button type="button" class="admin-back-btn" onclick="switchAdminTab('choice')">⬅️ 처음 선택지로 돌아가기</button>
       <div class="admin-form-group">
-        <label class="admin-label" for="adminRegUsername">개발자 닉네임 / 아이디</label>
+        <label class="admin-label" for="adminRegUsername">관리자 닉네임 / 아이디</label>
         <input type="text" id="adminRegUsername" class="admin-input" placeholder="예: ADMIN" value="ADMIN" required minlength="2" maxlength="15" autocomplete="username">
       </div>
       <div class="admin-form-group">
-        <label class="admin-label" for="adminRegPassword">새 이벤트 오픈 비밀번호 (4자 이상)</label>
+        <label class="admin-label" for="adminRegPassword">새 이벤트 관리자 비밀번호 (4자 이상)</label>
         <input type="password" id="adminRegPassword" class="admin-input" placeholder="새 비밀번호 입력" required minlength="4" autocomplete="new-password">
       </div>
       <div class="admin-form-group">
@@ -1533,8 +1735,11 @@ window.addEventListener("DOMContentLoaded", () => {
         <input type="password" id="adminRegPasswordConfirm" class="admin-input" placeholder="비밀번호 다시 입력" required minlength="4" autocomplete="new-password">
       </div>
       <div id="adminRegMsg" class="admin-msg"></div>
-      <button type="submit" class="admin-submit-btn" style="background: linear-gradient(135deg, #7209b7, #f72585); color:#fff;">✨ 개발자 비밀번호 등록 완료</button>
-      <div class="admin-subtext">등록 완료 시 이 기기에서 개발자 권한이 자동으로 활성화됩니다.</div>
+      <button type="submit" class="admin-submit-btn" style="background: linear-gradient(135deg, #7209b7, #f72585); color:#fff;">✨ 관리자 비밀번호 생성 완료 & 이벤트 열기</button>
+      <div class="admin-subtext">
+        이미 비밀번호가 있으신가요? 
+        <button type="button" onclick="switchAdminTab('login')" style="background:none; border:none; color:#ffd166; font-weight:800; cursor:pointer; text-decoration:underline; font-size:inherit;">[🔑 로그인하기]</button>
+      </div>
     </form>
   </div>
 </div>
