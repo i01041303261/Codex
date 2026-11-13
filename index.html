@@ -2876,8 +2876,14 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     state.questProgress.battle = (state.questProgress.battle || 0) + 1;
     combat = null;
 
-    gainReward(expGain, tokenGain, `⚔️ ${defeatedName} 처치 성공! (+${expGain} EXP, +${tokenGain} 토큰)`);
-    showResultModal(true, `🎉 전투 승리!\n${defeatedName}을(를) 격파했습니다!\n✨ EXP +${expGain.toLocaleString()} · 🪙 토큰 +${tokenGain.toLocaleString()}`);
+    // 전투 종료 후 자동 HP/MP 100% 풀 회복
+    const stats = getPlayerStats();
+    currentHp = stats.maxHp;
+    currentMp = stats.maxMp;
+    updateUI();
+
+    gainReward(expGain, tokenGain, `⚔️ ${defeatedName} 처치 성공! (+${expGain} EXP, +${tokenGain} 토큰, ❤️ 체력 풀 회복)`);
+    showResultModal(true, `🎉 전투 승리!\n${defeatedName}을(를) 격파했습니다!\n✨ EXP +${expGain.toLocaleString()} · 🪙 토큰 +${tokenGain.toLocaleString()}\n❤️ 전투 승리로 체력과 마나가 100% 풀로 채워졌습니다!`);
   }
 
   function endBattleLose() {
@@ -2886,16 +2892,23 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const enemyName = combat ? combat.name : "적";
     combat = null;
     const stats = getPlayerStats();
-    currentHp = Math.round(stats.maxHp * 0.35);
-    state.lastEvent = `전투에서 쓰러져 마을로 귀환했습니다.`;
+    currentHp = stats.maxHp;
+    currentMp = stats.maxMp;
+    state.lastEvent = `전투에서 쓰러져 마을로 귀환하여 체력을 풀 회복했습니다.`;
+    updateUI();
     save();
-    showResultModal(false, `💀 전투 패배!\n${enemyName}에게 쓰러졌습니다...\n마을로 귀환하여 체력을 정비하세요.`);
+    showResultModal(false, `💀 전투 패배!\n${enemyName}에게 쓰러졌습니다...\n마을로 귀환하여 체력과 마나가 100% 완충되었습니다.`);
   }
 
   window.escapeBattle = function() {
     stopAutoBattle();
     combat = null;
     Sound.click();
+    const stats = getPlayerStats();
+    currentHp = stats.maxHp;
+    currentMp = stats.maxMp;
+    updateUI();
+    save();
     window.show("home");
   };
 
