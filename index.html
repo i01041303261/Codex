@@ -786,6 +786,175 @@ button.warning {
   background: rgba(255, 190, 11, 0.15);
   box-shadow: 0 0 12px var(--gold-glow);
 }
+.job-mini-card.awakened-card {
+  border-color: #00f5d4 !important;
+  background: linear-gradient(135deg, rgba(255, 0, 127, 0.15), rgba(0, 245, 212, 0.15)) !important;
+  box-shadow: 0 0 16px rgba(0, 245, 212, 0.45);
+}
+.mini-awakened-badge {
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #00f5d4;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid #00f5d4;
+  border-radius: 99px;
+  padding: 1px 7px;
+  margin-bottom: 4px;
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(0, 245, 212, 0.5);
+  animation: transcendentPulse 2s infinite ease-in-out;
+}
+.mini-rank-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #ffbe0b;
+  background: rgba(255, 190, 11, 0.15);
+  border: 1px solid #ffbe0b;
+  border-radius: 99px;
+  padding: 1px 6px;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.job-awakened-glow {
+  border-color: #00f5d4 !important;
+  background: linear-gradient(135deg, rgba(255,0,127,0.3), rgba(0,245,212,0.3)) !important;
+  box-shadow: 0 0 15px rgba(0, 245, 212, 0.7), 0 0 25px rgba(255, 0, 127, 0.4) !important;
+  animation: transcendentPulse 2s infinite ease-in-out;
+}
+.awakened-glow {
+  filter: drop-shadow(0 0 12px #00f5d4) drop-shadow(0 0 20px #ff007f);
+  animation: unitBob 2s infinite ease-in-out;
+}
+.awakened-sparkle {
+  display: inline-block;
+  animation: spin 6s linear infinite;
+}
+
+/* ==============================================
+   직업 승급 및 초월각성 제단 UI
+   ============================================== */
+.job-upgrade-altar {
+  position: relative;
+  overflow: hidden;
+}
+.upgrade-status-badge {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.upgrade-status-badge.ranked {
+  background: rgba(255, 190, 11, 0.2);
+  color: #ffbe0b;
+  border-color: #ffbe0b;
+  box-shadow: 0 0 10px rgba(255, 190, 11, 0.3);
+}
+.upgrade-status-badge.max {
+  background: rgba(131, 56, 236, 0.25);
+  color: #c084fc;
+  border-color: #8338ec;
+  box-shadow: 0 0 12px rgba(131, 56, 236, 0.4);
+}
+.upgrade-status-badge.awakened {
+  background: linear-gradient(135deg, rgba(255, 0, 127, 0.35), rgba(0, 245, 212, 0.35));
+  color: #fff;
+  border-color: #00f5d4;
+  box-shadow: 0 0 16px rgba(0, 245, 212, 0.6);
+  animation: transcendentPulse 2s infinite ease-in-out;
+}
+.awakened-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ff007f, #7928ca);
+  color: #fff;
+  border: 1px solid #00f5d4;
+  box-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
+  animation: transcendentPulse 2s infinite ease-in-out;
+}
+@keyframes transcendentPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 245, 212, 0.5), 0 0 20px rgba(255, 0, 127, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(0, 245, 212, 0.9), 0 0 30px rgba(255, 0, 127, 0.6); }
+}
+.upgrade-progress-track {
+  height: 10px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 8px;
+}
+.upgrade-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #ffbe0b, #fb5607, #ff007f, #00f5d4);
+  transition: width 0.4s ease;
+}
+.upgrade-steps-indicator {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.step-dot {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #64748b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+.step-dot.active {
+  background: rgba(255, 190, 11, 0.2);
+  color: #ffbe0b;
+  border-color: #ffbe0b;
+}
+.step-dot.awakened.active {
+  background: linear-gradient(135deg, rgba(255,0,127,0.35), rgba(0,245,212,0.35));
+  color: #00f5d4;
+  border-color: #00f5d4;
+  box-shadow: 0 0 10px rgba(0,245,212,0.5);
+}
+.altar-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.altar-panel.awakened-panel {
+  border-color: rgba(255, 0, 127, 0.4);
+  background: linear-gradient(135deg, rgba(40, 15, 35, 0.65), rgba(20, 15, 40, 0.85));
+}
+.battle-btn.awaken-skill {
+  background: linear-gradient(135deg, #ff007f, #7928ca, #00f5d4);
+  background-size: 200% 200%;
+  animation: rainbowShift 3s ease infinite;
+  color: #fff;
+  border: 1px solid #00f5d4;
+  box-shadow: 0 0 16px rgba(255, 0, 127, 0.55);
+}
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.damage-number.awaken-crit {
+  background: linear-gradient(135deg, #00f5d4, #ff007f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2.3rem;
+  text-shadow: 0 0 15px rgba(0, 245, 212, 0.8);
+}
 
 /* ==============================================
    스토리 퀘스트 UI
@@ -1434,9 +1603,89 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         <div id="jobDisplayStats" style="font-weight: 800; color: var(--cyan); margin-bottom: 18px;">
           ⚔️ 공격력 +25 · 🛡️ 방어력 +10 · ❤️ HP +100 · 💧 MP +20
         </div>
-        <button class="primary" id="spinJobBtn" onclick="spinRandomJob()" style="padding: 14px 32px; font-size: 1.1rem;">
-          🎲 50개 직업 랜덤 각성! (🪙 100 소모)
-        </button>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <button class="primary" id="spinJobBtn" onclick="spinRandomJob()" style="padding: 14px 28px; font-size: 1.05rem;">
+            🎲 50개 직업 랜덤 각성! (🪙 100 소모)
+          </button>
+          <button class="secondary" id="equipJobBtn" onclick="equipCurrentPreviewJob()" style="padding: 14px 24px; font-size: 1.05rem;">
+            ✅ 현재 장착 중
+          </button>
+        </div>
+      </div>
+
+      <!-- 직업 승급 및 초월각성 제단 카드 -->
+      <div class="card job-upgrade-altar" style="background: linear-gradient(135deg, rgba(20, 15, 45, 0.95), rgba(10, 10, 25, 0.98)); border: 2px solid var(--purple); border-radius: 20px; padding: 22px; margin: 20px 0; box-shadow: 0 0 25px rgba(131, 56, 236, 0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
+          <h3 style="margin: 0; font-size: 1.35rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+            <span>⚡ 차원의 직업 승급 & 초월각성 제단</span>
+          </h3>
+          <div id="jobUpgradeBadge" class="upgrade-status-badge">기본 단계</div>
+        </div>
+
+        <p class="desc" style="margin-bottom: 16px;">
+          현재 장착한 직업을 <b>최대 5차 승급</b>하고, 궁극의 <b>초월각성(Transcendent Awakening)</b>에 도달하세요! 직업의 모든 보너스 스탯이 폭발적으로 증폭되고, 초월각성 시 전투 전용 궁극기 <b>[초월: 시공간 붕괴]</b>가 해금됩니다.
+        </p>
+
+        <!-- 현재 장착 직업 요약 -->
+        <div style="display: flex; align-items: center; gap: 16px; background: rgba(255,255,255,0.05); padding: 14px 18px; border-radius: 14px; margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.1);">
+          <div id="altarJobIcon" style="font-size: 38px;">⚔️</div>
+          <div style="flex: 1;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span id="altarJobName" style="font-size: 1.25rem; font-weight: 800; color: #fff;">검성</span>
+              <span id="altarJobRankTag" class="tier-tag tier-전설">기본 직업</span>
+              <span id="altarAwakenedTag" class="awakened-tag" style="display:none;">🌌 초월각성</span>
+            </div>
+            <div id="altarJobStatBonus" style="font-size: 0.88rem; color: var(--cyan); margin-top: 4px; font-weight: 700;">
+              기본 스탯 유지 중
+            </div>
+          </div>
+        </div>
+
+        <!-- 승급 단계 프로그레스 바 (0 ~ 5단계 + 초월) -->
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 6px; font-weight: 700;">
+            <span>승급 진행도</span>
+            <span id="altarRankStepText">0 / 5차 승급 (기본)</span>
+          </div>
+          <div class="upgrade-progress-track">
+            <div id="altarProgressBar" class="upgrade-progress-fill" style="width: 0%;"></div>
+          </div>
+          <div class="upgrade-steps-indicator" id="altarStepsIndicator">
+            <!-- 0, 1차, 2차, 3차, 4차, 5차, 🌌초월 도트들 -->
+          </div>
+        </div>
+
+        <!-- 2분할 액션 박스: 좌측 [직업 승급], 우측 [초월각성] -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+          <!-- 승급 패널 -->
+          <div class="altar-panel" id="altarPromotePanel">
+            <h4 style="margin: 0 0 8px 0; color: var(--gold); display: flex; align-items: center; gap: 6px;">
+              <span>⚡ 직업 승급 (1차 ~ 5차)</span>
+            </h4>
+            <div id="promoteReqText" style="font-size: 0.86rem; color: #e2e8f0; margin-bottom: 12px; min-height: 48px;">
+              다음 승급: <b>1차 승급 [숙련]</b><br>
+              필요: <b>Lv.20 이상</b> · <b>🪙 200 토큰</b><br>
+              효과: <b>직업 스탯 +30% 증폭</b>
+            </div>
+            <button class="primary" id="btnPromoteJob" onclick="promoteCurrentJob()" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 800;">
+              ⚡ 1차 승급하기 (🪙 200)
+            </button>
+          </div>
+
+          <!-- 초월각성 패널 -->
+          <div class="altar-panel awakened-panel" id="altarAwakenPanel">
+            <h4 style="margin: 0 0 8px 0; color: #ff70a6; display: flex; align-items: center; gap: 6px;">
+              <span>🌌 궁극의 초월각성</span>
+            </h4>
+            <div id="awakenReqText" style="font-size: 0.86rem; color: #e2e8f0; margin-bottom: 12px; min-height: 48px;">
+              조건: <b>5차 승급 완료</b> + <b>Lv.300 이상</b> + <b>🪙 10,000 토큰</b><br>
+              효과: <b>직업 스탯 400% (4배) 폭증</b> + <b>초월 궁극기 해금</b>
+            </div>
+            <button class="warning" id="btnAwakenJob" onclick="awakenCurrentJob()" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #ff007f, #7928ca); border: none;">
+              🌌 초월각성 단행! (🪙 10,000)
+            </button>
+          </div>
+        </div>
       </div>
 
       <h3 style="margin: 20px 0 10px 0;">📚 50개 전 직업 도감</h3>
@@ -1548,6 +1797,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
           <button class="battle-btn def" onclick="playerAction('defend')">🛡️ 방어 & 반격</button>
           <button class="battle-btn heal" onclick="playerAction('heal')">🧪 치유 포션 (+40 HP)</button>
           <button class="battle-btn ult" id="ultBtn" onclick="playerAction('ult')">🔥 차원 폭발 (필살기)</button>
+          <button class="battle-btn awaken-skill" id="awakenSkillBtn" onclick="playerAction('awaken')" style="display:none;">🌌 [초월: 시공간 붕괴] (45 MP)</button>
         </div>
 
         <div class="battle-log-box" id="battleLog"></div>
@@ -2127,12 +2377,30 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     "언레어": ["🌱 새싹 탐험가","🪶 첫걸음","🍀 행운의 초보","🗺️ 길잡이 견습","🔦 어둠의 탐색자","🎒 작은 모험가","🧭 방향 감각","🌿 숲의 친구","🪵 캠프 초보","🐾 발자국 추적자","🪨 돌멩이 수집가","🌙 밤길 입문자","☀️ 첫 햇살","💧 샘물 발견자","🍎 간식 수집가","📜 첫 기록","🔔 차원의 종소리","🕯️ 작은 불빛","🌼 들꽃 수집가","🧩 퍼즐 입문자"],
     "레어": ["💎 보물 사냥꾼","⚡ 번개 반응자","🏹 정밀 사냥꾼","🛡️ 수호자 견습","🎯 명중 전문가","🗝️ 비밀열쇠 수집가","🧪 포션 연구가","🧱 성벽 돌파자","🦅 하늘 정찰자","🐺 야생 추적자","🏜️ 사막 방랑자","❄️ 얼음 정찰자","🌋 화산 탐사자","🌌 별빛 여행자","🌊 파도 항해자"],
     "에픽": ["🔥 차원 도전자","🧠 퍼즐 마스터","⚔️ 전투 전략가","🎰 룰렛 마스터","🌀 차원 점프자","👾 몬스터 헌터","🧭 미지의 개척자","💫 별가루 수집가","🛡️ 철벽 방어자","⚔️ 연속 공격자","🏆 승리 수집가","🪐 우주 탐험가","🌠 혜성 추적자","🔮 예언의 탐험가","🧿 수호의 눈"],
-    "슈퍼에픽": ["👑 왕국의 친구","🐉 드래곤 추적자","🌋 화산 정복자","❄️ 빙결 돌파자","🌌 성운 탐험가","⚡ 천둥의 전사","🌀 차원 파괴자","💠 초월의 보물꾼","🔥 불꽃의 지배자","🌙 달빛의 수호자","☄️ 혜성의 기사","🗡️ 차원검의 주인","🧿 고대 유물 사냥꾼","🛡️ 무한 방패","✨ 초월 탐험가"],
-    "전설": ["🏆 보스 브레이커","👑 차원의 왕","🐲 용의 정복자","🌌 우주 지배자","🔱 차원 최강자","⚔️ 전설의 검객","🌀 무한의 개척자","💎 전설의 보물왕","🔥 불멸의 화염","❄️ 영원의 빙결","🌠 별의 지배자","👁️ 차원 감시자","🗝️ 끝의 열쇠","🛡️ 전설의 수호자","🌟 끝없는 탐험가"],
-    "시크릿": ["🤫 숨겨진 차원의 주인","🕳️ 공허를 본 자","👁️ CODEX의 선택","🌑 검은 별의 방문자","🌀 무한 루프 탈출자","🔮 금지된 예언자","🪐 미지의 관찰자","🗝️ 차원의 문지기","🌘 그림자 너머","💫 시간의 흔적","🧿 잊힌 수호자","⚫ 공허의 핵","🌌 무한 성운","👑 시크릿 로드","🌀 경계의 여행자","🕯️ 마지막 불꽃","📡 차원 신호 수신자","🪽 초월의 방문자"],
+    "슈퍼에픽": ["👑 왕국의 친구","🐉 드래곤 추적자","🌋 화산 정복자","❄️ 빙결 돌파자","🌌 성운 탐험가","⚡ 천둥의 전사","🌀 차원 파괴자","💠 초월의 보물꾼","🔥 불꽃의 지배자","🌙 달빛의 수호자","☄️ 혜성의 기사","🗡️ 차원검의 주인","🧿 고대 유물 사냥꾼","🛡️ 무한 방패","✨ 초월 탐험가","⚡ 1차 승급자","⚡ 2차 승급 정예","⚡ 3차 승급 달인"],
+    "전설": ["🏆 보스 브레이커","👑 차원의 왕","🐲 용의 정복자","🌌 우주 지배자","🔱 차원 최강자","⚔️ 전설의 검객","🌀 무한의 개척자","💎 전설의 보물왕","🔥 불멸의 화염","❄️ 영원의 빙결","🌠 별의 지배자","👁️ 차원 감시자","🗝️ 끝의 열쇠","🛡️ 전설의 수호자","🌟 끝없는 탐험가","⚡ 4차 승급 극의","👑 5차 최고승급자"],
+    "시크릿": ["🤫 숨겨진 차원의 주인","🕳️ 공허를 본 자","👁️ CODEX의 선택","🌑 검은 별의 방문자","🌀 무한 루프 탈출자","🔮 금지된 예언자","🪐 미지의 관찰자","🗝️ 차원의 문지기","🌘 그림자 너머","💫 시간의 흔적","🧿 잊힌 수호자","⚫ 공허의 핵","🌌 무한 성운","👑 시크릿 로드","🌀 경계의 여행자","🕯️ 마지막 불꽃","📡 차원 신호 수신자","🪽 초월의 방문자","🌌 차원을 초월한 자","👑 직업 초월 각성자"],
     "리미트": ["🔒 최초의 기록자","🔒 개발자의 친구"]
   };
   const ALL_TITLES = Object.values(TITLE_CATEGORIES).flat();
+
+  // 직업 승급 및 초월각성 데이터
+  const JOB_PROMOTIONS = [
+    { rank: 0, name: "기본", reqLv: 0, reqTokens: 0, bonusMult: 1.0, title: "기본 직업", desc: "직업의 원초적인 힘입니다." },
+    { rank: 1, name: "1차 승급 [숙련]", reqLv: 20, reqTokens: 200, bonusMult: 1.3, title: "⚡ 1차 승급자", desc: "직업 보너스 스탯 +30% 증폭" },
+    { rank: 2, name: "2차 승급 [정예]", reqLv: 50, reqTokens: 600, bonusMult: 1.7, title: "⚡ 2차 승급 정예", desc: "직업 보너스 스탯 +70% 증폭" },
+    { rank: 3, name: "3차 승급 [달인]", reqLv: 100, reqTokens: 1500, bonusMult: 2.2, title: "⚡ 3차 승급 달인", desc: "직업 보너스 스탯 +120% 증폭" },
+    { rank: 4, name: "4차 승급 [극의]", reqLv: 180, reqTokens: 3500, bonusMult: 2.8, title: "⚡ 4차 승급 극의", desc: "직업 보너스 스탯 +180% 증폭" },
+    { rank: 5, name: "5차 승급 [신화]", reqLv: 260, reqTokens: 7000, bonusMult: 3.5, title: "👑 5차 최고승급자", desc: "직업 보너스 스탯 +250% 증폭" }
+  ];
+
+  const AWAKENING_REQ = {
+    reqRank: 5,
+    reqLv: 300,
+    reqTokens: 10000,
+    bonusMult: 4.0,
+    desc: "직업 보너스 스탯 400% (4배) 폭증 + 전투 초월기 [시공간 붕괴] 해금 + 턴당 5% 체력 재생"
+  };
 
   // 6. 상태 관리
   const defaultState = {
@@ -2140,6 +2408,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     exp: 0,
     level: 1,
     jobId: 1, // 기본 검성
+    jobUpgrades: {},
+    unlockedJobs: [1],
     titles: ["🌱 새싹 탐험가"],
     equippedTitle: "🌱 새싹 탐험가",
     avatar: "🧙",
@@ -2176,6 +2446,9 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       if (!Array.isArray(merged.storyCleared)) merged.storyCleared = [];
       if (!merged.questProgress) merged.questProgress = { explore: 0, battle: 0, mini: 0 };
       if (!merged.jobId) merged.jobId = 1;
+      if (!merged.jobUpgrades || typeof merged.jobUpgrades !== "object") merged.jobUpgrades = {};
+      if (!Array.isArray(merged.unlockedJobs)) merged.unlockedJobs = [merged.jobId];
+      if (!merged.unlockedJobs.includes(merged.jobId)) merged.unlockedJobs.push(merged.jobId);
       return merged;
     } catch (e) {
       return Object.assign({}, defaultState);
@@ -2204,6 +2477,23 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     return JOBS.find(j => j.id === state.jobId) || JOBS[0];
   }
 
+  function getJobUpgrade(jobId) {
+    if (!state.jobUpgrades) state.jobUpgrades = {};
+    if (!state.jobUpgrades[jobId]) {
+      state.jobUpgrades[jobId] = { rank: 0, awakened: false };
+    }
+    return state.jobUpgrades[jobId];
+  }
+
+  function getJobFullTitle(job, upg) {
+    if (!upg) upg = getJobUpgrade(job.id);
+    if (upg.awakened) return `🌌 [초월각성] ${job.name}`;
+    if (upg.rank > 0) return `${job.name} (★${upg.rank}차)`;
+    return job.name;
+  }
+
+  let previewJobId = 1;
+
   // 최고 만렙 설정 (Lv.500)
   const MAX_LEVEL = 500;
 
@@ -2213,14 +2503,27 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     return Math.max(50, state.level * 25);
   }
 
-  // 총 캐릭터 스탯 계산 (기본 스탯 + 레벨 스케일링 + 대장간 강화 + 직업 보너스)
+  // 총 캐릭터 스탯 계산 (기본 스탯 + 레벨 스케일링 + 대장간 강화 + 직업 보너스 * 승급/초월 배율)
   function getPlayerStats() {
     const job = getCurrentJob();
-    const baseAtk = 10 + (state.level * 2) + (state.forgeAtk || 0) + job.atk;
-    const baseDef = 3 + Math.floor(state.level * 0.8) + (state.forgeDef || 0) + job.def;
-    const maxHp = 100 + (state.level * 15) + (state.forgeHp || 0) + job.hp;
-    const maxMp = 50 + (state.level * 3) + job.mp;
-    return { atk: baseAtk, def: baseDef, maxHp, maxMp };
+    const upg = getJobUpgrade(job.id);
+    let mult = 1.0;
+    if (upg.awakened) {
+      mult = AWAKENING_REQ.bonusMult;
+    } else if (upg.rank > 0 && JOB_PROMOTIONS[upg.rank]) {
+      mult = JOB_PROMOTIONS[upg.rank].bonusMult;
+    }
+
+    const jobAtk = Math.round(job.atk * mult);
+    const jobDef = Math.round(job.def * mult);
+    const jobHp = Math.round(job.hp * mult);
+    const jobMp = Math.round(job.mp * mult);
+
+    const baseAtk = 10 + (state.level * 2) + (state.forgeAtk || 0) + jobAtk;
+    const baseDef = 3 + Math.floor(state.level * 0.8) + (state.forgeDef || 0) + jobDef;
+    const maxHp = 100 + (state.level * 15) + (state.forgeHp || 0) + jobHp;
+    const maxMp = 50 + (state.level * 3) + jobMp;
+    return { atk: baseAtk, def: baseDef, maxHp, maxMp, jobAtk, jobDef, jobHp, jobMp, mult };
   }
 
   function rand(min, max) {
@@ -2370,8 +2673,20 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (hudExpVal) hudExpVal.textContent = isMaxLv ? "MAX (만렙)" : state.exp + "/" + nextLevelExp();
 
     const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
     const hudJobBadge = document.getElementById("hudJobBadge");
-    if (hudJobBadge) hudJobBadge.textContent = `${job.icon} ${job.name}`;
+    if (hudJobBadge) {
+      if (upg.awakened) {
+        hudJobBadge.innerHTML = `<span class="awakened-sparkle">🌌</span> [초월] ${job.name}`;
+        hudJobBadge.classList.add("job-awakened-glow");
+      } else if (upg.rank > 0) {
+        hudJobBadge.textContent = `${job.icon} ${job.name} (★${upg.rank}차)`;
+        hudJobBadge.classList.remove("job-awakened-glow");
+      } else {
+        hudJobBadge.textContent = `${job.icon} ${job.name}`;
+        hudJobBadge.classList.remove("job-awakened-glow");
+      }
+    }
 
     const hudTitleBadge = document.getElementById("hudTitleBadge");
     if (hudTitleBadge) hudTitleBadge.textContent = state.equippedTitle || "🌱 새싹 탐험가";
@@ -2394,7 +2709,16 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     updateEventBanner();
     if (homeAtk) homeAtk.textContent = stats.atk;
     if (homeDef) homeDef.textContent = stats.def;
-    if (homeJobText) homeJobText.textContent = `${job.icon} ${job.name} (${job.tier})`;
+    if (homeJobText) {
+      if (upg.awakened) {
+        homeJobText.innerHTML = `<span style="color:#00f5d4; font-weight:900;">🌌 [초월각성] ${job.icon} ${job.name} (${job.tier})</span> <span style="font-size:0.82rem; color:var(--gold);">[스탯 400% 폭증]</span>`;
+      } else if (upg.rank > 0) {
+        const bonusPct = Math.round((JOB_PROMOTIONS[upg.rank].bonusMult - 1) * 100);
+        homeJobText.innerHTML = `${job.icon} ${job.name} (${job.tier}) <span style="color:var(--gold); font-weight:800;">[★${upg.rank}차 승급 +${bonusPct}%]</span>`;
+      } else {
+        homeJobText.textContent = `${job.icon} ${job.name} (${job.tier})`;
+      }
+    }
 
     // 퀘스트
     const q1 = document.getElementById("qCheck1");
@@ -2406,6 +2730,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     renderDimensionCards();
     renderStoryChapters();
+    renderJobAltar();
     renderJobsGrid();
     renderTitlesBook();
   }
@@ -2454,17 +2779,43 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         }
         const finalJob = pool[rand(0, pool.length - 1)];
         state.jobId = finalJob.id;
+        if (!state.unlockedJobs) state.unlockedJobs = [1];
+        if (!state.unlockedJobs.includes(finalJob.id)) {
+          state.unlockedJobs.push(finalJob.id);
+        }
+        previewJobId = finalJob.id;
         Sound.levelUp();
 
+        const finalUpg = getJobUpgrade(finalJob.id);
+        let finalMult = 1.0;
+        if (finalUpg.awakened) finalMult = AWAKENING_REQ.bonusMult;
+        else if (finalUpg.rank > 0 && JOB_PROMOTIONS[finalUpg.rank]) finalMult = JOB_PROMOTIONS[finalUpg.rank].bonusMult;
+
+        const finalAtk = Math.round(finalJob.atk * finalMult);
+        const finalDef = Math.round(finalJob.def * finalMult);
+        const finalHp = Math.round(finalJob.hp * finalMult);
+        const finalMp = Math.round(finalJob.mp * finalMult);
+
         if (iconEl) iconEl.textContent = finalJob.icon;
-        if (nameEl) nameEl.textContent = finalJob.name;
+        if (nameEl) {
+          if (finalUpg.awakened) nameEl.innerHTML = `🌌 [초월각성] ${escapeHtml(finalJob.name)}`;
+          else if (finalUpg.rank > 0) nameEl.innerHTML = `${escapeHtml(finalJob.name)} <small style="color:var(--gold);">(★${finalUpg.rank}차)</small>`;
+          else nameEl.textContent = finalJob.name;
+        }
         if (badgeEl) {
           badgeEl.textContent = finalJob.tier;
           badgeEl.className = "tier-tag tier-" + finalJob.tier;
         }
         if (descEl) descEl.textContent = finalJob.desc;
         if (statsEl) {
-          statsEl.innerHTML = `⚔️ 공격력 +${finalJob.atk} · 🛡️ 방어력 +${finalJob.def} · ❤️ HP +${finalJob.hp} · 💧 MP +${finalJob.mp}`;
+          statsEl.innerHTML = `⚔️ 공격력 +${finalAtk} · 🛡️ 방어력 +${finalDef} · ❤️ HP +${finalHp} · 💧 MP +${finalMp}`;
+        }
+
+        const equipBtn = document.getElementById("equipJobBtn");
+        if (equipBtn) {
+          equipBtn.textContent = "✅ 현재 장착 중";
+          equipBtn.disabled = true;
+          equipBtn.className = "secondary";
         }
 
         state.lastEvent = `🔮 신규 직업 [${finalJob.name}] 각성!`;
@@ -2480,12 +2831,33 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const current = getCurrentJob();
     container.innerHTML = JOBS.map(j => {
       const isCur = j.id === current.id;
+      const upg = getJobUpgrade(j.id);
+      let mult = 1.0;
+      if (upg.awakened) mult = AWAKENING_REQ.bonusMult;
+      else if (upg.rank > 0 && JOB_PROMOTIONS[upg.rank]) mult = JOB_PROMOTIONS[upg.rank].bonusMult;
+
+      const atk = Math.round(j.atk * mult);
+      const def = Math.round(j.def * mult);
+
+      let upgBadge = "";
+      if (upg.awakened) {
+        upgBadge = `<div class="mini-awakened-badge">🌌 초월</div>`;
+      } else if (upg.rank > 0) {
+        upgBadge = `<div class="mini-rank-badge">★${upg.rank}차</div>`;
+      }
+
+      const isUnlocked = state.unlockedJobs && state.unlockedJobs.includes(j.id);
+
       return `
-        <div class="job-mini-card ${isCur ? 'current' : ''}" onclick="selectJobPreview(${j.id})">
+        <div class="job-mini-card ${isCur ? 'current' : ''} ${upg.awakened ? 'awakened-card' : ''}" onclick="selectJobPreview(${j.id})">
+          ${upgBadge}
           <div style="font-size: 28px;">${j.icon}</div>
           <div style="font-weight: 800; font-size: 0.95rem; margin: 4px 0;">${escapeHtml(j.name)}</div>
           <div class="tier-tag tier-${j.tier}" style="font-size:0.7rem; padding:1px 6px;">${j.tier}</div>
-          <div style="font-size:0.75rem; color:var(--cyan); margin-top:4px;">+${j.atk} ATK / +${j.def} DEF</div>
+          <div style="font-size:0.75rem; color:${upg.awakened ? '#00f5d4' : 'var(--cyan)'}; margin-top:4px;">
+            +${atk} ATK / +${def} DEF
+          </div>
+          ${isCur ? '<div style="font-size:0.7rem; color:var(--gold); font-weight:800; margin-top:2px;">[장착 중]</div>' : isUnlocked ? '<div style="font-size:0.68rem; color:#a2d2ff; margin-top:2px;">보유 중</div>' : ''}
         </div>
       `;
     }).join("");
@@ -2495,17 +2867,323 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     Sound.click();
     const j = JOBS.find(item => item.id === id);
     if (!j) return;
+    previewJobId = id;
+    const upg = getJobUpgrade(j.id);
+    let mult = 1.0;
+    if (upg.awakened) mult = AWAKENING_REQ.bonusMult;
+    else if (upg.rank > 0 && JOB_PROMOTIONS[upg.rank]) mult = JOB_PROMOTIONS[upg.rank].bonusMult;
+
+    const atk = Math.round(j.atk * mult);
+    const def = Math.round(j.def * mult);
+    const hp = Math.round(j.hp * mult);
+    const mp = Math.round(j.mp * mult);
+
     const iconEl = document.getElementById("jobDisplayIcon");
     const nameEl = document.getElementById("jobDisplayName");
     const badgeEl = document.getElementById("jobTierBadge");
     const statsEl = document.getElementById("jobDisplayStats");
     const descEl = document.getElementById("jobDisplayDesc");
     if (iconEl) iconEl.textContent = j.icon;
-    if (nameEl) nameEl.textContent = j.name;
-    if (badgeEl) { badgeEl.textContent = j.tier; badgeEl.className = "tier-tag tier-" + j.tier; }
+    if (nameEl) {
+      if (upg.awakened) nameEl.innerHTML = `🌌 [초월각성] ${escapeHtml(j.name)}`;
+      else if (upg.rank > 0) nameEl.innerHTML = `${escapeHtml(j.name)} <small style="color:var(--gold); font-size:0.9rem;">(★${upg.rank}차)</small>`;
+      else nameEl.textContent = j.name;
+    }
+    if (badgeEl) {
+      if (upg.awakened) {
+        badgeEl.textContent = "🌌 초월각성";
+        badgeEl.className = "tier-tag tier-신화";
+      } else {
+        badgeEl.textContent = j.tier;
+        badgeEl.className = "tier-tag tier-" + j.tier;
+      }
+    }
     if (descEl) descEl.textContent = j.desc;
-    if (statsEl) statsEl.innerHTML = `⚔️ 공격력 +${j.atk} · 🛡️ 방어력 +${j.def} · ❤️ HP +${j.hp} · 💧 MP +${j.mp}`;
+    if (statsEl) {
+      let statExtra = "";
+      if (upg.awakened) statExtra = `<br><span style="color:#00f5d4; font-size:0.85rem;">★초월각성 4배 스탯 적용</span>`;
+      else if (upg.rank > 0) statExtra = `<br><span style="color:var(--gold); font-size:0.85rem;">★${upg.rank}차 승급 (+${Math.round((mult-1)*100)}% 증폭 적용)</span>`;
+      statsEl.innerHTML = `⚔️ 공격력 +${atk} · 🛡️ 방어력 +${def} · ❤️ HP +${hp} · 💧 MP +${mp} ${statExtra}`;
+    }
+
+    const equipBtn = document.getElementById("equipJobBtn");
+    if (equipBtn) {
+      const isCur = j.id === state.jobId;
+      const isUnlocked = state.unlockedJobs && state.unlockedJobs.includes(j.id);
+      if (isCur) {
+        equipBtn.textContent = "✅ 현재 장착 중";
+        equipBtn.disabled = true;
+        equipBtn.className = "secondary";
+      } else if (isUnlocked) {
+        equipBtn.textContent = `🔄 【${j.name}】 장착하기`;
+        equipBtn.disabled = false;
+        equipBtn.className = "warning";
+      } else {
+        equipBtn.textContent = "🔒 미해금 (룰렛 각성 필요)";
+        equipBtn.disabled = true;
+        equipBtn.className = "secondary";
+      }
+    }
   };
+
+  window.equipCurrentPreviewJob = function() {
+    Sound.click();
+    if (!previewJobId) return;
+    if (previewJobId === state.jobId) return;
+    if (!state.unlockedJobs || !state.unlockedJobs.includes(previewJobId)) {
+      Sound.hit();
+      alert("🔒 아직 해금되지 않은 직업입니다! 룰렛으로 먼저 각성하세요.");
+      return;
+    }
+    state.jobId = previewJobId;
+    const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
+    Sound.levelUp();
+    state.lastEvent = `직업을 [${getJobFullTitle(job, upg)}]으로 변경 장착했습니다.`;
+    save();
+    selectJobPreview(previewJobId);
+    showResultModal(true, `🔄 직업 장착 완료!\n\n【 ${job.icon} ${getJobFullTitle(job, upg)} 】을(를) 장착했습니다!\n캐릭터 스탯이 실시간 갱신되었습니다.`);
+  };
+
+  window.promoteCurrentJob = function() {
+    const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
+
+    if (upg.awakened) {
+      Sound.hit();
+      alert("🌌 이미 이 직업은 최고 경지인 [초월각성] 상태입니다!");
+      return;
+    }
+
+    if (upg.rank >= 5) {
+      Sound.hit();
+      alert("⚡ 이미 최고 승급 단계인 5차 승급 상태입니다!\n우측의 [🌌 초월각성 단행!]에 도전하세요!");
+      return;
+    }
+
+    const nextRank = upg.rank + 1;
+    const promoData = JOB_PROMOTIONS[nextRank];
+    if (!promoData) return;
+
+    if (state.level < promoData.reqLv) {
+      Sound.hit();
+      alert(`❌ 레벨이 부족합니다!\n${nextRank}차 승급 필요 레벨: Lv.${promoData.reqLv} (현재 레벨: Lv.${state.level})`);
+      return;
+    }
+
+    const infRoulette = isInfRouletteEventActive();
+    if (!infRoulette && state.tokens < promoData.reqTokens) {
+      Sound.hit();
+      alert(`❌ 토큰이 부족합니다!\n${nextRank}차 승급 필요 토큰: 🪙 ${promoData.reqTokens.toLocaleString()} (현재 토큰: 🪙 ${state.tokens.toLocaleString()})`);
+      return;
+    }
+
+    if (!infRoulette) {
+      state.tokens -= promoData.reqTokens;
+    }
+
+    upg.rank = nextRank;
+    Sound.levelUp();
+
+    const rankTitles = [
+      "",
+      "⚡ 1차 승급자",
+      "⚡ 2차 승급 정예",
+      "⚡ 3차 승급 달인",
+      "⚡ 4차 승급 극의",
+      "👑 5차 최고승급자"
+    ];
+    const newTitle = rankTitles[nextRank];
+    if (newTitle && !state.titles.includes(newTitle)) {
+      state.titles.push(newTitle);
+    }
+
+    state.lastEvent = `⚡ 직업 [${job.name}] ${nextRank}차 승급 완료!`;
+    save();
+    selectJobPreview(job.id);
+
+    showResultModal(true, `⚡ 직업 승급 성공!\n\n【 ${job.icon} ${job.name} 】\n단계: ${promoData.name}\n효과: ${promoData.desc}\n\n새로운 칭호 [${newTitle}]을(를) 획득했습니다!\n스탯 증폭이 실시간 반영되었습니다.`);
+  };
+
+  window.awakenCurrentJob = function() {
+    const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
+
+    if (upg.awakened) {
+      Sound.hit();
+      alert("🌌 이미 이 직업은 궁극의 [초월각성]을 달성했습니다!");
+      return;
+    }
+
+    if (upg.rank < 5) {
+      Sound.hit();
+      alert(`❌ 먼저 5차 승급을 완료해야 초월각성을 시도할 수 있습니다!\n(현재 승급 단계: ${upg.rank}/5차)`);
+      return;
+    }
+
+    if (state.level < AWAKENING_REQ.reqLv) {
+      Sound.hit();
+      alert(`❌ 레벨이 부족합니다!\n초월각성 필요 레벨: Lv.${AWAKENING_REQ.reqLv} 이상 (현재: Lv.${state.level})\n6차원 수준의 초월자만 도달할 수 있습니다.`);
+      return;
+    }
+
+    const infRoulette = isInfRouletteEventActive();
+    if (!infRoulette && state.tokens < AWAKENING_REQ.reqTokens) {
+      Sound.hit();
+      alert(`❌ 토큰이 부족합니다!\n초월각성 필요 토큰: 🪙 ${AWAKENING_REQ.reqTokens.toLocaleString()} (현재: 🪙 ${state.tokens.toLocaleString()})`);
+      return;
+    }
+
+    if (!infRoulette) {
+      state.tokens -= AWAKENING_REQ.reqTokens;
+    }
+
+    upg.awakened = true;
+    Sound.win();
+
+    const t1 = "🌌 차원을 초월한 자";
+    const t2 = "👑 직업 초월 각성자";
+    if (!state.titles.includes(t1)) state.titles.push(t1);
+    if (!state.titles.includes(t2)) state.titles.push(t2);
+
+    state.lastEvent = `🌌 직업 [${job.name}] 초월각성 달성!`;
+    save();
+    selectJobPreview(job.id);
+
+    showResultModal(true, `🌌 [궁극의 초월각성 달성!]\n\n축하합니다! 【 ${job.icon} ${job.name} 】이(가) 차원의 법칙을 깨부수고 궁극의 초월각성에 도달했습니다!\n\n✨ 효과:\n• 직업 스탯 400% (4배) 폭발적 증폭!\n• 전투 전용 초월기 [시공간 붕괴] 해금!\n• 전투 중 매 턴 5% 자동 체력 재생!\n• 초월자 전용 네온 오라 발동!\n\n칭호 [${t1}], [${t2}]을(를) 획득했습니다!`);
+  };
+
+  function renderJobAltar() {
+    const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
+
+    const altarIcon = document.getElementById("altarJobIcon");
+    const altarName = document.getElementById("altarJobName");
+    const altarRankTag = document.getElementById("altarJobRankTag");
+    const altarAwakenedTag = document.getElementById("altarAwakenedTag");
+    const altarBonus = document.getElementById("altarJobStatBonus");
+    const altarStatusBadge = document.getElementById("jobUpgradeBadge");
+
+    if (altarIcon) {
+      altarIcon.textContent = job.icon;
+      if (upg.awakened) altarIcon.classList.add("awakened-glow");
+      else altarIcon.classList.remove("awakened-glow");
+    }
+    if (altarName) altarName.textContent = job.name;
+
+    if (altarRankTag) {
+      altarRankTag.textContent = upg.rank > 0 ? `${upg.rank}차 승급` : "기본 직업";
+      altarRankTag.className = "tier-tag tier-" + (upg.rank >= 5 ? "신화" : upg.rank >= 3 ? "전설" : "희귀");
+    }
+
+    if (altarAwakenedTag) {
+      altarAwakenedTag.style.display = upg.awakened ? "inline-block" : "none";
+    }
+
+    if (altarBonus) {
+      if (upg.awakened) {
+        altarBonus.innerHTML = `<span style="color:#00f5d4; font-weight:900;">🌌 초월각성 상태: 직업 보너스 스탯 400% (4배) 증폭 중!</span>`;
+      } else if (upg.rank > 0) {
+        const bonusPct = Math.round((JOB_PROMOTIONS[upg.rank].bonusMult - 1) * 100);
+        altarBonus.innerHTML = `<span style="color:var(--gold);">⚡ ${upg.rank}차 승급: 직업 보너스 스탯 +${bonusPct}% 증폭 중</span>`;
+      } else {
+        altarBonus.innerHTML = `<span style="color:#94a3b8;">기본 상태: 직업 승급을 진행하여 스탯을 대폭 강화하세요.</span>`;
+      }
+    }
+
+    if (altarStatusBadge) {
+      if (upg.awakened) {
+        altarStatusBadge.textContent = "🌌 초월각성 완료";
+        altarStatusBadge.className = "upgrade-status-badge awakened";
+      } else if (upg.rank >= 5) {
+        altarStatusBadge.textContent = "👑 5차 최고승급";
+        altarStatusBadge.className = "upgrade-status-badge max";
+      } else if (upg.rank > 0) {
+        altarStatusBadge.textContent = `⚡ ${upg.rank}차 승급`;
+        altarStatusBadge.className = "upgrade-status-badge ranked";
+      } else {
+        altarStatusBadge.textContent = "기본 단계";
+        altarStatusBadge.className = "upgrade-status-badge";
+      }
+    }
+
+    const pBar = document.getElementById("altarProgressBar");
+    const rankStepText = document.getElementById("altarRankStepText");
+    const stepsIndicator = document.getElementById("altarStepsIndicator");
+
+    let progressPct = 0;
+    if (upg.awakened) {
+      progressPct = 100;
+      if (rankStepText) rankStepText.textContent = "🌌 초월각성 완료 (MAX)";
+    } else {
+      progressPct = (upg.rank / 6) * 100;
+      if (rankStepText) rankStepText.textContent = `${upg.rank} / 5차 승급 ${upg.rank >= 5 ? "(초월각성 대기)" : ""}`;
+    }
+    if (pBar) pBar.style.width = progressPct + "%";
+
+    if (stepsIndicator) {
+      let dotsHtml = "";
+      for (let i = 0; i <= 5; i++) {
+        const active = upg.rank >= i;
+        dotsHtml += `<span class="step-dot ${active ? 'active' : ''}">${i === 0 ? '기본' : i + '차'}</span>`;
+      }
+      dotsHtml += `<span class="step-dot awakened ${upg.awakened ? 'active' : ''}">🌌초월</span>`;
+      stepsIndicator.innerHTML = dotsHtml;
+    }
+
+    const promoReqText = document.getElementById("promoteReqText");
+    const btnPromote = document.getElementById("btnPromoteJob");
+    if (upg.awakened) {
+      if (promoReqText) promoReqText.innerHTML = `🌌 <b>궁극의 초월각성 완료!</b><br>직업의 모든 잠재력이 개방되어 최고의 스탯을 발휘 중입니다.`;
+      if (btnPromote) { btnPromote.disabled = true; btnPromote.textContent = "⚡ 최고 경지 도달"; }
+    } else if (upg.rank >= 5) {
+      if (promoReqText) promoReqText.innerHTML = `👑 <b>5차 최고 승급 완료!</b><br>오른쪽 제단에서 <b>[🌌 초월각성]</b>을 단행하세요!`;
+      if (btnPromote) { btnPromote.disabled = true; btnPromote.textContent = "⚡ 5차 최고승급 완료"; }
+    } else {
+      const nextRank = upg.rank + 1;
+      const nextPromo = JOB_PROMOTIONS[nextRank];
+      const canLv = state.level >= nextPromo.reqLv;
+      const canTokens = isInfRouletteEventActive() || state.tokens >= nextPromo.reqTokens;
+      const bonusPct = Math.round((nextPromo.bonusMult - 1) * 100);
+
+      if (promoReqText) {
+        promoReqText.innerHTML = `
+          다음 목표: <b>${nextPromo.name}</b><br>
+          조건: <b style="color:${canLv?'var(--cyan)':'#ff0054'}">Lv.${nextPromo.reqLv} 이상 (현재: ${state.level})</b> · 
+          <b style="color:${canTokens?'var(--gold)':'#ff0054'}">🪙 ${nextPromo.reqTokens.toLocaleString()} 토큰 (보유: ${state.tokens.toLocaleString()})</b><br>
+          효과: <b>직업 스탯 +${bonusPct}% 증폭</b>
+        `;
+      }
+      if (btnPromote) {
+        btnPromote.disabled = false;
+        btnPromote.textContent = `⚡ ${nextRank}차 승급하기 (🪙 ${nextPromo.reqTokens.toLocaleString()})`;
+      }
+    }
+
+    const awakenReqText = document.getElementById("awakenReqText");
+    const btnAwaken = document.getElementById("btnAwakenJob");
+    if (upg.awakened) {
+      if (awakenReqText) awakenReqText.innerHTML = `🌌 <b>초월각성 활성화됨!</b><br>전투 전용 초월기 [시공간 붕괴]와 턴당 5% 체력 재생 패시브가 작동 중입니다.`;
+      if (btnAwaken) { btnAwaken.disabled = true; btnAwaken.textContent = "🌌 초월각성 완료"; }
+    } else {
+      const canRank = upg.rank >= 5;
+      const canLv = state.level >= AWAKENING_REQ.reqLv;
+      const canTokens = isInfRouletteEventActive() || state.tokens >= AWAKENING_REQ.reqTokens;
+
+      if (awakenReqText) {
+        awakenReqText.innerHTML = `
+          조건 1: <b style="color:${canRank?'var(--cyan)':'#ff0054'}">5차 승급 달성 (${upg.rank}/5차)</b><br>
+          조건 2: <b style="color:${canLv?'var(--cyan)':'#ff0054'}">Lv.${AWAKENING_REQ.reqLv} 이상 (현재: ${state.level})</b><br>
+          조건 3: <b style="color:${canTokens?'var(--gold)':'#ff0054'}">🪙 ${AWAKENING_REQ.reqTokens.toLocaleString()} 토큰 (보유: ${state.tokens.toLocaleString()})</b><br>
+          효과: <b>직업 스탯 400% (4배) 폭증 + 전용 초월기</b>
+        `;
+      }
+      if (btnAwaken) {
+        btnAwaken.disabled = false;
+        btnAwaken.textContent = `🌌 초월각성 단행! (🪙 ${AWAKENING_REQ.reqTokens.toLocaleString()})`;
+      }
+    }
+  }
 
   // 10. 차원 카드 렌더링 (6차원 Lv.300+ 강조)
   function renderDimensionCards() {
@@ -2755,6 +3433,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (pAtkEl) pAtkEl.textContent = stats.atk;
     if (pDefEl) pDefEl.textContent = stats.def;
     if (eAtkEl) eAtkEl.textContent = combat.atk;
+
+    const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
+    const awakenBtn = document.getElementById("awakenSkillBtn");
+    if (awakenBtn) {
+      awakenBtn.style.display = upg.awakened ? "inline-block" : "none";
+    }
   }
 
   window.startBattle = function(customEnemy) {
@@ -2787,6 +3472,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (log) log.innerHTML = "";
 
     combatLog(`⚔️ <b>${combat.name}</b>이(가) 나타났습니다! 전투를 시작합니다.`);
+    const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
+    if (upg.awakened) {
+      combatLog(`🌌 <b>[초월각성의 위엄]</b> 차원의 초월 아우라가 휘감기며, 매 턴 체력 재생과 전용 초월기 [시공간 붕괴]가 활성화됩니다!`);
+    }
     syncBattleUI();
   };
 
@@ -2810,14 +3500,18 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       Sound.hit();
       if (pIcon) { pIcon.classList.add("attack-lunge"); setTimeout(() => pIcon.classList.remove("attack-lunge"), 250); }
       const isLuck = isLuckEventActive();
-      const isCrit = isLuck ? (Math.random() < 0.75) : (Math.random() < 0.28);
+      const job = getCurrentJob();
+      const upg = getJobUpgrade(job.id);
+      const critChance = upg.awakened ? (isLuck ? 0.90 : 0.55) : (isLuck ? 0.75 : 0.28);
+      const critMult = upg.awakened ? (isLuck ? 2.8 : 2.4) : (isLuck ? 2.2 : 1.9);
+      const isCrit = Math.random() < critChance;
       const baseDmg = stats.atk + rand(0, 6);
-      const dmg = isCrit ? Math.round(baseDmg * (isLuck ? 2.2 : 1.9)) : baseDmg;
+      const dmg = isCrit ? Math.round(baseDmg * critMult) : baseDmg;
       combat.hp = Math.max(0, combat.hp - dmg);
 
       if (eIcon) { eIcon.classList.add("hit-flash"); setTimeout(() => eIcon.classList.remove("hit-flash"), 300); }
-      spawnDamageNumber(eIcon, (isCrit ? "💥 " : "-") + dmg, isCrit ? "crit" : "player-dmg");
-      combatLog(`🗡️ 탐험가의 공격! ${isCrit ? '<b>[치명타!]</b> ' : ''}<b>${dmg}</b> 피해.`);
+      spawnDamageNumber(eIcon, (isCrit ? (upg.awakened ? "🌌 " : "💥 ") : "-") + dmg, isCrit ? (upg.awakened ? "awaken-crit" : "crit") : "player-dmg");
+      combatLog(`🗡️ 탐험가의 공격! ${isCrit ? (upg.awakened ? '<b>[초월 치명타!]</b> ' : '<b>[치명타!]</b> ') : ''}<b>${dmg}</b> 피해.`);
 
     } else if (act === "thunder") {
       if (currentMp < 15) { alert("💧 MP가 부족합니다! (필요 MP: 15)"); return; }
@@ -2848,6 +3542,19 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       combat.hp = Math.max(0, combat.hp - dmg);
       spawnDamageNumber(eIcon, "🔥 -" + dmg, "crit");
       combatLog(`🔥 <b>[차원 폭발]</b> 시전!! <b>${dmg}</b> 극대 피해!`);
+
+    } else if (act === "awaken") {
+      const job = getCurrentJob();
+      const upg = getJobUpgrade(job.id);
+      if (!upg.awakened) { alert("🌌 초월각성을 달성한 직업만 사용할 수 있는 궁극기입니다!"); return; }
+      if (currentMp < 45) { alert("💧 초월기를 쓰려면 MP가 45 필요합니다! (현재 MP: " + currentMp + ")"); return; }
+      currentMp -= 45;
+      Sound.crit();
+      const dmg = Math.round(stats.atk * 5.5 + 150);
+      combat.hp = Math.max(0, combat.hp - dmg);
+      if (eIcon) { eIcon.classList.add("hit-flash"); setTimeout(() => eIcon.classList.remove("hit-flash"), 400); }
+      spawnDamageNumber(eIcon, "🌌 CRITICAL -" + dmg, "awaken-crit");
+      combatLog(`🌌 <b>[초월: 시공간 붕괴]</b> 발동!! 시공간이 산산조각 나며 <b>${dmg}</b>의 초월적 치명타 피해를 입혔습니다!`);
     }
 
     syncBattleUI();
@@ -2887,7 +3594,17 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     save();
 
     if (combat.hp <= 0) { endBattleWin(); return; }
-    if (currentHp <= 0) { endBattleLose(); }
+    if (currentHp <= 0) { endBattleLose(); return; }
+
+    const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
+    if (upg.awakened && currentHp > 0) {
+      const regenAmt = Math.max(1, Math.round(stats.maxHp * 0.05));
+      currentHp = Math.min(stats.maxHp, currentHp + regenAmt);
+      if (pIcon) spawnDamageNumber(pIcon, "+" + regenAmt, "heal");
+      combatLog(`🌌 <b>[초월자의 위엄]</b> 영구 재생 효과로 체력 <b>+${regenAmt}</b> 자동 회복!`);
+      syncBattleUI();
+    }
   }
 
   function endBattleWin() {
@@ -3498,7 +4215,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (accU) accU.textContent = user.username;
     if (accN) accN.textContent = user.nickname;
     if (accL) accL.textContent = state.level >= MAX_LEVEL ? `Lv.${state.level} (만렙)` : `Lv.${state.level}`;
-    if (accJ) accJ.textContent = `${job.icon} ${job.name} (${job.tier})`;
+    if (accJ) accJ.textContent = `${job.icon} ${getJobFullTitle(job, getJobUpgrade(job.id))} (${job.tier})`;
     if (accT) accT.textContent = `🪙 ${state.tokens.toLocaleString()}`;
   }
 
