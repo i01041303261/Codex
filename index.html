@@ -2153,6 +2153,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         </div>
       </div>
 
+      <div id="accAdminBadgeBox" style="display:none; margin-bottom:14px; padding:10px 12px; background:rgba(255,209,102,0.12); border:1px solid rgba(255,209,102,0.45); border-radius:10px;">
+        <div style="color:var(--gold); font-weight:800; font-size:0.85rem; margin-bottom:4px;">👑 개발자 어드민 특권 활성화</div>
+        <div style="font-size:0.78rem; color:var(--text-sub); margin-bottom:6px;">리미트 한정 칭호 2종 획득 완료:</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge" style="background:rgba(255,209,102,0.2); color:#ffd166; border:1px solid rgba(255,209,102,0.5); font-size:0.75rem; padding:3px 8px; border-radius:12px;">🔒 최초의 기록자</span>
+          <span class="badge" style="background:rgba(255,0,110,0.2); color:#ff70a6; border:1px solid rgba(255,0,110,0.5); font-size:0.75rem; padding:3px 8px; border-radius:12px;">🔒 개발자의 친구</span>
+        </div>
+      </div>
+
       <div style="display: flex; gap: 8px; margin-bottom: 12px;">
         <button type="button" class="secondary" style="flex: 1; padding: 10px; font-size: 0.88rem;" onclick="exportSaveCode()">📋 세이브 복사</button>
         <button type="button" class="secondary" style="flex: 1; padding: 10px; font-size: 0.88rem;" onclick="importSaveCode()">📥 세이브 복원</button>
@@ -2173,7 +2182,40 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   function getUsersDB() {
     try {
-      return JSON.parse(localStorage.getItem(AUTH_USERS_KEY) || "{}");
+      const db = JSON.parse(localStorage.getItem(AUTH_USERS_KEY) || "{}");
+      Object.keys(db).forEach(k => {
+        if ((k.toUpperCase() === "ADMIN" || k === "어드민") && db[k]) {
+          if (!db[k].saveData) {
+            db[k].saveData = {
+              tokens: 10000,
+              exp: 0,
+              level: 500,
+              jobId: 1,
+              jobUpgrades: {},
+              unlockedJobs: [1],
+              titles: ["🌱 새싹 탐험가", "🔒 최초의 기록자", "🔒 개발자의 친구"],
+              equippedTitle: "🔒 개발자의 친구",
+              avatar: "👑",
+              zones: ["🌳 에메랄드 초원"],
+              dailyDone: false,
+              questProgress: { explore: 0, battle: 0, mini: 0 },
+              storyCleared: [],
+              lastEvent: "어드민 차원에 입장했습니다.",
+              roulette: { dimension: 1, tries: 10 },
+              lastRouletteRefill: null,
+              forgeAtk: 0,
+              forgeDef: 0,
+              forgeHp: 0
+            };
+          } else {
+            if (!Array.isArray(db[k].saveData.titles)) db[k].saveData.titles = ["🌱 새싹 탐험가"];
+            ["🔒 최초의 기록자", "🔒 개발자의 친구"].forEach(t => {
+              if (!db[k].saveData.titles.includes(t)) db[k].saveData.titles.push(t);
+            });
+          }
+        }
+      });
+      return db;
     } catch (e) {
       return {};
     }
@@ -2524,6 +2566,18 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       if (!merged.jobUpgrades || typeof merged.jobUpgrades !== "object") merged.jobUpgrades = {};
       if (!Array.isArray(merged.unlockedJobs)) merged.unlockedJobs = [merged.jobId];
       if (!merged.unlockedJobs.includes(merged.jobId)) merged.unlockedJobs.push(merged.jobId);
+
+      // 어드민 계정(ADMIN/어드민) 감지 시 리미트 칭호 2종 상시 자동 획득
+      const currentU = getCurrentUsername();
+      const isAdminAccount = (currentU && (currentU.toUpperCase() === "ADMIN" || currentU === "어드민")) ||
+                             (user && user.username && (user.username.toUpperCase() === "ADMIN" || user.username === "어드민"));
+      if (isAdminAccount) {
+        const limitTitles = ["🔒 최초의 기록자", "🔒 개발자의 친구"];
+        limitTitles.forEach(t => {
+          if (!merged.titles.includes(t)) merged.titles.push(t);
+        });
+      }
+
       return merged;
     } catch (e) {
       return Object.assign({}, defaultState);
@@ -2536,6 +2590,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       if (username) {
         const db = getUsersDB();
         if (db[username]) {
+          if (username.toUpperCase() === "ADMIN" || username === "어드민") {
+            const limitTitles = ["🔒 최초의 기록자", "🔒 개발자의 친구"];
+            limitTitles.forEach(t => {
+              if (!state.titles.includes(t)) state.titles.push(t);
+            });
+          }
           db[username].saveData = state;
           db[username].lastLogin = new Date().toISOString();
           saveUsersDB(db);
@@ -4076,8 +4136,30 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }).join("");
   }
 
-  window.equipTitle = function(title) {
+  window.equipTitle = async function(title) {
     if (!state.titles.includes(title)) {
+      // 리미트 칭호인 경우 어드민 암호 인증을 통해 즉시 해금 제공
+      if (TITLE_CATEGORIES["리미트"] && TITLE_CATEGORIES["리미트"].includes(title)) {
+        Sound.click();
+        const pw = prompt("🔒 [리미트 칭호] 개발자 어드민 전용 칭호입니다.\n관리자 암호를 입력하시면 칭호 2종이 즉시 해금됩니다:");
+        if (pw === null) return;
+        const ok = await checkAdminAuth(pw);
+        if (ok) {
+          TITLE_CATEGORIES["리미트"].forEach(lt => {
+            if (!state.titles.includes(lt)) state.titles.push(lt);
+          });
+          state.equippedTitle = title;
+          save();
+          Sound.win();
+          showResultModal(true, `👑 [리미트 칭호 2종 해금 완료!]\n어드민 보안 인증 성공!\n【 🔒 최초의 기록자 】\n【 🔒 개발자의 친구 】\n리미트 칭호 2종이 모두 지급 및 장착되었습니다!`);
+          renderTitlesBook();
+          return;
+        } else {
+          Sound.hit();
+          alert("❌ 관리자 보안 암호가 일치하지 않습니다.");
+          return;
+        }
+      }
       Sound.hit();
       alert("🔒 아직 획득하지 않은 칭호입니다!");
       return;
@@ -4417,9 +4499,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (accL) accL.textContent = state.level >= MAX_LEVEL ? `Lv.${state.level} (만렙)` : `Lv.${state.level}`;
     if (accJ) accJ.textContent = `${job.icon} ${getJobFullTitle(job, getJobUpgrade(job.id))} (${job.tier})`;
     if (accT) accT.textContent = `🪙 ${state.tokens.toLocaleString()}`;
+
+    const isAdmin = (user.username && (user.username.toUpperCase() === "ADMIN" || user.username === "어드민"));
+    const adminBox = document.getElementById("accAdminBadgeBox");
+    if (adminBox) {
+      adminBox.style.display = isAdmin ? "block" : "none";
+    }
   }
 
-  window.handleLoginSubmit = function(e) {
+  window.handleLoginSubmit = async function(e) {
     if (e && e.preventDefault) e.preventDefault();
     clearAuthMsgs();
     const uInput = document.getElementById("loginUsername");
@@ -4435,11 +4523,48 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }
 
     const db = getUsersDB();
-    const user = db[username];
-    if (!user || user.password !== password) {
+    let user = db[username];
+
+    const isAdminId = username.toUpperCase() === "ADMIN" || username === "어드민";
+    if (isAdminId) {
+      const isMasterPw = await checkAdminAuth(password);
+      if (isMasterPw) {
+        if (!user) {
+          user = {
+            username: username,
+            nickname: "👑 개발자 어드민",
+            password: password,
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            saveData: Object.assign({}, defaultState, {
+              tokens: 10000,
+              level: 500,
+              titles: ["🌱 새싹 탐험가", "🔒 최초의 기록자", "🔒 개발자의 친구"],
+              equippedTitle: "🔒 개발자의 친구"
+            })
+          };
+          db[username] = user;
+          saveUsersDB(db);
+        }
+      }
+    }
+
+    const isPwMatch = user && user.password === password;
+    const isAdminAuthSuccess = isAdminId && await checkAdminAuth(password);
+
+    if (!user || (!isPwMatch && !isAdminAuthSuccess)) {
       if (msgEl) { msgEl.textContent = "❌ 아이디 또는 비밀번호가 일치하지 않습니다."; msgEl.className = "auth-msg error"; }
       Sound.hit();
       return;
+    }
+
+    if (isAdminId) {
+      if (!user.saveData) user.saveData = Object.assign({}, defaultState);
+      if (!Array.isArray(user.saveData.titles)) user.saveData.titles = ["🌱 새싹 탐험가"];
+      ["🔒 최초의 기록자", "🔒 개발자의 친구"].forEach(t => {
+        if (!user.saveData.titles.includes(t)) user.saveData.titles.push(t);
+      });
+      saveUsersDB(db);
     }
 
     setSession(username);
@@ -4452,7 +4577,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     closeAuthModal();
     if (uInput) uInput.value = "";
     if (pInput) pInput.value = "";
-    showResultModal(true, `🎉 [${user.nickname}]님, 환영합니다!\n성공적으로 로그인되었습니다.\n차원의 모험을 이어서 시작하세요!`);
+    const adminWelcome = isAdminId ? "\n👑 [어드민 특권] 리미트 칭호 2종(최초의 기록자, 개발자의 친구)이 활성화되었습니다!" : "";
+    showResultModal(true, `🎉 [${user.nickname}]님, 환영합니다!\n성공적으로 로그인되었습니다.${adminWelcome}\n차원의 모험을 이어서 시작하세요!`);
   };
 
   window.handleRegisterSubmit = function(e) {
@@ -4495,6 +4621,14 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }
 
     const userSaveData = keepData ? JSON.parse(JSON.stringify(state)) : Object.assign({}, defaultState);
+    if (username.toUpperCase() === "ADMIN" || username === "어드민") {
+      const limitTitles = ["🔒 최초의 기록자", "🔒 개발자의 친구"];
+      if (!Array.isArray(userSaveData.titles)) userSaveData.titles = ["🌱 새싹 탐험가"];
+      limitTitles.forEach(t => {
+        if (!userSaveData.titles.includes(t)) userSaveData.titles.push(t);
+      });
+      userSaveData.equippedTitle = "🔒 개발자의 친구";
+    }
     db[username] = {
       username: username,
       nickname: nickname,
