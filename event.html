@@ -504,6 +504,203 @@ footer {
   font-size: 0.85rem;
   color: #6b7280;
 }
+
+/* ==========================================
+   개발자 어드민 보안 인증 모달 & 뱃지 스타일
+   ========================================== */
+.admin-badge-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+  width: fit-content;
+  transition: all 0.2s;
+}
+.admin-badge-indicator.authed {
+  background: rgba(255, 209, 102, 0.15);
+  border: 1px solid rgba(255, 209, 102, 0.6);
+  color: #ffd166;
+  box-shadow: 0 0 14px rgba(255, 209, 102, 0.28);
+}
+.admin-badge-indicator.guest {
+  background: rgba(107, 114, 128, 0.15);
+  border: 1px solid rgba(107, 114, 128, 0.4);
+  color: #9ca3af;
+}
+
+.admin-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+.admin-modal-box {
+  background: linear-gradient(145deg, #131528, #0b0c16);
+  border: 1px solid rgba(255, 209, 102, 0.45);
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85), 0 0 35px rgba(255, 209, 102, 0.25);
+  width: 100%;
+  max-width: 440px;
+  padding: 28px;
+  position: relative;
+  box-sizing: border-box;
+  animation: adminModalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes adminModalIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.admin-modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.admin-modal-close:hover {
+  background: rgba(255, 0, 110, 0.3);
+  border-color: #ff006e;
+}
+.admin-modal-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #ffd166;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-modal-title {
+  margin: 0 0 8px 0;
+  font-size: 1.35rem;
+  color: #fff;
+  font-weight: 800;
+}
+.admin-modal-desc {
+  margin: 0 0 18px 0;
+  font-size: 0.88rem;
+  color: #9ca3af;
+  line-height: 1.45;
+}
+.admin-modal-tabs {
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+.admin-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.admin-tab-btn.active {
+  background: rgba(255, 209, 102, 0.2);
+  color: #ffd166;
+  border: 1px solid rgba(255, 209, 102, 0.4);
+}
+.admin-form {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+.admin-form.active {
+  display: flex;
+}
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.admin-label {
+  font-size: 0.82rem;
+  color: #d1d5db;
+  font-weight: 600;
+}
+.admin-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  padding: 11px 13px;
+  color: #fff;
+  font-size: 0.92rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.admin-input:focus {
+  border-color: #ffd166;
+  box-shadow: 0 0 10px rgba(255, 209, 102, 0.35);
+}
+.admin-msg {
+  font-size: 0.82rem;
+  padding: 8px 10px;
+  border-radius: 6px;
+  display: none;
+  line-height: 1.4;
+}
+.admin-msg.error {
+  display: block;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+.admin-msg.success {
+  display: block;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
+}
+.admin-submit-btn {
+  background: linear-gradient(135deg, #ffd166, #ff006e);
+  border: none;
+  color: #0b0c16;
+  font-weight: 800;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(255, 209, 102, 0.3);
+}
+.admin-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255, 209, 102, 0.5);
+}
+.admin-subtext {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 4px;
+}
+
 </style>
 </head>
 <body>
@@ -519,6 +716,7 @@ footer {
         <h1>🎉 CODEX 이벤트 센터</h1>
       </div>
       <div class="header-tools">
+        <button id="adminAuthBtn" class="tool-btn" onclick="openAdminModal()" style="background: linear-gradient(135deg, #ffd166, #ff006e); color:#0b0c16; font-weight:800; border:none; box-shadow: 0 0 12px rgba(255,209,102,0.4); cursor:pointer;">👑 개발자 로그인</button>
         <a href="index.html" class="tool-btn primary">🎮 게임으로 돌아가기</a>
       </div>
     </div>
@@ -788,44 +986,328 @@ function setLuck(val) {
   localStorage.setItem(KEY_LUCK100, val ? "true" : "false");
 }
 
-// 토글 함수
+// ==========================================
+// 개발자 어드민 인증 & 비밀번호 보안 시스템
+// ==========================================
+const MASTER_ADMIN_HASH = "bb5444fa3f60d176e154e8e2a733c6ab713fdb62a110436537ae9a28b6e7127c"; // rivers3161@@ 해시
+const KEY_CUSTOM_ADMIN_HASH = "codex_event_custom_admin_hash";
+const KEY_CUSTOM_ADMIN_USER = "codex_event_custom_admin_user";
+const KEY_ADMIN_AUTH = "codex_event_admin_auth";
+const KEY_ADMIN_NAME = "codex_event_admin_name";
+
+let pendingAdminAction = null;
+
+// SHA-256 단방향 암호화
+async function sha256(text) {
+  if (!text) return "";
+  try {
+    const buf = new TextEncoder().encode(text.trim());
+    const hash = await crypto.subtle.digest("SHA-256", buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
+  } catch (e) {
+    return "";
+  }
+}
+
+// 개발자 인증 여부 확인
+function isDeveloperAdmin() {
+  return sessionStorage.getItem(KEY_ADMIN_AUTH) === "true";
+}
+
+function getAdminName() {
+  return sessionStorage.getItem(KEY_ADMIN_NAME) || localStorage.getItem(KEY_CUSTOM_ADMIN_USER) || "어드민 개발자";
+}
+
+// 비밀번호 검증
+async function verifyAdminPassword(input) {
+  if (!input) return { ok: false };
+  const h = await sha256(input);
+  if (h === MASTER_ADMIN_HASH) {
+    return { ok: true, name: "마스터 개발자" };
+  }
+  const customHash = localStorage.getItem(KEY_CUSTOM_ADMIN_HASH);
+  if (customHash && h === customHash) {
+    const customUser = localStorage.getItem(KEY_CUSTOM_ADMIN_USER) || "등록된 개발자";
+    return { ok: true, name: customUser };
+  }
+  return { ok: false };
+}
+
+// 이벤트 활성화 시 개발자 인증 가드
+function requireDeveloperAuth(action) {
+  if (isDeveloperAdmin()) {
+    action();
+    return;
+  }
+  Sound.hit();
+  pendingAdminAction = action;
+  openAdminModal("login", "🔒 이벤트 열기는 개발자(어드민)만 가능합니다! 비밀번호를 인증해주세요.");
+}
+
+// 모달 조작
+window.openAdminModal = function(tab = 'login', customDesc = null) {
+  Sound.click();
+  const overlay = document.getElementById("adminModalOverlay");
+  const descEl = document.getElementById("adminModalDesc");
+  if (descEl) {
+    descEl.textContent = customDesc || "이벤트를 열고 활성화하려면 개발자(어드민) 인증이 필요합니다.";
+  }
+  switchAdminTab(tab);
+  if (overlay) overlay.style.display = "flex";
+  setTimeout(() => {
+    if (tab === 'login') {
+      const p = document.getElementById("adminPasswordInput");
+      if (p) p.focus();
+    } else {
+      const u = document.getElementById("adminRegUsername");
+      if (u) u.focus();
+    }
+  }, 100);
+};
+
+window.closeAdminModal = function() {
+  const overlay = document.getElementById("adminModalOverlay");
+  if (overlay) overlay.style.display = "none";
+  pendingAdminAction = null;
+  const lMsg = document.getElementById("adminLoginMsg");
+  const rMsg = document.getElementById("adminRegMsg");
+  if (lMsg) { lMsg.style.display = "none"; lMsg.textContent = ""; }
+  if (rMsg) { rMsg.style.display = "none"; rMsg.textContent = ""; }
+};
+
+window.handleAdminOverlayClick = function(e) {
+  if (e.target && e.target.id === "adminModalOverlay") {
+    closeAdminModal();
+  }
+};
+
+window.switchAdminTab = function(tab) {
+  Sound.click();
+  const tLogin = document.getElementById("adminTabLoginBtn");
+  const tReg = document.getElementById("adminTabRegBtn");
+  const fLogin = document.getElementById("adminLoginForm");
+  const fReg = document.getElementById("adminRegisterForm");
+  const title = document.getElementById("adminModalTitle");
+
+  if (tab === 'login') {
+    if (tLogin) tLogin.className = "admin-tab-btn active";
+    if (tReg) tReg.className = "admin-tab-btn";
+    if (fLogin) fLogin.className = "admin-form active";
+    if (fReg) fReg.className = "admin-form";
+    if (title) title.textContent = "🔒 개발자 보안 로그인";
+  } else {
+    if (tLogin) tLogin.className = "admin-tab-btn";
+    if (tReg) tReg.className = "admin-tab-btn active";
+    if (fLogin) fLogin.className = "admin-form";
+    if (fReg) fReg.className = "admin-form active";
+    if (title) title.textContent = "✨ 개발자 비밀번호 등록 (회원가입)";
+  }
+};
+
+window.handleAdminLoginSubmit = async function(e) {
+  e.preventDefault();
+  const pInput = document.getElementById("adminPasswordInput");
+  const msg = document.getElementById("adminLoginMsg");
+  const pw = pInput ? pInput.value : "";
+
+  const check = await verifyAdminPassword(pw);
+  if (!check.ok) {
+    Sound.hit();
+    if (msg) {
+      msg.textContent = "❌ 개발자 비밀번호가 올바르지 않습니다. 권한이 없습니다.";
+      msg.className = "admin-msg error";
+    }
+    return;
+  }
+
+  sessionStorage.setItem(KEY_ADMIN_AUTH, "true");
+  sessionStorage.setItem(KEY_ADMIN_NAME, check.name);
+  if (pInput) pInput.value = "";
+  Sound.powerOn();
+  closeAdminModal();
+  alert(`👑 개발자 어드민 인증 완료!\n[${check.name}] 모드로 이벤트 제어 권한이 활성화되었습니다.`);
+  render();
+
+  if (pendingAdminAction) {
+    const act = pendingAdminAction;
+    pendingAdminAction = null;
+    act();
+  }
+};
+
+window.handleAdminRegisterSubmit = async function(e) {
+  e.preventDefault();
+  const uInput = document.getElementById("adminRegUsername");
+  const pInput = document.getElementById("adminRegPassword");
+  const cInput = document.getElementById("adminRegPasswordConfirm");
+  const msg = document.getElementById("adminRegMsg");
+
+  const username = uInput ? uInput.value.trim() : "ADMIN";
+  const pw = pInput ? pInput.value : "";
+  const pwConfirm = cInput ? cInput.value : "";
+
+  if (pw.length < 4) {
+    Sound.hit();
+    if (msg) {
+      msg.textContent = "❌ 비밀번호는 4자 이상으로 입력해주세요.";
+      msg.className = "admin-msg error";
+    }
+    return;
+  }
+  if (pw !== pwConfirm) {
+    Sound.hit();
+    if (msg) {
+      msg.textContent = "❌ 비밀번호와 비밀번호 확인이 일치하지 않습니다.";
+      msg.className = "admin-msg error";
+    }
+    return;
+  }
+
+  const h = await sha256(pw);
+  localStorage.setItem(KEY_CUSTOM_ADMIN_HASH, h);
+  localStorage.setItem(KEY_CUSTOM_ADMIN_USER, username);
+  sessionStorage.setItem(KEY_ADMIN_AUTH, "true");
+  sessionStorage.setItem(KEY_ADMIN_NAME, username);
+
+  if (pInput) pInput.value = "";
+  if (cInput) cInput.value = "";
+  Sound.powerOn();
+  closeAdminModal();
+  alert(`✨ 개발자 비밀번호 등록 완료!\n[${username}] 계정으로 개발자 권한이 활성화되었습니다.\n이제 자유롭게 이벤트를 켜고 끌 수 있습니다!`);
+  render();
+
+  if (pendingAdminAction) {
+    const act = pendingAdminAction;
+    pendingAdminAction = null;
+    act();
+  }
+};
+
+window.handleAdminLogout = function() {
+  Sound.click();
+  if (!confirm("개발자 어드민 모드를 로그아웃 하시겠습니까?\n로그아웃하면 다시 비밀번호를 인증해야 이벤트를 열 수 있습니다.")) return;
+  sessionStorage.removeItem(KEY_ADMIN_AUTH);
+  sessionStorage.removeItem(KEY_ADMIN_NAME);
+  Sound.powerOff();
+  render();
+};
+
+// 소스코드 및 개발자 도구 방어 (비밀번호 보호)
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+  if (e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+      (e.ctrlKey && (e.key === "U" || e.key === "u" || e.key === "S" || e.key === "s"))) {
+    e.preventDefault();
+  }
+});
+
+// 토글 함수 (개발자 인증 필수 적용)
 function toggleExp2Event() {
   const current = getExp2();
-  setExp2(!current);
-  if (!current) Sound.powerOn();
-  else Sound.powerOff();
-  render();
+  if (!current) {
+    // 켤 때 개발자 인증 필수
+    requireDeveloperAuth(() => {
+      setExp2(true);
+      Sound.powerOn();
+      render();
+    });
+  } else {
+    setExp2(false);
+    Sound.powerOff();
+    render();
+  }
 }
 
 function toggleRouletteEvent() {
   const current = getRoulette();
-  setRoulette(!current);
-  if (!current) Sound.powerOn();
-  else Sound.powerOff();
-  render();
+  if (!current) {
+    // 켤 때 개발자 인증 필수
+    requireDeveloperAuth(() => {
+      setRoulette(true);
+      Sound.powerOn();
+      render();
+    });
+  } else {
+    setRoulette(false);
+    Sound.powerOff();
+    render();
+  }
 }
 
 function toggleLuckEvent() {
   const current = getLuck();
-  setLuck(!current);
-  if (!current) Sound.powerOn();
-  else Sound.powerOff();
-  render();
+  if (!current) {
+    // 켤 때 개발자 인증 필수
+    requireDeveloperAuth(() => {
+      setLuck(true);
+      Sound.powerOn();
+      render();
+    });
+  } else {
+    setLuck(false);
+    Sound.powerOff();
+    render();
+  }
 }
 
 function setAllEvents(enable) {
-  setExp2(enable);
-  setRoulette(enable);
-  setLuck(enable);
-  if (enable) Sound.powerOn();
-  else Sound.powerOff();
-  render();
+  if (enable) {
+    // 켤 때 개발자 인증 필수
+    requireDeveloperAuth(() => {
+      setExp2(true);
+      setRoulette(true);
+      setLuck(true);
+      Sound.powerOn();
+      render();
+    });
+  } else {
+    setExp2(false);
+    setRoulette(false);
+    setLuck(false);
+    Sound.powerOff();
+    render();
+  }
 }
 
 // 렌더링
 function render() {
   const exp2 = getExp2();
   const roulette = getRoulette();
+
+  // 개발자 어드민 상태 갱신
+  const adminBtn = document.getElementById("adminAuthBtn");
+  const adminBadge = document.getElementById("adminStatusIndicator");
+  const isAuthed = isDeveloperAdmin();
+  const adminName = getAdminName();
+
+  if (adminBtn) {
+    if (isAuthed) {
+      adminBtn.innerHTML = `👑 ${adminName} <span>(로그아웃)</span>`;
+      adminBtn.style.background = "linear-gradient(135deg, #10b981, #06d6a0)";
+      adminBtn.style.color = "#0b0c16";
+      adminBtn.style.boxShadow = "0 0 12px rgba(16, 185, 129, 0.4)";
+      adminBtn.onclick = handleAdminLogout;
+      adminBtn.title = "개발자 어드민 세션 로그아웃";
+    } else {
+      adminBtn.innerHTML = "👑 개발자 로그인";
+      adminBtn.style.background = "linear-gradient(135deg, #ffd166, #ff006e)";
+      adminBtn.style.color = "#0b0c16";
+      adminBtn.style.boxShadow = "0 0 12px rgba(255, 209, 102, 0.4)";
+      adminBtn.onclick = () => openAdminModal('login');
+      adminBtn.title = "개발자 어드민 로그인 및 비밀번호 등록";
+    }
+  }
+
+  if (adminBadge) {
+    if (isAuthed) {
+      adminBadge.className = "admin-badge-indicator authed";
+      adminBadge.innerHTML = `👑 <b>개발자 어드민: 인증됨 (${adminName})</b>`;
+    } else {
+      adminBadge.className = "admin-badge-indicator guest";
+      adminBadge.innerHTML = "🔒 <b>일반 모험가 모드</b> (이벤트 열기는 개발자 전용)";
+    }
+  }
 
   // 1. 경험치 2배 카드
   const cardExp2 = document.getElementById("cardExp2");
@@ -1008,6 +1490,54 @@ window.addEventListener("DOMContentLoaded", () => {
   render();
 });
 </script>
+
+
+<!-- 개발자 보안 로그인 & 회원가입 모달 -->
+<div id="adminModalOverlay" class="admin-modal-overlay" onclick="handleAdminOverlayClick(event)">
+  <div class="admin-modal-box">
+    <button type="button" class="admin-modal-close" onclick="closeAdminModal()">&times;</button>
+    <div class="admin-modal-header">
+      <div class="admin-modal-tag">👑 CODEX DEVELOPER ADMIN GATE</div>
+      <h2 class="admin-modal-title" id="adminModalTitle">🔒 개발자 보안 로그인</h2>
+      <p class="admin-modal-desc" id="adminModalDesc">이벤트를 열고 활성화하려면 개발자(어드민) 인증이 필요합니다.</p>
+    </div>
+
+    <div class="admin-modal-tabs">
+      <button type="button" id="adminTabLoginBtn" class="admin-tab-btn active" onclick="switchAdminTab('login')">🔑 개발자 로그인</button>
+      <button type="button" id="adminTabRegBtn" class="admin-tab-btn" onclick="switchAdminTab('register')">✨ 비밀번호 등록 (회원가입)</button>
+    </div>
+
+    <!-- 1. 로그인 폼 -->
+    <form id="adminLoginForm" class="admin-form active" onsubmit="handleAdminLoginSubmit(event)">
+      <div class="admin-form-group">
+        <label class="admin-label" for="adminPasswordInput">개발자 어드민 비밀번호</label>
+        <input type="password" id="adminPasswordInput" class="admin-input" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
+      </div>
+      <div id="adminLoginMsg" class="admin-msg"></div>
+      <button type="submit" class="admin-submit-btn">🔑 인증하고 이벤트 열기</button>
+      <div class="admin-subtext">기존 세이브 관리자 암호 또는 등록한 비밀번호로 즉시 인증됩니다.</div>
+    </form>
+
+    <!-- 2. 회원가입 / 비밀번호 생성 폼 -->
+    <form id="adminRegisterForm" class="admin-form" onsubmit="handleAdminRegisterSubmit(event)">
+      <div class="admin-form-group">
+        <label class="admin-label" for="adminRegUsername">개발자 닉네임 / 아이디</label>
+        <input type="text" id="adminRegUsername" class="admin-input" placeholder="예: ADMIN" value="ADMIN" required minlength="2" maxlength="15" autocomplete="username">
+      </div>
+      <div class="admin-form-group">
+        <label class="admin-label" for="adminRegPassword">새 이벤트 오픈 비밀번호 (4자 이상)</label>
+        <input type="password" id="adminRegPassword" class="admin-input" placeholder="새 비밀번호 입력" required minlength="4" autocomplete="new-password">
+      </div>
+      <div class="admin-form-group">
+        <label class="admin-label" for="adminRegPasswordConfirm">비밀번호 확인</label>
+        <input type="password" id="adminRegPasswordConfirm" class="admin-input" placeholder="비밀번호 다시 입력" required minlength="4" autocomplete="new-password">
+      </div>
+      <div id="adminRegMsg" class="admin-msg"></div>
+      <button type="submit" class="admin-submit-btn" style="background: linear-gradient(135deg, #7209b7, #f72585); color:#fff;">✨ 개발자 비밀번호 등록 완료</button>
+      <div class="admin-subtext">등록 완료 시 이 기기에서 개발자 권한이 자동으로 활성화됩니다.</div>
+    </form>
+  </div>
+</div>
 
 </body>
 </html>
