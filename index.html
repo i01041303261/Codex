@@ -1601,7 +1601,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   <section id="shop" class="screen">
     <div class="card">
       <h2>🛒 CODEX 상점 & 대장간</h2>
-      <p class="desc">토큰으로 스탯을 영구 강화하거나 초특급 EXP 성장 비약을 구매하여 300레벨에 도달하세요!</p>
+      <p class="desc">토큰으로 스탯을 영구 강화하거나 초특급 EXP 성장 비약을 구매하여 최고 500레벨 만렙에 도달하세요!</p>
       
       <div class="shop-section-title">⚔️ 대장간 영구 스탯 강화</div>
       <div class="shop-grid">
@@ -2204,8 +2204,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     return JOBS.find(j => j.id === state.jobId) || JOBS[0];
   }
 
-  // 레벨업 필요 EXP: 300레벨까지 도달할 수 있도록 설계 (level * 25)
+  // 최고 만렙 설정 (Lv.500)
+  const MAX_LEVEL = 500;
+
+  // 레벨업 필요 EXP: 최고 500레벨 만렙까지 도달할 수 있도록 설계 (level * 25)
   function nextLevelExp() {
+    if (state.level >= MAX_LEVEL) return Infinity;
     return Math.max(50, state.level * 25);
   }
 
@@ -2283,6 +2287,17 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   // 7. 보상 및 성장
   function gainReward(expGain, tokenGain, triggerMsg) {
+    if (state.level >= MAX_LEVEL) {
+      state.level = MAX_LEVEL;
+      state.exp = 0;
+      state.tokens += tokenGain;
+      Sound.win();
+      if (triggerMsg) state.lastEvent = triggerMsg;
+      save();
+      updateUI();
+      return;
+    }
+
     if (isExp2EventActive() && expGain > 0) {
       expGain = expGain * 2;
       triggerMsg = (triggerMsg ? triggerMsg + " " : "") + "🔥(EXP 2배 이벤트!)";
@@ -2293,15 +2308,24 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     let leveledUp = false;
     let oldLv = state.level;
-    while (state.exp >= nextLevelExp()) {
+    while (state.level < MAX_LEVEL && state.exp >= nextLevelExp()) {
       state.exp -= nextLevelExp();
       state.level++;
       leveledUp = true;
     }
 
+    if (state.level >= MAX_LEVEL) {
+      state.level = MAX_LEVEL;
+      state.exp = 0;
+    }
+
     if (leveledUp) {
       Sound.levelUp();
-      showResultModal(true, `🎉 LEVEL UP!\nLv.${oldLv} ➡️ Lv.${state.level} 달성!\n(스탯과 체력이 대폭 상승했습니다!)`);
+      if (state.level >= MAX_LEVEL) {
+        showResultModal(true, `👑 [최고 레벨 만렙 달성!]\n축하합니다! 끝없는 차원의 모험 최고 레벨인 Lv.${MAX_LEVEL} 만렙에 등극하셨습니다! 🎉✨\n(모든 차원과 시공간을 초월한 절대자의 스탯을 획득했습니다!)`);
+      } else {
+        showResultModal(true, `🎉 LEVEL UP!\nLv.${oldLv} ➡️ Lv.${state.level} 달성!\n(스탯과 체력이 대폭 상승했습니다! / 최고 만렙: Lv.${MAX_LEVEL})`);
+      }
     } else if (triggerMsg) {
       state.lastEvent = triggerMsg;
     }
@@ -2313,6 +2337,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   let currentMp = null;
 
   function updateUI() {
+    if (state.level > MAX_LEVEL) state.level = MAX_LEVEL;
+    const isMaxLv = state.level >= MAX_LEVEL;
+    if (isMaxLv) state.exp = 0;
+
     const stats = getPlayerStats();
     if (currentHp === null || currentHp > stats.maxHp) currentHp = stats.maxHp;
     if (currentMp === null || currentMp > stats.maxMp) currentMp = stats.maxMp;
@@ -2320,11 +2348,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const tokensEl = document.getElementById("tokens");
     const levelEl = document.getElementById("level");
     if (tokensEl) tokensEl.textContent = state.tokens.toLocaleString();
-    if (levelEl) levelEl.textContent = state.level;
+    if (levelEl) levelEl.textContent = isMaxLv ? `${MAX_LEVEL} (만렙)` : state.level;
 
     const hpPercent = Math.max(0, Math.min(100, (currentHp / stats.maxHp) * 100));
     const mpPercent = Math.max(0, Math.min(100, (currentMp / stats.maxMp) * 100));
-    const expPercent = Math.max(0, Math.min(100, (state.exp / nextLevelExp()) * 100));
+    const expPercent = isMaxLv ? 100 : Math.max(0, Math.min(100, (state.exp / nextLevelExp()) * 100));
 
     const hudHpBar = document.getElementById("hudHpBar");
     const hudHpVal = document.getElementById("hudHpVal");
@@ -2339,7 +2367,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const hudExpBar = document.getElementById("hudExpBar");
     const hudExpVal = document.getElementById("hudExpVal");
     if (hudExpBar) hudExpBar.style.width = expPercent + "%";
-    if (hudExpVal) hudExpVal.textContent = state.exp + "/" + nextLevelExp();
+    if (hudExpVal) hudExpVal.textContent = isMaxLv ? "MAX (만렙)" : state.exp + "/" + nextLevelExp();
 
     const job = getCurrentJob();
     const hudJobBadge = document.getElementById("hudJobBadge");
@@ -3220,7 +3248,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   window.codexResult = showResultModal;
 
   window.showHelpModal = function() {
-    showResultModal(true, "📖 CODEX 신규 업데이트 가이드\n\n1. 🔮 [50개 직업소]: 전직 제단에서 50개 고유 직업을 랜덤 각성하세요!\n2. 📜 [차원 스토리]: 6개 챕터 서사를 확인하고 완료 보상을 받으세요.\n3. 🗺️ [차원 레벨 제한]:\n- 1차원(초원): Lv.1\n- 2차원(사막): Lv.30\n- 3차원(얼음): Lv.70\n- 4차원(화산): Lv.140\n- 5차원(우주): Lv.220\n- ★ 6차원(비밀 차원): Lv.300 이상 초월자 전용!\n4. 🛒 [상점]: 대형 EXP 비약으로 300레벨을 돌파하세요!");
+    showResultModal(true, "📖 CODEX 신규 업데이트 가이드\n\n1. 🔮 [50개 직업소]: 전직 제단에서 50개 고유 직업을 랜덤 각성하세요!\n2. 📜 [차원 스토리]: 6개 챕터 서사를 확인하고 완료 보상을 받으세요.\n3. 🗺️ [차원 레벨 제한]:\n- 1차원(초원): Lv.1\n- 2차원(사막): Lv.30\n- 3차원(얼음): Lv.70\n- 4차원(화산): Lv.140\n- 5차원(우주): Lv.220\n- ★ 6차원(비밀 차원): Lv.300 이상 초월자 전용!\n4. 👑 [최고 레벨]: 최고 만렙 Lv.500까지 끝없이 스탯을 육성하세요!");
   };
 
   window.show = function(screenId) {
@@ -3469,7 +3497,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     if (accU) accU.textContent = user.username;
     if (accN) accN.textContent = user.nickname;
-    if (accL) accL.textContent = `Lv.${state.level}`;
+    if (accL) accL.textContent = state.level >= MAX_LEVEL ? `Lv.${state.level} (만렙)` : `Lv.${state.level}`;
     if (accJ) accJ.textContent = `${job.icon} ${job.name} (${job.tier})`;
     if (accT) accT.textContent = `🪙 ${state.tokens.toLocaleString()}`;
   }
