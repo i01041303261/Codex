@@ -4978,7 +4978,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   const V_VB = { x: 62, y: 32, w: 620, h: 400 };
 
   const V_SITES = [
-    { key: "shop", gx: 1.55, gy: 3.35, w: 2.3, d: 2.1, scale: 1.16 },
+    { key: "shop", gx: 1.7, gy: 3.85, w: 2.3, d: 2.1, scale: 1.16 },
     { key: "portal", gx: 4.3, gy: 4.3, w: 2.4, d: 2.4, scale: 1.05 },
     { key: "forge", gx: 1.15, gy: 7.55, w: 2.2, d: 1.8, scale: 1.16 },
     { key: "town", gx: 7.3, gy: 2.0, w: 2.5, d: 2.1, scale: 1.1 }
@@ -5041,13 +5041,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       '<circle cx="' + p[0] + '" cy="' + (p[1] - 3) + '" r="1.4" fill="#fff6a8" opacity="0.85"/>';
   }
   function vLamp(gx, gy) {
-    const p = vp(gx, gy, 1.2);
-    return vbox(gx - 0.05, gy - 0.05, 0, 0.1, 0.1, 1.2, { top: "#93a7c9", left: "#7386a6", right: "#5c6c88" }) +
-      '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="24" fill="#ffbe0b" opacity="0.22" filter="url(#vBlurSm)"/>' +
-      vbox(gx - 0.16, gy - 0.16, 1.2, 0.32, 0.32, 0.05, { top: "#8f9bb3", left: "#737e96", right: "#5d677c" }) +
-      vbox(gx - 0.13, gy - 0.13, 1.25, 0.26, 0.26, 0.26, { top: "#fff3c4", left: "#ffd166", right: "#e0a92f" }) +
-      vbox(gx - 0.17, gy - 0.17, 1.51, 0.34, 0.34, 0.06, { top: "#8f9bb3", left: "#737e96", right: "#5d677c" }) +
-      '<circle class="lampBulb" cx="' + p[0] + '" cy="' + p[1] + '" r="9" fill="#ffe9a8" opacity="0.3" filter="url(#vBlurSm)"/>';
+    const p = vp(gx, gy, 1.32);
+    return vbox(gx - 0.05, gy - 0.05, 0, 0.1, 0.1, 1.25, { top: "#93a7c9", left: "#7386a6", right: "#5c6c88" }) +
+      '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="22" fill="#ffbe0b" opacity="0.16" filter="url(#vBlurSm)"/>' +
+      '<circle class="lampBulb" cx="' + p[0] + '" cy="' + p[1] + '" r="9.5" fill="#ffd166" opacity="0.35" filter="url(#vBlurSm)"/>' +
+      '<circle class="lampBulb" cx="' + p[0] + '" cy="' + p[1] + '" r="5" fill="#fff6d0" opacity="0.95" stroke="#ffcf5a" stroke-width="0.9"/>';
   }
 
   /* ---------- 상점 (시장 노점) ---------- */
