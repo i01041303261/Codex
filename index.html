@@ -455,6 +455,26 @@ button.warning {
 .v-building:hover .v-pad, .v-building:active .v-pad { opacity: 1; }
 .v-hit { fill: transparent; }
 
+/* 마을 소품 애니메이션 */
+@keyframes fireFlicker {
+  0%, 100% { opacity: 0.55; transform: scaleY(0.88); }
+  50% { opacity: 0.98; transform: scaleY(1.12); }
+}
+.v-fire { animation: fireFlicker 1.3s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+.v-fire2 { animation: fireFlicker 0.85s ease-in-out infinite reverse; transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes sparkRise {
+  0% { opacity: 0; transform: translateY(0); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-24px); }
+}
+.v-spark { animation: sparkRise 2.6s linear infinite; transform-box: fill-box; }
+.v-spark2 { animation: sparkRise 2.6s linear infinite 1.3s; transform-box: fill-box; }
+@keyframes flagWave {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-5deg) scaleX(0.93); }
+}
+.v-flag { transform-box: fill-box; transform-origin: left center; animation: flagWave 3s ease-in-out infinite; }
+
 /* 마을 위치 라벨 (HTML 오버레이) */
 .village-labels { position: absolute; inset: 0; pointer-events: none; }
 .village-label {
@@ -5063,29 +5083,40 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   /* ---------- 대장간 ---------- */
   function vForge(gx, gy) {
-    const stone = { top: "#818b99", left: "#6a727f", right: "#565d69" };
-    const stoneD = { top: "#5f6874", left: "#4f5763", right: "#414852" };
-    const slate = { top: "#414754", left: "#363c47", right: "#2c313b" };
+    const stone = { top: "#8a94a3", left: "#727b8a", right: "#5e6572" };
+    const stoneB = { top: "#6c7683", left: "#5a626e", right: "#4a515c" };
+    const stoneD = { top: "#5a626f", left: "#49505a", right: "#3c424b" };
+    const slate = { light: "#5b6472", mid: "#4b5462", dark: "#3b4350" };
+    const w = 2.1, d = 1.7, wh = 1.12, rh = 0.42;
     let s = "";
-    s += vbox(gx, gy, 0, 2.1, 1.7, 1.02, stone);
-    s += vbox(gx - 0.12, gy - 0.12, 1.02, 2.34, 1.94, 0.16, slate);
-    s += vbox(gx + 1.46, gy + 0.22, 1.18, 0.4, 0.4, 0.86, stoneD);
+    s += vbox(gx, gy, 0, w, d, 0.26, stoneB);                 // 기단
+    s += vbox(gx, gy, 0.26, w, d, wh - 0.26, stone);           // 벽
+    // 박공지붕
+    const hz = wh + 0.42;
+    const r1 = vp(gx, gy, wh), r2 = vp(gx + w, gy, wh), r3 = vp(gx + w, gy + d, wh), r4 = vp(gx, gy + d, wh);
+    const rm1 = vp(gx, gy + d / 2, hz), rm2 = vp(gx + w, gy + d / 2, hz);
+    s += vpoly([r1, r2, rm2, rm1], slate.dark);                // 뒤 경사
+    s += vpoly([r4, r3, rm2, rm1], slate.mid);                 // 앞 경사
+    s += vpoly([r2, r3, rm2], slate.light);                    // 박공 단면
+    // 굴뚝
+    s += vbox(gx + 1.5, gy + 0.22, wh + 0.1, 0.38, 0.38, 1.15, stoneD);
+    s += vbox(gx + 1.44, gy + 0.16, wh + 1.22, 0.5, 0.5, 0.1, { top: "#4a515c", left: "#3c424b", right: "#32383f" });
     // 화로 입구
-    s += vpoly([vp(gx + 0.62, gy + 1.7, 0.66), vp(gx + 1.4, gy + 1.7, 0.66), vp(gx + 1.4, gy + 1.7, 0.06), vp(gx + 0.62, gy + 1.7, 0.06)], "#22140d");
-    const fm = vp(gx + 1.01, gy + 1.7, 0.36);
-    s += '<ellipse class="v-fire" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="14" ry="7" fill="#ff8a1f" opacity="0.85"/>' +
-      '<ellipse class="v-fire2" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="7" ry="4" fill="#ffe08a" opacity="0.9"/>';
+    s += vpoly([vp(gx + 0.56, gy + d, 0.72), vp(gx + 1.46, gy + d, 0.72), vp(gx + 1.46, gy + d, 0.06), vp(gx + 0.56, gy + d, 0.06)], "#1d120b");
+    const fm = vp(gx + 1.01, gy + d, 0.38);
+    s += '<ellipse class="v-fire" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="17" ry="8" fill="#ff8a1f" opacity="0.9"/>' +
+      '<ellipse class="v-fire2" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="9" ry="4.4" fill="#ffe08a" opacity="0.95"/>';
     // 굴뚝 연기
-    const ch = vp(gx + 1.66, gy + 0.42, 2.1);
-    s += '<circle class="smoke-particle" cx="' + ch[0] + '" cy="' + ch[1] + '" r="4.2" fill="#c9d4e6" opacity="0.5"/>' +
-      '<circle class="smoke-particle smoke-2" cx="' + (ch[0] + 2) + '" cy="' + (ch[1] - 2) + '" r="3.4" fill="#c9d4e6" opacity="0.4"/>';
-    // 모루와 망치
-    s += vbox(gx + 1.42, gy + 2.02, 0, 0.26, 0.24, 0.2, { top: "#4b525f", left: "#3c424d", right: "#31363f" });
-    s += vbox(gx + 1.34, gy + 1.96, 0.2, 0.44, 0.36, 0.13, { top: "#5b6371", left: "#49505c", right: "#3b414b" });
+    const ch = vp(gx + 1.69, gy + 0.41, wh + 1.35);
+    s += '<circle class="smoke-particle" cx="' + ch[0] + '" cy="' + ch[1] + '" r="4.4" fill="#c9d4e6" opacity="0.5"/>' +
+      '<circle class="smoke-particle smoke-2" cx="' + (ch[0] + 3) + '" cy="' + (ch[1] - 3) + '" r="3.6" fill="#c9d4e6" opacity="0.4"/>';
+    // 모루
+    s += vbox(gx + 1.5, gy + 2.02, 0, 0.26, 0.24, 0.2, { top: "#4b525f", left: "#3c424d", right: "#31363f" });
+    s += vbox(gx + 1.4, gy + 1.96, 0.2, 0.46, 0.36, 0.13, { top: "#5b6371", left: "#49505c", right: "#3b414b" });
     // 불티
-    const sp = vp(gx + 0.8, gy + 1.95, 1.0);
-    s += '<circle class="v-spark" cx="' + sp[0] + '" cy="' + sp[1] + '" r="1.7" fill="#ffd166"/>' +
-      '<circle class="v-spark2" cx="' + (sp[0] + 9) + '" cy="' + (sp[1] + 6) + '" r="1.4" fill="#ff8a1f"/>';
+    const sp = vp(gx + 0.74, gy + 1.98, 1.02);
+    s += '<circle class="v-spark" cx="' + sp[0] + '" cy="' + sp[1] + '" r="1.8" fill="#ffd166"/>' +
+      '<circle class="v-spark2" cx="' + (sp[0] + 11) + '" cy="' + (sp[1] + 6) + '" r="1.5" fill="#ff8a1f"/>';
     return s;
   }
 
@@ -5135,14 +5166,14 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const roof2 = { light: "#ff9d6b", mid: "#ef7f4b", dark: "#c96433" };
     let s = "";
     // 뒤쪽 집
-    s += vHouse(7.05, 2.45, 1.05, 0.85, 0.78, 0.52, wallA, roof);
-    s += vWindows(7.05, 2.45, 1.05, 0.85, 0.78);
+    s += vHouse(6.95, 2.35, 1.25, 0.95, 0.85, 0.6, wallA, roof);
+    s += vWindows(6.95, 2.35, 1.25, 0.95, 0.85);
     // 오른쪽 큰 집
-    s += vHouse(8.28, 2.58, 1.0, 0.8, 0.92, 0.58, wallB, roof);
-    s += vWindows(8.28, 2.58, 1.0, 0.8, 0.92);
+    s += vHouse(8.35, 2.5, 1.1, 0.85, 1.0, 0.66, wallB, roof);
+    s += vWindows(8.35, 2.5, 1.1, 0.85, 1.0);
     // 앞쪽 집
-    s += vHouse(7.55, 3.5, 0.95, 0.75, 0.66, 0.48, wallC, roof2);
-    s += vWindows(7.55, 3.5, 0.95, 0.75, 0.66);
+    s += vHouse(7.55, 3.55, 1.05, 0.8, 0.72, 0.54, wallC, roof2);
+    s += vWindows(7.55, 3.55, 1.05, 0.8, 0.72);
     // 깃대
     s += vbox(8.62, 3.18, 0, 0.09, 0.09, 1.75, { top: "#cfd6e2", left: "#a9b1c0", right: "#8d94a3" });
     const fp = vp(8.71, 3.22, 1.72);
@@ -5186,12 +5217,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const pathSet = new Set();
     for (let x = 0; x < V_N; x++) {
       for (let y = 0; y < V_N; y++) {
-        if (Math.abs((x + 0.5) - V_C) <= 1.0 || Math.abs((y + 0.5) - V_C) <= 1.0) pathSet.add(x + "," + y);
+        if (Math.abs((x + 0.5) - V_C) <= 0.6 || Math.abs((y + 0.5) - V_C) <= 0.6) pathSet.add(x + "," + y);
       }
     }
     V_SITES.forEach(s => {
-      for (let x = Math.floor(s.gx - 0.7); x <= Math.ceil(s.gx + s.w + 0.6); x++)
-        for (let y = Math.floor(s.gy - 0.7); y <= Math.ceil(s.gy + s.d + 0.6); y++) pathSet.add(x + "," + y);
+      for (let x = Math.floor(s.gx - 0.25); x <= Math.ceil(s.gx + s.w + 0.2); x++)
+        for (let y = Math.floor(s.gy - 0.25); y <= Math.ceil(s.gy + s.d + 0.2); y++) pathSet.add(x + "," + y);
     });
     const nearSite = (x, y) => V_SITES.some(s => x + 0.5 > s.gx - 1.0 && x + 0.5 < s.gx + s.w + 1.0 && y + 0.5 > s.gy - 1.0 && y + 0.5 < s.gy + s.d + 1.0);
 
@@ -5294,10 +5325,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       "</svg>";
 
     const anchors = {
-      shop: vp(shopSite.gx + shopSite.w / 2, shopSite.gy + shopSite.d / 2, 2.15),
+      shop: vp(shopSite.gx + shopSite.w / 2, shopSite.gy + shopSite.d / 2, 2.55),
       portal: portal.anchor,
-      forge: vp(forgeSite.gx + forgeSite.w / 2, forgeSite.gy + forgeSite.d / 2, 2.05),
-      town: vp(townSite.gx + townSite.w / 2, townSite.gy + townSite.d / 2, 2.15)
+      forge: vp(forgeSite.gx + forgeSite.w / 2, forgeSite.gy + forgeSite.d / 2, 2.5),
+      town: vp(townSite.gx + townSite.w / 2, townSite.gy + townSite.d / 2, 2.55)
     };
     return { svg: svg, anchors: anchors };
   }
