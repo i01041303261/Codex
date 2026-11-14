@@ -486,11 +486,11 @@ button.warning {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 5px 11px 6px;
+  padding: 5px 10px 6px;
   border-radius: 999px;
   font-family: inherit;
   font-weight: 900;
-  font-size: clamp(11px, 2.35vw, 15px);
+  font-size: clamp(10px, 2.2vw, 15px);
   line-height: 1;
   letter-spacing: -0.3px;
   color: #ffffff;
@@ -5360,8 +5360,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       "</svg>";
 
     const anchors = {
-      shop: vp(shopSite.gx + shopSite.w / 2, shopSite.gy + shopSite.d / 2, 2.55),
-      portal: portal.anchor,
+      shop: vp(shopSite.gx + shopSite.w / 2 - 0.35, shopSite.gy + shopSite.d / 2 + 0.1, 2.45),
+      portal: [portal.anchor[0] + 20, portal.anchor[1] - 22],
       forge: vp(forgeSite.gx + forgeSite.w / 2, forgeSite.gy + forgeSite.d / 2, 2.5),
       town: vp(townSite.gx + townSite.w / 2, townSite.gy + townSite.d / 2, 2.55)
     };
