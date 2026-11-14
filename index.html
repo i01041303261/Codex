@@ -5318,20 +5318,20 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       '<filter id="vBlur" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter>' +
       '<filter id="vBlurSm" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>' +
       "</defs>" +
-      '<rect width="' + V_W + '" height="' + V_H + '" fill="url(#vSky)"/>' +
+      '<rect x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="url(#vSky)"/>' +
       '<ellipse cx="' + (V_W / 2) + '" cy="' + (V_H * 0.68) + '" rx="' + (V_W * 0.52) + '" ry="' + (V_H * 0.46) + '" fill="url(#vVoid)"/>' +
       "<g>" + stars + "</g>" +
       '<circle id="skyGlow" cx="600" cy="118" r="34" fill="#ffbe0b" opacity="0.42" filter="url(#vBlur)"/>' +
       '<circle id="skyBody" cx="600" cy="118" r="16" fill="#fff6cf"/>' +
       '<ellipse cx="' + (V_W / 2) + '" cy="' + (V_H - 40) + '" rx="250" ry="26" fill="#000000" opacity="0.35" filter="url(#vBlur)"/>' +
-      "<g>" + terrain + decoStr +
+      '<g id="vScene">' + terrain + decoStr +
       vLamp(3.9, 6.6) + vLamp(6.9, 3.85) + vLamp(6.6, 7.2) +
-      "</g>" + buildList +
-      '<rect class="v-tint v-tint-morning" width="' + V_W + '" height="' + V_H + '" fill="#ff9d5c" fill-opacity="0.14"/>' +
-      '<rect class="v-tint v-tint-day" width="' + V_W + '" height="' + V_H + '" fill="#ffe9a8" fill-opacity="0.05"/>' +
-      '<rect class="v-tint v-tint-afternoon" width="' + V_W + '" height="' + V_H + '" fill="#ffb168" fill-opacity="0.1"/>' +
-      '<rect class="v-tint v-tint-evening" width="' + V_W + '" height="' + V_H + '" fill="#ff6b3d" fill-opacity="0.2"/>' +
-      '<rect class="v-tint v-tint-night" width="' + V_W + '" height="' + V_H + '" fill="#0b1a45" fill-opacity="0.52"/>' +
+      buildList + "</g>" +
+      '<rect class="v-tint v-tint-morning" x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="#ff9d5c" fill-opacity="0.14"/>' +
+      '<rect class="v-tint v-tint-day" x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="#ffe9a8" fill-opacity="0.05"/>' +
+      '<rect class="v-tint v-tint-afternoon" x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="#ffb168" fill-opacity="0.1"/>' +
+      '<rect class="v-tint v-tint-evening" x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="#ff6b3d" fill-opacity="0.2"/>' +
+      '<rect class="v-tint v-tint-night" x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="#0b1a45" fill-opacity="0.52"/>' +
       "</svg>";
 
     const anchors = {
@@ -5350,10 +5350,30 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const built = buildVillageSvg();
     stage.insertAdjacentHTML("afterbegin", built.svg);
     const svg = stage.querySelector(".villageArt");
+    const vb = frameVillage(svg) || V_VB;
     attachVillageHits(svg);
-    buildVillageLabels(built.anchors);
+    buildVillageLabels(built.anchors, vb);
     const loading = document.getElementById("villageLoading");
     if (loading) loading.remove();
+  }
+
+  // 장면 전체가 프레임에 들어오도록 viewBox 자동 계산
+  function frameVillage(svg) {
+    const scene = svg.querySelector("#vScene");
+    if (!scene) return null;
+    let bb = null;
+    try { bb = scene.getBBox(); } catch (e) { return null; }
+    if (!bb || !bb.width || !bb.height) return null;
+    const padX = 16, padTop = 30, padBottom = 18;
+    const vb = {
+      x: Math.round(bb.x - padX),
+      y: Math.round(bb.y - padTop),
+      w: Math.round(bb.width + padX * 2),
+      h: Math.round(bb.height + padTop + padBottom)
+    };
+    svg.setAttribute("viewBox", vb.x + " " + vb.y + " " + vb.w + " " + vb.h);
+    if (svg.parentElement) svg.parentElement.style.aspectRatio = vb.w + " / " + vb.h;
+    return vb;
   }
 
   function attachVillageHits(svg) {
@@ -5386,9 +5406,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     });
   }
 
-  function buildVillageLabels(anchors) {
+  function buildVillageLabels(anchors, vb) {
     const box = document.getElementById("villageLabels");
     if (!box || !anchors) return;
+    const frame = vb || V_VB;
     const defs = [
       { key: "shop", icon: "🛒", name: "상점" },
       { key: "forge", icon: "⚒️", name: "대장간" },
@@ -5403,8 +5424,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       btn.type = "button";
       btn.className = "village-label " + d.key;
       btn.innerHTML = '<span class="lb-ico">' + d.icon + '</span><span>' + d.name + '</span>';
-      btn.style.left = (((a[0] - V_VB.x) / V_VB.w) * 100).toFixed(2) + "%";
-      btn.style.top = (((a[1] - V_VB.y) / V_VB.h) * 100).toFixed(2) + "%";
+      btn.style.left = (((a[0] - frame.x) / frame.w) * 100).toFixed(2) + "%";
+      btn.style.top = (((a[1] - frame.y) / frame.h) * 100).toFixed(2) + "%";
       btn.setAttribute("aria-label", d.name + " 열기");
       btn.addEventListener("click", e => {
         e.preventDefault();
