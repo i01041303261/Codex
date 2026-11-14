@@ -5226,15 +5226,32 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     return s;
   }
 
-  function vBuildingGroup(kind, label, inner, padPt, scale) {
+  function vBuildingGroup(kind, label, inner, padPt, scale, prism) {
     const sc = scale || 1;
     const tr = sc === 1 ? "" : ' transform="translate(' + padPt[0] + ',' + padPt[1] + ') scale(' + sc +
       ') translate(' + (-padPt[0]) + ',' + (-padPt[1]) + ')"';
+    const hit = vPrismHit(prism, padPt, sc);
     return '<g class="v-building" data-kind="' + kind + '" role="button" tabindex="0" aria-label="' + label + ' 열기">' +
+      hit +
       '<g class="v-building-body">' +
       '<ellipse class="v-pad" cx="' + padPt[0] + '" cy="' + padPt[1] + '" rx="' + (74 * sc).toFixed(0) + '" ry="' + (30 * sc).toFixed(0) +
       '" fill="#00f5d4" opacity="0.18" filter="url(#vBlurSm)"/>' +
       "<g" + tr + ">" + inner + "</g></g></g>";
+  }
+
+  // 건물 실루엣(육각형) 히트 영역 — 옆 건물과 겹치지 않게
+  function vPrismHit(prism, pivot, sc) {
+    if (!prism) return "";
+    const gx = prism[0], gy = prism[1], w = prism[2], d = prism[3], h = prism[4];
+    const raw = [
+      vp(gx, gy + d, 0), vp(gx + w, gy + d, 0), vp(gx + w, gy, 0),
+      vp(gx + w, gy, h), vp(gx + w, gy + d, h), vp(gx, gy + d, h)
+    ];
+    const pts = raw.map(pt => [
+      (pivot[0] + (pt[0] - pivot[0]) * sc).toFixed(1),
+      (pivot[1] + (pt[1] - pivot[1]) * sc).toFixed(1)
+    ]);
+    return vpoly(pts, "transparent", ' class="v-hit" aria-hidden="true"');
   }
 
   /* ---------- 마을 전체 SVG ---------- */
@@ -5306,10 +5323,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     // 건물 배치 (뒤 -> 앞)
     const buildList = [
-      { d: shopSite.gx + shopSite.gy, s: vBuildingGroup("shop", "상점", vShop(shopSite.gx, shopSite.gy), shopPad, shopSite.scale) },
-      { d: portalSite.gx + portalSite.gy, s: vBuildingGroup("portal", "포탈", portal.svg, portalPad, portalSite.scale) },
-      { d: forgeSite.gx + forgeSite.gy, s: vBuildingGroup("forge", "대장간", vForge(forgeSite.gx, forgeSite.gy), forgePad, forgeSite.scale) },
-      { d: townSite.gx + townSite.gy, s: vBuildingGroup("town", "마을", vTown(townSite.gx, townSite.gy), townPad, townSite.scale) }
+      { d: shopSite.gx + shopSite.gy, s: vBuildingGroup("shop", "상점", vShop(shopSite.gx, shopSite.gy), shopPad, shopSite.scale, [shopSite.gx - 0.1, shopSite.gy - 0.1, shopSite.w + 0.2, shopSite.d + 0.2, 2.3]) },
+      { d: portalSite.gx + portalSite.gy, s: vBuildingGroup("portal", "포탈", portal.svg, portalPad, portalSite.scale, [portalSite.gx + 0.2, portalSite.gy + 0.2, portalSite.w - 0.4, portalSite.d - 0.4, 5.0]) },
+      { d: forgeSite.gx + forgeSite.gy, s: vBuildingGroup("forge", "대장간", vForge(forgeSite.gx, forgeSite.gy), forgePad, forgeSite.scale, [forgeSite.gx - 0.1, forgeSite.gy - 0.1, forgeSite.w + 0.2, forgeSite.d + 0.2, 2.2]) },
+      { d: townSite.gx + townSite.gy, s: vBuildingGroup("town", "마을", vTown(townSite.gx, townSite.gy), townPad, townSite.scale, [townSite.gx - 0.1, townSite.gy - 0.1, townSite.w + 0.2, townSite.d + 0.2, 2.2]) }
     ].sort((a, b) => a.d - b.d).map(o => o.s).join("");
 
     const svg = '<svg class="villageArt tod-day" viewBox="' + V_VB.x + " " + V_VB.y + " " + V_VB.w + " " + V_VB.h + '" xmlns="http://www.w3.org/2000/svg" ' +
@@ -5403,18 +5420,6 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
           window.villageTap(kind);
         }
       });
-      let bb = null;
-      try { bb = g.getBBox(); } catch (err) { bb = null; }
-      if (!bb || !bb.width) return;
-      const pad = 6;
-      const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      r.setAttribute("x", (bb.x - pad).toFixed(1));
-      r.setAttribute("y", (bb.y - pad).toFixed(1));
-      r.setAttribute("width", (bb.width + pad * 2).toFixed(1));
-      r.setAttribute("height", (bb.height + pad * 2).toFixed(1));
-      r.setAttribute("class", "v-hit");
-      r.setAttribute("aria-hidden", "true");
-      g.insertBefore(r, g.firstChild);
     });
   }
 
