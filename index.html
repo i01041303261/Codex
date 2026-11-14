@@ -5871,13 +5871,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     // 발코니
     s += vbox(gx - 0.06, Y + 0.0, zB + 0.1, w + 0.12, 0.13, 0.05, { top: "#d8c9ad", left: "#c1b294", right: "#a99b7e" });
     // 시계
-    s += vDiscY(Y + 0.014, cx, zC + 0.26, 0.29, 0.29, "#c9a24a");
-    s += vDiscY(Y + 0.017, cx, zC + 0.26, 0.255, 0.255, "#efe2c6");
-    s += vDiscY(Y + 0.02, cx, zC + 0.26, 0.21, 0.21, "#2c3350");
+    s += vDiscY(Y + 0.014, cx, zC + 0.26, 0.3, 0.3, "#a9842f");
+    s += vDiscY(Y + 0.017, cx, zC + 0.26, 0.265, 0.265, "#e9d9ae");
+    s += vDiscY(Y + 0.02, cx, zC + 0.26, 0.235, 0.235, "#26304d");
     for (let i = 0; i < 12; i++) {
       const a = Math.PI * 2 * i / 12;
-      const pp = vp(cx + Math.cos(a) * 0.17, Y + 0.024, zC + 0.26 + Math.sin(a) * 0.17);
-      s += `<circle cx="${pp[0].toFixed(1)}" cy="${pp[1].toFixed(1)}" r="${i % 3 === 0 ? 1.1 : 0.6}" fill="#f6e6bd"/>`;
+      const pp = vp(cx + Math.cos(a) * 0.185, Y + 0.024, zC + 0.26 + Math.sin(a) * 0.185);
+      s += `<circle cx="${pp[0].toFixed(1)}" cy="${pp[1].toFixed(1)}" r="${i % 3 === 0 ? 0.9 : 0.5}" fill="#ffd166"/>`;
     }
     const cc = vp(cx, Y + 0.026, zC + 0.26);
     s += `<g class="v-clockHand" style="transform-origin:${cc[0]}px ${cc[1]}px"><line x1="${cc[0]}" y1="${cc[1]}" x2="${cc[0]}" y2="${(cc[1] - 9).toFixed(1)}" stroke="#ffd166" stroke-width="1.5" stroke-linecap="round"/></g>`;
@@ -5930,10 +5930,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const rz = 1.06, rTop = 1.24;
     const r1 = [cx - 0.36, cy, rTop], r2 = [cx + 0.36, cy, rTop];
     s += vTiledPlane(r1, r2, [cx - 0.42, cy - 0.3, rz], [cx + 0.42, cy - 0.3, rz],
-      { a: "#3f6f8c", b: "#4a7d9b", joint: "#263f4d", edge: "#2c4a5a" }, 2, 6);
+      { a: "#7e3a2c", b: "#8c4534", joint: "#4a1c14", edge: "#57241a" }, 2, 6);
     s += vTiledPlane(r1, r2, [cx - 0.42, cy + 0.3, rz], [cx + 0.42, cy + 0.3, rz],
-      { a: "#56809b", b: "#6390ab", joint: "#2c4a5a", edge: "#345565" }, 2, 6);
-    s += vLine3([cx - 0.4, cy, rz], [cx + 0.4, cy, rz], "#8fb6c9", 1.6, 0.9);
+      { a: "#a8503a", b: "#b85c44", joint: "#57241a", edge: "#63291d" }, 2, 6);
+    s += vLine3([cx - 0.4, cy, rz], [cx + 0.4, cy, rz], "#e0b89a", 1.6, 0.9);
     return s;
   }
 
@@ -6016,11 +6016,6 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }));
     add(2.66, vBench(gx + 0.34, gy + 2.12));
     add(3.4, vWell(gx + 1.28, gy + 2.02));
-    // 광장 바닥 돌
-    for (let i = 0; i < 4; i++) {
-      const px = gx + 0.96 + (i % 2) * 0.3, py = gy + 1.62 + Math.floor(i / 2) * 0.22;
-      add(px + py, vEllipseTop(px, py, 0.07, 0.04, i % 2 ? "#c8bda4" : "#bfb299"));
-    }
     add(3.6, vFence(gx + 2.6, gy + 1.02, gx + 2.6, gy + 1.44, 0.3));
     add(3.86, vHouse(gx + 1.84, gy + 1.2, 0.8, 0.6, 0.92, 0.48, {
       wallL: "#efe6d4", wallR: "#dfd4bb", bays: 3, baysR: 2, flowers: true,
