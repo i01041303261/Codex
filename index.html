@@ -467,7 +467,7 @@ button.warning {
 @keyframes sparkRise {
   0% { opacity: 0; transform: translateY(0); }
   25% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-24px); }
+  100% { opacity: 0; transform: translateY(-13px); }
 }
 .v-spark { animation: sparkRise 2.6s linear infinite; transform-box: fill-box; }
 .v-spark2 { animation: sparkRise 2.6s linear infinite 1.3s; transform-box: fill-box; }
@@ -5437,8 +5437,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const r = vhash(i, 5, seed);
       const x = cx + (i % 3) * 0.19 - 0.19, y = cy + (Math.floor(i / 3) % 2) * 0.12, z = i >= 3 ? 0.11 : 0;
       s += vbox(x, y, z, 0.17, 0.5, 0.11, { top: "#b98a52", left: "#9a6d3a", right: "#7d5429" });
-      s += vEllipseTop(x + 0.085, y + 0.5, 0.09, z + 0.11, "#e2c089");
-      if (r > 0.5) s += vEllipseTop(x + 0.085, y - 0.005, 0.09, z + 0.11, "#c9a672");
+      s += vEllipseTop(x + 0.085, y + 0.5, 0.072, z + 0.11, "#cfa877");
+      if (r > 0.5) s += vEllipseTop(x + 0.085, y - 0.005, 0.072, z + 0.11, "#b08e63");
     }
     return s;
   }
@@ -5508,13 +5508,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     s += vpoly(archShade, "#140a05", ' opacity="0.72"');
     // 불꽃
     const fpB = vp(fxc, Y + 0.03, fzB);
-    s += `<ellipse cx="${fpB[0]}" cy="${(fpB[1] - 1).toFixed(1)}" rx="14" ry="9" fill="#ff6a00" opacity="0.4" filter="url(#vBlurSm)"/>`;
-    s += vFlame(fpB[0] - 3, fpB[1], 6, 8, "#ff6a00", "v-fire", 0);
-    s += vFlame(fpB[0] + 3, fpB[1], 5.4, 6.4, "#ff8a1f", "v-fire2", 0.3);
-    s += vFlame(fpB[0] - 0.3, fpB[1], 5, 10.4, "#ffb545", "v-fire3", 0.55);
-    s += vFlame(fpB[0] + 0.8, fpB[1], 3, 6, "#ffe9a8", "v-fire4", 0.15);
-    s += `<ellipse cx="${fpB[0]}" cy="${fpB[1].toFixed(1)}" rx="8" ry="2.2" fill="#ff4d00" opacity="0.92"/>`;
-    s += `<ellipse cx="${fpB[0]}" cy="${(fpB[1] - 0.6).toFixed(1)}" rx="4.6" ry="1.3" fill="#ffd166" opacity="0.85"/>`;
+    s += `<ellipse cx="${fpB[0]}" cy="${(fpB[1] - 1.5).toFixed(1)}" rx="10" ry="7" fill="#ff6a00" opacity="0.34" filter="url(#vBlurSm)"/>`;
+    s += `<ellipse cx="${fpB[0]}" cy="${(fpB[1] - 0.4).toFixed(1)}" rx="6.4" ry="1.7" fill="#ff3d00" opacity="0.9"/>`;
+    s += vFlame(fpB[0] - 2.4, fpB[1], 4.6, 8.4, "#ff6a00", "v-fire", 0);
+    s += vFlame(fpB[0] + 2.6, fpB[1], 4, 6.4, "#ff8a1f", "v-fire2", 0.3);
+    s += vFlame(fpB[0] + 0.2, fpB[1], 4.2, 11, "#ffb545", "v-fire3", 0.55);
+    s += vFlame(fpB[0] - 0.6, fpB[1], 2.2, 6, "#ffe9a8", "v-fire4", 0.15);
     // 쐐기돌
     const nV = 7;
     for (let i = 0; i < nV; i++) {
@@ -5534,7 +5533,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       }
     }
     s += vbox(fxc - frx - 0.17, Y - 0.05, fzS + frz + 0.06, (frx + 0.17) * 2, 0.16, 0.11, { top: "#b9afa4", left: "#a2988d", right: "#8d8379" });
-    s += `<ellipse class="v-furnaceGlow" cx="${fpB[0]}" cy="${(fpB[1] + 5).toFixed(1)}" rx="22" ry="11" fill="#ff8a1f" opacity="0.15" filter="url(#vBlurSm)"/>`;
+    s += `<ellipse class="v-furnaceGlow" cx="${fpB[0]}" cy="${(fpB[1] + 1).toFixed(1)}" rx="15" ry="7" fill="#ff8a1f" opacity="0.12" filter="url(#vBlurSm)"/>`;
 
     /* --- 오른쪽 면 : 문 + 창 --- */
     s += vDoorX(X + 0.012, gy + 0.24, gy + 0.76, zP, 1.14, { arch: true, color: "#5f3c22" });
@@ -5572,20 +5571,17 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   function vAnvil(cx, cy) {
     let s = vShadow(cx, cy, 0.32, 0.28);
-    s += vbox(cx - 0.16, cy - 0.13, 0, 0.32, 0.26, 0.2, { top: "#4c525c", left: "#3e434c", right: "#323740" });
-    s += vbox(cx - 0.1, cy - 0.08, 0.2, 0.2, 0.16, 0.11, { top: "#565d68", left: "#464c56", right: "#393f48" });
-    s += vbox(cx - 0.25, cy - 0.19, 0.31, 0.5, 0.38, 0.14, { top: "#69717e", left: "#525a66", right: "#414852" });
-    s += vPath3([[cx + 0.25, cy - 0.05, 0.45], [cx + 0.42, cy + 0.03, 0.4], [cx + 0.25, cy + 0.13, 0.4]], "#5b6371");
+    s += vbox(cx - 0.13, cy - 0.11, 0, 0.26, 0.22, 0.17, { top: "#4c525c", left: "#3e434c", right: "#323740" });
+    s += vbox(cx - 0.08, cy - 0.07, 0.17, 0.16, 0.14, 0.09, { top: "#565d68", left: "#464c56", right: "#393f48" });
+    s += vbox(cx - 0.2, cy - 0.15, 0.26, 0.4, 0.3, 0.11, { top: "#69717e", left: "#525a66", right: "#414852" });
+    s += vPath3([[cx + 0.2, cy - 0.04, 0.37], [cx + 0.34, cy + 0.03, 0.33], [cx + 0.2, cy + 0.11, 0.33]], "#5b6371");
     // 달궈진 검
-    const p = vp(cx - 0.04, cy + 0.04, 0.5);
+    const p = vp(cx - 0.03, cy + 0.02, 0.4);
     s += `<g class="v-blade">`;
     s += `<ellipse cx="${(p[0] + 6).toFixed(1)}" cy="${(p[1] - 3).toFixed(1)}" rx="9" ry="4" fill="#ff5a00" opacity="0.32" filter="url(#vBlurSm)" transform="rotate(-17 ${p[0]} ${p[1]})"/>`;
     s += `<path d="M${p[0]},${p[1]} L${(p[0] + 13).toFixed(1)},${(p[1] - 4).toFixed(1)} L${(p[0] + 13.8).toFixed(1)},${(p[1] - 2.6).toFixed(1)} L${(p[0] + 1).toFixed(1)},${(p[1] + 1.2).toFixed(1)} Z" fill="url(#vBlade)" stroke="#ffcf8a" stroke-width="0.25"/>`;
     s += `<rect x="${(p[0] - 5).toFixed(1)}" y="${(p[1] + 0.4).toFixed(1)}" width="5" height="1.8" rx="0.6" fill="#8a5a2c" transform="rotate(-17 ${p[0]} ${p[1]})"/>`;
     s += `</g>`;
-    // 망치
-    const h = vp(cx + 0.3, cy + 0.24, 0.04);
-    s += `<g transform="rotate(16 ${h[0]} ${h[1]})"><rect x="${(h[0] - 0.8).toFixed(1)}" y="${(h[1] - 11).toFixed(1)}" width="1.6" height="11" fill="#8a5f33" rx="0.8"/><rect x="${(h[0] - 3.4).toFixed(1)}" y="${(h[1] - 14).toFixed(1)}" width="6.8" height="3.4" rx="1" fill="#5b6371" stroke="#3b414b" stroke-width="0.4"/></g>`;
     return s;
   }
 
@@ -5646,9 +5642,9 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     s += vWallX(jX, gy - 0.02, jY, z1, z2, "#e8dcc6");
     s += vTimberY(jY, gx - 0.02, jX, z1, z2, { bays: 4, stagger: 1 });
     s += vTimberX(jX, gy - 0.02, jY, z1, z2, { bays: 2, stagger: 0, beam: "#6f4c2c" });
-    s += vWindowY(jY + 0.014, gx + 0.12, gx + 0.78, z1 + 0.34, z1 + 0.92, { flowers: true, flowerA: "#ff7aa2", flowerB: "#ffe066" });
-    s += vWindowY(jY + 0.014, gx + 1.18, gx + 1.84, z1 + 0.34, z1 + 0.92, { flowers: true, flowerA: "#c792ff", flowerB: "#8fd6ff" });
-    s += vWindowX(jX + 0.014, gy + 0.36, gy + 0.84, z1 + 0.34, z1 + 0.92, {});
+    s += vWindowY(jY + 0.014, gx + 0.2, gx + 0.72, z1 + 0.4, z1 + 0.86, { flowers: true, flowerA: "#ff7aa2", flowerB: "#ffe066" });
+    s += vWindowY(jY + 0.014, gx + 1.28, gx + 1.8, z1 + 0.4, z1 + 0.86, { flowers: true, flowerA: "#c792ff", flowerB: "#8fd6ff" });
+    s += vWindowX(jX + 0.014, gy + 0.4, gy + 0.8, z1 + 0.4, z1 + 0.86, {});
     // 2층 난간
     s += vbox(gx - 0.02, jY + 0.05, z1, w + 0.04, 0.05, 0.05, { top: "#b07f4a", left: "#96683a", right: "#7d5529" });
     for (let i = 0; i <= 7; i++) {
@@ -6181,7 +6177,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       '<stop offset="0%" stop-color="#ffb347"/><stop offset="35%" stop-color="#ff6a00" stop-opacity="0.95"/>' +
       '<stop offset="72%" stop-color="#8c1f00" stop-opacity="0.95"/><stop offset="100%" stop-color="#1b0a04"/></radialGradient>' +
       '<linearGradient id="vBlade" x1="0" y1="0" x2="1" y2="0">' +
-      '<stop offset="0%" stop-color="#ffcf8a"/><stop offset="45%" stop-color="#ff8a1f"/><stop offset="100%" stop-color="#ffe6b8"/></linearGradient>' +
+      '<stop offset="0%" stop-color="#ff7a1f"/><stop offset="55%" stop-color="#ff9d3a"/><stop offset="100%" stop-color="#ffd88a"/></linearGradient>' +
       '<filter id="vBlur" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter>' +
       '<filter id="vBlurSm" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>' +
       "</defs>" +
