@@ -454,8 +454,8 @@ button.warning {
 .v-building .v-pad { opacity: 0; transition: opacity 0.2s ease; }
 .v-building:hover .v-pad, .v-building:active .v-pad { opacity: 1; }
 .v-hit { fill: transparent; pointer-events: all; }
-/* 장식 요소는 터치를 가로채지 않음 (건물 히트 영역만 반응) */
-.v-building-body, .v-building-body * { pointer-events: none; }
+/* 보이지 않는 강조 타원은 터치를 가로채지 않게 */
+.v-pad { pointer-events: none; }
 
 /* 마을 소품 애니메이션 */
 @keyframes fireFlicker {
@@ -5323,10 +5323,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     // 건물 배치 (뒤 -> 앞)
     const buildList = [
-      { d: shopSite.gx + shopSite.gy, s: vBuildingGroup("shop", "상점", vShop(shopSite.gx, shopSite.gy), shopPad, shopSite.scale, [shopSite.gx - 0.1, shopSite.gy - 0.1, shopSite.w + 0.2, shopSite.d + 0.2, 2.3]) },
-      { d: portalSite.gx + portalSite.gy, s: vBuildingGroup("portal", "포탈", portal.svg, portalPad, portalSite.scale, [portalSite.gx + 0.3, portalSite.gy + 0.3, portalSite.w - 0.6, portalSite.d - 0.6, 4.2]) },
-      { d: forgeSite.gx + forgeSite.gy, s: vBuildingGroup("forge", "대장간", vForge(forgeSite.gx, forgeSite.gy), forgePad, forgeSite.scale, [forgeSite.gx - 0.1, forgeSite.gy - 0.1, forgeSite.w + 0.2, forgeSite.d + 0.2, 2.2]) },
-      { d: townSite.gx + townSite.gy, s: vBuildingGroup("town", "마을", vTown(townSite.gx, townSite.gy), townPad, townSite.scale, [townSite.gx - 0.1, townSite.gy - 0.1, townSite.w + 0.2, townSite.d + 0.2, 2.2]) }
+      { d: shopSite.gx + shopSite.gy, s: vBuildingGroup("shop", "상점", vShop(shopSite.gx, shopSite.gy), shopPad, shopSite.scale, [shopSite.gx - 0.1, shopSite.gy - 0.1, shopSite.w + 0.2, shopSite.d + 0.2, 2.6]) },
+      { d: portalSite.gx + portalSite.gy, s: vBuildingGroup("portal", "포탈", portal.svg, portalPad, portalSite.scale, [portalSite.gx + 0.3, portalSite.gy + 0.3, portalSite.w - 0.6, portalSite.d - 0.6, 4.6]) },
+      { d: forgeSite.gx + forgeSite.gy, s: vBuildingGroup("forge", "대장간", vForge(forgeSite.gx, forgeSite.gy), forgePad, forgeSite.scale, [forgeSite.gx - 0.1, forgeSite.gy - 0.1, forgeSite.w + 0.2, forgeSite.d + 0.2, 2.8]) },
+      { d: townSite.gx + townSite.gy, s: vBuildingGroup("town", "마을", vTown(townSite.gx, townSite.gy), townPad, townSite.scale, [townSite.gx - 0.1, townSite.gy - 0.1, townSite.w + 0.2, townSite.d + 0.2, 2.6]) }
     ].sort((a, b) => a.d - b.d).map(o => o.s).join("");
 
     const svg = '<svg class="villageArt tod-day" viewBox="' + V_VB.x + " " + V_VB.y + " " + V_VB.w + " " + V_VB.h + '" xmlns="http://www.w3.org/2000/svg" ' +
