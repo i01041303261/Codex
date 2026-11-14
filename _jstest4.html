@@ -1690,7 +1690,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 <body>
 <script>
 window.__errs = [];
-window.addEventListener('error', function(e){ window.__errs.push('ERR: ' + e.message + ' @' + (e.filename||'') + ':' + (e.lineno||0) + ':' + (e.colno||0)); });
+window.addEventListener('error', function(e){ window.__errs.push('ERR: ' + e.message + ' @' + (e.lineno||0) + ':' + (e.colno||0)); });
 window.addEventListener('unhandledrejection', function(e){ window.__errs.push('REJ: ' + (e.reason && e.reason.message ? e.reason.message : e.reason)); });
 (function(){ var ce = console.error, cw = console.warn;
   console.error = function(){ window.__errs.push('CE: ' + Array.prototype.join.call(arguments,' ')); ce.apply(console, arguments); };
@@ -4563,10 +4563,10 @@ setInterval(function(){
 
   // 20. 낮/밤 조명
   const TOD_CONFIG = {
-    morning: { badge: "🌅 아침 (해돋이)", body: "#ffe3b0", glow: "#ffb37a", cx: 150, cy: 140, winOp: 0.2, lampOp: 0.2 },
-    day:     { badge: "☀️ 낮 (마을 활성화)", body: "#fff6cf", glow: "#fff0b0", cx: 400, cy: 55,  winOp: 0.1, lampOp: 0.1 },
-    evening: { badge: "🌇 노을 저녁 (마을 황혼)", body: "#ffcf8a", glow: "#ff8a5c", cx: 640, cy: 150, winOp: 0.75, lampOp: 0.8 },
-    night:   { badge: "🌙 깊은 밤 (별빛 활성화)", body: "#fff3c4", glow: "#ffcf5a", cx: 670, cy: 55,  winOp: 0.95, lampOp: 1.0 }
+    morning: { badge: "🌅 아침 (해돋이)", body: "#ffe3b0", glow: "#ffb37a", cx: 118, cy: 132, winOp: 0.2, lampOp: 0.2 },
+    day:     { badge: "☀️ 낮 (마을 활성화)", body: "#fff6cf", glow: "#fff0b0", cx: 578, cy: 52,  winOp: 0.1, lampOp: 0.1 },
+    evening: { badge: "🌇 노을 저녁 (마을 황혼)", body: "#ffcf8a", glow: "#ff8a5c", cx: 128, cy: 138, winOp: 0.75, lampOp: 0.8 },
+    night:   { badge: "🌙 깊은 밤 (별빛 활성화)", body: "#fff3c4", glow: "#ffcf5a", cx: 578, cy: 58,  winOp: 0.95, lampOp: 1.0 }
   };
   function getTodPeriod(hour) {
     if (hour >= 5 && hour < 8) return "morning";
@@ -5236,8 +5236,13 @@ setInterval(function(){
       }
     }
     V_SITES.forEach(s => {
-      for (let x = Math.floor(s.gx - 0.25); x <= Math.ceil(s.gx + s.w + 0.2); x++)
-        for (let y = Math.floor(s.gy - 0.25); y <= Math.ceil(s.gy + s.d + 0.2); y++) pathSet.add(x + "," + y);
+      if (s.key !== "shop" && s.key !== "town") return;
+      for (let x = 0; x < V_N; x++) {
+        for (let y = 0; y < V_N; y++) {
+          const xc = x + 0.5, yc = y + 0.5;
+          if (xc > s.gx - 0.15 && xc < s.gx + s.w + 0.15 && yc > s.gy - 0.15 && yc < s.gy + s.d + 0.15) pathSet.add(x + "," + y);
+        }
+      }
     });
     const nearSite = (x, y) => V_SITES.some(s => x + 0.5 > s.gx - 1.0 && x + 0.5 < s.gx + s.w + 1.0 && y + 0.5 > s.gy - 1.0 && y + 0.5 < s.gy + s.d + 1.0);
 
@@ -5326,8 +5331,8 @@ setInterval(function(){
       '<rect width="' + V_W + '" height="' + V_H + '" fill="url(#vSky)"/>' +
       '<ellipse cx="' + (V_W / 2) + '" cy="' + (V_H * 0.68) + '" rx="' + (V_W * 0.52) + '" ry="' + (V_H * 0.46) + '" fill="url(#vVoid)"/>' +
       "<g>" + stars + "</g>" +
-      '<circle id="skyGlow" cx="600" cy="58" r="42" fill="#ffbe0b" opacity="0.45" filter="url(#vBlur)"/>' +
-      '<circle id="skyBody" cx="600" cy="58" r="20" fill="#fff6cf"/>' +
+      '<circle id="skyGlow" cx="578" cy="52" r="34" fill="#ffbe0b" opacity="0.42" filter="url(#vBlur)"/>' +
+      '<circle id="skyBody" cx="578" cy="52" r="16" fill="#fff6cf"/>' +
       '<ellipse cx="' + (V_W / 2) + '" cy="' + (V_H - 40) + '" rx="250" ry="26" fill="#000000" opacity="0.35" filter="url(#vBlur)"/>' +
       "<g>" + terrain + decoStr +
       vLamp(3.9, 6.6) + vLamp(6.9, 3.85) + vLamp(6.6, 7.2) +
