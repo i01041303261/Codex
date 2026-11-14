@@ -453,7 +453,9 @@ button.warning {
 .v-building:focus { outline: none; }
 .v-building .v-pad { opacity: 0; transition: opacity 0.2s ease; }
 .v-building:hover .v-pad, .v-building:active .v-pad { opacity: 1; }
-.v-hit { fill: transparent; }
+.v-hit { fill: transparent; pointer-events: all; }
+/* 장식 요소는 터치를 가로채지 않음 (건물 히트 영역만 반응) */
+.v-building-body, .v-building-body * { pointer-events: none; }
 
 /* 마을 소품 애니메이션 */
 @keyframes fireFlicker {
