@@ -3829,8 +3829,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const isApex = d.id === 8;
       const isDeep = d.id >= 6;
       const badge = isApex
-        ? ' <span style="font-size:0.68rem; color:#ffd166; font-weight:900; letter-spacing:0.5px;">★APEX FINAL</span>'
-        : (d.id === 7 ? ' <span style="font-size:0.68rem; color:var(--cyan); font-weight:900; letter-spacing:0.5px;">★심연</span>' : '');
+        ? ' <span style="font-size:0.68rem; color:#ffd166; font-weight:900; letter-spacing:0.5px; white-space:nowrap; flex-shrink:0;">★APEX</span>'
+        : (d.id === 7 ? ' <span style="font-size:0.68rem; color:var(--cyan); font-weight:900; letter-spacing:0.5px; white-space:nowrap; flex-shrink:0;">★심연</span>' : '');
       return `
         <div class="dim-card" style="--dim-gradient: ${d.gradient}; opacity: ${isLocked ? 0.65 : 1}; ${isDeep ? 'border: 2px solid var(--purple);' : ''}${isApex ? ' box-shadow: 0 0 30px rgba(255,209,102,0.32);' : ''}" onclick="enterDimension(${d.id})">
           <div class="dim-header">
