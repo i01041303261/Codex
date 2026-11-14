@@ -443,6 +443,39 @@ button.warning {
 .villageArt.tod-day     .v-tint-day,
 .villageArt.tod-evening .v-tint-evening,
 .villageArt.tod-night   .v-tint-night { opacity: 1; }
+/* 하늘: 시간대별 배경 레이어 (밤 하늘은 기본 레이어, 아침·낮·저녁은 위에 덮임) */
+.villageArt .v-sky-layer { opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
+.villageArt.tod-morning .v-sky-morning,
+.villageArt.tod-day     .v-sky-day,
+.villageArt.tod-evening .v-sky-evening { opacity: 1; }
+.villageArt .v-stars,
+.villageArt .v-clouds,
+.villageArt .v-void-glow { transition: opacity 1.4s ease; }
+.villageArt .v-stars { opacity: 1; }
+.villageArt.tod-morning .v-stars { opacity: 0.06; }
+.villageArt.tod-day     .v-stars { opacity: 0; }
+.villageArt.tod-evening .v-stars { opacity: 0.48; }
+.villageArt.tod-night   .v-stars { opacity: 1; }
+.villageArt .v-void-glow { opacity: 1; }
+.villageArt.tod-morning .v-void-glow { opacity: 0.3; }
+.villageArt.tod-day     .v-void-glow { opacity: 0.14; }
+.villageArt.tod-evening .v-void-glow { opacity: 0.65; }
+.villageArt.tod-night   .v-void-glow { opacity: 1; }
+.villageArt .v-clouds { opacity: 0; }
+.villageArt.tod-morning .v-clouds { opacity: 0.9; }
+.villageArt.tod-day     .v-clouds { opacity: 1; }
+.villageArt.tod-evening .v-clouds { opacity: 0.45; }
+.villageArt.tod-night   .v-clouds { opacity: 0; }
+@keyframes cloudDrift { from { transform: translateX(-11px); } to { transform: translateX(11px); } }
+.v-cloud { animation: cloudDrift 26s ease-in-out infinite alternate; }
+.v-cloud-2 { animation-duration: 34s; animation-delay: -7s; }
+.v-cloud-3 { animation-duration: 30s; animation-delay: -15s; }
+/* 스테이지 바깥 여백도 같은 시간대 색으로 */
+.village-wrap { transition: background 1.4s ease; }
+.village-wrap.tod-morning { background: radial-gradient(120% 90% at 50% 0%, #a9d7f1 0%, #ffe2c0 62%, #ffcd9c 100%); }
+.village-wrap.tod-day     { background: radial-gradient(120% 90% at 50% 0%, #74bde8 0%, #bfe4f8 58%, #eff9ff 100%); }
+.village-wrap.tod-evening { background: radial-gradient(120% 90% at 50% 0%, #463d7a 0%, #c2694f 60%, #ffbe7a 100%); }
+.village-wrap.tod-night   { background: radial-gradient(120% 90% at 50% 0%, #17234b 0%, #0a1024 55%, #05070f 100%); }
 .windowLight, .lampBulb { transition: opacity 0.8s ease; }
 
 /* 건물 터치 영역 */
@@ -4578,7 +4611,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   // 20. 낮/밤 조명
   const TOD_CONFIG = {
     morning: { badge: "🌅 아침 (해돋이)", body: "#ffe3b0", glow: "#ffb37a", cx: 205, cy: 150, winOp: 0.2, lampOp: 0.2 },
-    day:     { badge: "☀️ 낮 (마을 활성화)", body: "#fff6cf", glow: "#fff0b0", cx: 600, cy: 118, winOp: 0.1, lampOp: 0.1 },
+    day:     { badge: "☀️ 낮 (마을 활성화)", body: "#fffdef", glow: "#ffd76a", cx: 600, cy: 118, winOp: 0.1, lampOp: 0.1 },
     evening: { badge: "🌇 노을 저녁 (마을 황혼)", body: "#ffcf8a", glow: "#ff8a5c", cx: 210, cy: 152, winOp: 0.75, lampOp: 0.8 },
     night:   { badge: "🌙 깊은 밤 (별빛 활성화)", body: "#fff3c4", glow: "#ffcf5a", cx: 596, cy: 122, winOp: 0.95, lampOp: 1.0 }
   };
@@ -4596,11 +4629,18 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const c = TOD_CONFIG[period];
     svg.classList.remove("tod-morning", "tod-day", "tod-evening", "tod-night");
     svg.classList.add("tod-" + period);
+    const wrap = svg.closest(".village-wrap");
+    if (wrap) {
+      wrap.classList.remove("tod-morning", "tod-day", "tod-evening", "tod-night");
+      wrap.classList.add("tod-" + period);
+    }
     if (badge) badge.textContent = c.badge;
     const body = document.getElementById("skyBody");
     const glow = document.getElementById("skyGlow");
+    const halo = document.getElementById("skyHalo");
     if (body) { body.setAttribute("cx", c.cx); body.setAttribute("cy", c.cy); body.setAttribute("fill", c.body); }
     if (glow) { glow.setAttribute("cx", c.cx); glow.setAttribute("cy", c.cy); glow.setAttribute("fill", c.glow); }
+    if (halo) { halo.setAttribute("cx", c.cx); halo.setAttribute("cy", c.cy); halo.setAttribute("fill", c.glow); halo.setAttribute("opacity", period === "night" ? 0.14 : 0.22); }
     document.querySelectorAll(".windowLight").forEach(el => el.style.opacity = c.winOp);
     document.querySelectorAll(".lampBulb").forEach(el => el.style.opacity = c.lampOp);
   }
@@ -6117,6 +6157,23 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         '" fill="#ffffff" opacity="' + (0.3 + vhash(i, 4, 3) * 0.5).toFixed(2) + '"/>';
     }
 
+    // 구름 (아침·낮 하늘)
+    let clouds = "";
+    const vCloud = (cx, cy, s, o, cls) => {
+      const puff = (dx, dy, rx, ry, fill) =>
+        '<ellipse cx="' + (cx + dx * s).toFixed(1) + '" cy="' + (cy + dy * s).toFixed(1) + '" rx="' + (rx * s).toFixed(1) +
+        '" ry="' + (ry * s).toFixed(1) + '" fill="' + fill + '"/>';
+      return '<g class="v-cloud' + (cls ? " " + cls : "") + '" opacity="' + o + '">' +
+        puff(0, 7, 34, 8, "#cfe4f4") +
+        puff(0, 0, 30, 12, "#ffffff") + puff(-23, 5, 19, 9, "#ffffff") + puff(23, 5, 21, 10, "#ffffff") +
+        puff(-8, -9, 16, 10, "#ffffff") + puff(11, -7, 13, 9, "#ffffff") + "</g>";
+    };
+    clouds += vCloud(120, 102, 1.0, 0.92);
+    clouds += vCloud(392, 50, 0.72, 0.78, "v-cloud-2");
+    clouds += vCloud(646, 208, 0.95, 0.86, "v-cloud-3");
+    clouds += vCloud(98, 272, 0.62, 0.6, "v-cloud-2");
+    clouds += vCloud(604, 372, 0.55, 0.5, "v-cloud-3");
+
     const shopSite = V_SITES[0], forgeSite = V_SITES[2], townSite = V_SITES[3];
     const shopPad = vp(shopSite.gx + shopSite.w / 2, shopSite.gy + shopSite.d / 2, 0.05);
     const forgePad = vp(forgeSite.gx + forgeSite.w / 2, forgeSite.gy + forgeSite.d / 2, 0.05);
@@ -6159,6 +6216,18 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       '<linearGradient id="vSky" x1="0" y1="0" x2="0" y2="1">' +
       '<stop offset="0%" stop-color="#0a1230"/><stop offset="45%" stop-color="#152246"/><stop offset="100%" stop-color="#070a18"/>' +
       "</linearGradient>" +
+      '<linearGradient id="vSkyMorning" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="#7bb9e4"/><stop offset="34%" stop-color="#acd9f2"/>' +
+      '<stop offset="64%" stop-color="#ffe4c2"/><stop offset="100%" stop-color="#ffc9a0"/>' +
+      "</linearGradient>" +
+      '<linearGradient id="vSkyDay" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="#4fa8e4"/><stop offset="38%" stop-color="#8fd0f4"/>' +
+      '<stop offset="70%" stop-color="#d5eefb"/><stop offset="100%" stop-color="#fdf4e0"/>' +
+      "</linearGradient>" +
+      '<linearGradient id="vSkyEvening" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="#3b3a74"/><stop offset="30%" stop-color="#8e5a94"/>' +
+      '<stop offset="62%" stop-color="#e8794f"/><stop offset="100%" stop-color="#ffc27a"/>' +
+      "</linearGradient>" +
       '<radialGradient id="vVoid" cx="50%" cy="60%" r="55%">' +
       '<stop offset="0%" stop-color="#2f6bff" stop-opacity="0.5"/><stop offset="55%" stop-color="#7b2cbf" stop-opacity="0.18"/>' +
       '<stop offset="100%" stop-color="#000000" stop-opacity="0"/></radialGradient>' +
@@ -6177,8 +6246,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       '<filter id="vBlurSm" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>' +
       "</defs>" +
       '<rect x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="url(#vSky)"/>' +
-      '<ellipse cx="' + (V_W / 2) + '" cy="' + (V_H * 0.68) + '" rx="' + (V_W * 0.52) + '" ry="' + (V_H * 0.46) + '" fill="url(#vVoid)"/>' +
-      "<g>" + stars + "</g>" +
+      '<rect class="v-sky-layer v-sky-morning" x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="url(#vSkyMorning)"/>' +
+      '<rect class="v-sky-layer v-sky-day" x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="url(#vSkyDay)"/>' +
+      '<rect class="v-sky-layer v-sky-evening" x="-200" y="-200" width="' + (V_W + 400) + '" height="' + (V_H + 400) + '" fill="url(#vSkyEvening)"/>' +
+      '<ellipse class="v-void-glow" cx="' + (V_W / 2) + '" cy="' + (V_H * 0.68) + '" rx="' + (V_W * 0.52) + '" ry="' + (V_H * 0.46) + '" fill="url(#vVoid)"/>' +
+      '<g class="v-clouds">' + clouds + "</g>" +
+      '<g class="v-stars">' + stars + "</g>" +
+      '<circle id="skyHalo" cx="600" cy="118" r="74" fill="#fff0b0" opacity="0.2" filter="url(#vBlur)"/>' +
       '<circle id="skyGlow" cx="600" cy="118" r="34" fill="#ffbe0b" opacity="0.42" filter="url(#vBlur)"/>' +
       '<circle id="skyBody" cx="600" cy="118" r="16" fill="#fff6cf"/>' +
       '<ellipse cx="' + (V_W / 2) + '" cy="' + (V_H - 40) + '" rx="250" ry="26" fill="#000000" opacity="0.35" filter="url(#vBlur)"/>' +
