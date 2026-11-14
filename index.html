@@ -5102,12 +5102,22 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     // 굴뚝
     s += vbox(gx + 1.5, gy + 0.22, wh + 0.1, 0.38, 0.38, 1.15, stoneD);
     s += vbox(gx + 1.44, gy + 0.16, wh + 1.22, 0.5, 0.5, 0.1, { top: "#4a515c", left: "#3c424b", right: "#32383f" });
-    // 화로 입구
-    s += vpoly([vp(gx + 0.56, gy + d, 0.72), vp(gx + 1.46, gy + d, 0.72), vp(gx + 1.46, gy + d, 0.06), vp(gx + 0.56, gy + d, 0.06)], "#1d120b");
-    const fm = vp(gx + 1.01, gy + d, 0.38);
-    s += '<ellipse cx="' + fm[0] + '" cy="' + (fm[1] + 3) + '" rx="24" ry="12" fill="#ff8a1f" opacity="0.3" filter="url(#vBlurSm)"/>';
-    s += '<ellipse class="v-fire" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="17" ry="8" fill="#ff8a1f" opacity="0.9"/>' +
-      '<ellipse class="v-fire2" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="9" ry="4.4" fill="#ffe08a" opacity="0.95"/>';
+    // 화로 입구 (아치)
+    const mx1 = gx + 0.58, mx2 = gx + 1.46, yF = gy + d, zBase = 0.04, zTop = 0.5;
+    const archPts = [];
+    const acx = (mx1 + mx2) / 2, arx = (mx2 - mx1) / 2;
+    archPts.push(vp(mx1, yF, zBase));
+    archPts.push(vp(mx1, yF, zTop));
+    for (let i = 0; i <= 8; i++) {
+      const ang = Math.PI * (1 - i / 8);
+      archPts.push(vp(acx + Math.cos(ang) * arx, yF, zTop + Math.sin(ang) * 0.2));
+    }
+    archPts.push(vp(mx2, yF, zBase));
+    s += vpoly(archPts, "#160d07");
+    const fm = vp(acx, yF, zBase + 0.16);
+    s += '<ellipse cx="' + fm[0] + '" cy="' + (fm[1] + 2) + '" rx="26" ry="13" fill="#ff8a1f" opacity="0.28" filter="url(#vBlurSm)"/>';
+    s += '<ellipse class="v-fire" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="13" ry="7" fill="#ff8a1f" opacity="0.92"/>' +
+      '<ellipse class="v-fire2" cx="' + fm[0] + '" cy="' + (fm[1] + 1) + '" rx="7" ry="3.6" fill="#ffe08a" opacity="0.95"/>';
     // 굴뚝 연기
     const ch = vp(gx + 1.69, gy + 0.41, wh + 1.35);
     s += '<circle class="smoke-particle" cx="' + ch[0] + '" cy="' + ch[1] + '" r="4.4" fill="#c9d4e6" opacity="0.5"/>' +
@@ -5364,7 +5374,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     let bb = null;
     try { bb = scene.getBBox(); } catch (e) { return null; }
     if (!bb || !bb.width || !bb.height) return null;
-    const padX = 16, padTop = 30, padBottom = 18;
+    const padX = 24, padTop = 32, padBottom = 20;
     const vb = {
       x: Math.round(bb.x - padX),
       y: Math.round(bb.y - padTop),
