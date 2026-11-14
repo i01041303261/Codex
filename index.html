@@ -5125,15 +5125,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   /* ---------- 포탈 ---------- */
   function vPortal(gx, gy) {
     const cx = gx + 1.1, cy = gy + 1.1;
-    const base = vp(cx, cy, 0.46);
-    const ringW = 30, ringH = 38;
+    const base = vp(cx, cy, 0.42);
+    const ringW = 27, ringH = 34;
     const rcx = base[0], rcy = base[1] - 6 - ringH;
     let s = "";
     // 뒤 광휘
     s += '<ellipse cx="' + rcx + '" cy="' + rcy + '" rx="' + (ringW + 40) + '" ry="' + (ringH + 34) + '" fill="url(#vPortalGlow)" filter="url(#vBlur)"/>';
     // 기단
-    s += vbox(gx, gy, 0, 2.2, 2.2, 0.28, { top: "#6a7182", left: "#565d6c", right: "#474d5a" });
-    s += vbox(gx + 0.2, gy + 0.2, 0.28, 1.8, 1.8, 0.18, { top: "#7d859a", left: "#666e80", right: "#545a6b" });
+    s += vbox(gx + 0.3, gy + 0.3, 0, 1.8, 1.8, 0.24, { top: "#6a7182", left: "#565d6c", right: "#474d5a" });
+    s += vbox(gx + 0.5, gy + 0.5, 0.24, 1.4, 1.4, 0.16, { top: "#7d859a", left: "#666e80", right: "#545a6b" });
     // 링
     s += '<ellipse cx="' + rcx + '" cy="' + rcy + '" rx="' + ringW + '" ry="' + ringH + '" fill="none" stroke="#6e7789" stroke-width="9"/>';
     s += '<ellipse cx="' + rcx + '" cy="' + rcy + '" rx="' + ringW + '" ry="' + ringH + '" fill="none" stroke="#a9b4c8" stroke-width="2.4" opacity="0.75"/>';
@@ -5155,7 +5155,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }
     s += "</g>";
     // 기단 위 빛무리
-    s += '<ellipse class="lampBulb" cx="' + base[0] + '" cy="' + (base[1] + 2) + '" rx="' + (ringW + 16) + '" ry="9" fill="#00f5d4" opacity="0.25"/>';
+    s += '<ellipse class="lampBulb" cx="' + base[0] + '" cy="' + (base[1] + 2) + '" rx="' + (ringW + 12) + '" ry="8" fill="#00f5d4" opacity="0.22"/>';
     return { svg: s, anchor: [rcx, rcy - ringH - 16] };
   }
 
@@ -5227,18 +5227,9 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     for (let x = 0; x < V_N; x++) {
       for (let y = 0; y < V_N; y++) {
         const xc = x + 0.5, yc = y + 0.5;
-        if (Math.abs(xc - V_C) <= 0.6 || Math.abs(yc - V_C) <= 0.6) pathSet.add(x + "," + y);
-        if (Math.abs(xc - V_C) <= 1.1 && Math.abs(yc - V_C) <= 1.1) pathSet.add(x + "," + y);   // 중앙 광장
+        if (Math.abs(xc - (V_C + 0.5)) <= 1.0 || Math.abs(yc - (V_C + 0.5)) <= 1.0) pathSet.add(x + "," + y);
       }
     }
-    V_SITES.forEach(s => {
-      for (let x = 0; x < V_N; x++) {
-        for (let y = 0; y < V_N; y++) {
-          const xc = x + 0.5, yc = y + 0.5;
-          if (xc > s.gx - 0.1 && xc < s.gx + s.w + 0.1 && yc > s.gy - 0.1 && yc < s.gy + s.d + 0.1) pathSet.add(x + "," + y);
-        }
-      }
-    });
     const nearSite = (x, y) => V_SITES.some(s => x + 0.5 > s.gx - 1.0 && x + 0.5 < s.gx + s.w + 1.0 && y + 0.5 > s.gy - 1.0 && y + 0.5 < s.gy + s.d + 1.0);
 
     const GRASS = ["#8fd35f", "#7fc64f", "#9adc6b", "#86cc57"];
