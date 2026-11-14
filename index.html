@@ -413,7 +413,7 @@ button.warning {
 .village-stage {
   position: relative;
   width: 100%;
-  aspect-ratio: 900 / 620;
+  aspect-ratio: 532 / 402;
   touch-action: manipulation;
   -webkit-user-select: none;
   user-select: none;
@@ -4548,10 +4548,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   // 20. 낮/밤 조명
   const TOD_CONFIG = {
-    morning: { badge: "🌅 아침 (해돋이)", body: "#ffe3b0", glow: "#ffb37a", cx: 118, cy: 132, winOp: 0.2, lampOp: 0.2 },
-    day:     { badge: "☀️ 낮 (마을 활성화)", body: "#fff6cf", glow: "#fff0b0", cx: 578, cy: 52,  winOp: 0.1, lampOp: 0.1 },
-    evening: { badge: "🌇 노을 저녁 (마을 황혼)", body: "#ffcf8a", glow: "#ff8a5c", cx: 128, cy: 138, winOp: 0.75, lampOp: 0.8 },
-    night:   { badge: "🌙 깊은 밤 (별빛 활성화)", body: "#fff3c4", glow: "#ffcf5a", cx: 578, cy: 58,  winOp: 0.95, lampOp: 1.0 }
+    morning: { badge: "🌅 아침 (해돋이)", body: "#ffe3b0", glow: "#ffb37a", cx: 205, cy: 150, winOp: 0.2, lampOp: 0.2 },
+    day:     { badge: "☀️ 낮 (마을 활성화)", body: "#fff6cf", glow: "#fff0b0", cx: 600, cy: 118, winOp: 0.1, lampOp: 0.1 },
+    evening: { badge: "🌇 노을 저녁 (마을 황혼)", body: "#ffcf8a", glow: "#ff8a5c", cx: 210, cy: 152, winOp: 0.75, lampOp: 0.8 },
+    night:   { badge: "🌙 깊은 밤 (별빛 활성화)", body: "#fff3c4", glow: "#ffcf5a", cx: 596, cy: 122, winOp: 0.95, lampOp: 1.0 }
   };
   function getTodPeriod(hour) {
     if (hour >= 5 && hour < 8) return "morning";
@@ -4972,13 +4972,14 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   // ==================================================
   const V_W = 720, V_H = 470;
   const V_TW = 56, V_TH = 28, V_BH = 15;
-  const V_OX = 360, V_OY = 66, V_N = 11, V_C = 5.5, V_R = 5.2;
+  const V_OX = 360, V_OY = 66, V_N = 11, V_C = 5.5, V_R = 5.45;
+  const V_VB = { x: 150, y: 50, w: 532, h: 402 };
 
   const V_SITES = [
-    { key: "shop", gx: 2.4, gy: 4.0, w: 2.2, d: 2.0, lz: 2.1 },
-    { key: "portal", gx: 4.4, gy: 4.4, w: 2.2, d: 2.2, lz: 2.2 },
-    { key: "forge", gx: 1.6, gy: 7.4, w: 2.1, d: 1.7, lz: 2.0 },
-    { key: "town", gx: 7.0, gy: 2.4, w: 2.4, d: 1.9, lz: 2.2 }
+    { key: "shop", gx: 1.9, gy: 3.55, w: 2.3, d: 2.1, scale: 1.16 },
+    { key: "portal", gx: 4.3, gy: 4.3, w: 2.4, d: 2.4, scale: 1.14 },
+    { key: "forge", gx: 1.15, gy: 7.55, w: 2.2, d: 1.8, scale: 1.16 },
+    { key: "town", gx: 7.3, gy: 2.0, w: 2.5, d: 2.1, scale: 1.1 }
   ];
 
   // 아이소메트릭 좌표 -> 화면 좌표 (gx,gy: 격자 단위, gz: 블록 높이 단위)
@@ -5083,10 +5084,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   /* ---------- 대장간 ---------- */
   function vForge(gx, gy) {
-    const stone = { top: "#8a94a3", left: "#727b8a", right: "#5e6572" };
-    const stoneB = { top: "#6c7683", left: "#5a626e", right: "#4a515c" };
-    const stoneD = { top: "#5a626f", left: "#49505a", right: "#3c424b" };
-    const slate = { light: "#5b6472", mid: "#4b5462", dark: "#3b4350" };
+    const stone = { top: "#9a8f8a", left: "#82766f", right: "#6b605a" };
+    const stoneB = { top: "#7a6f69", left: "#665c56", right: "#544b46" };
+    const stoneD = { top: "#5f5651", left: "#4d4540", right: "#3e3733" };
+    const slate = { light: "#7a4a3a", mid: "#653b2e", dark: "#4e2d23" };
     const w = 2.1, d = 1.7, wh = 1.12, rh = 0.42;
     let s = "";
     s += vbox(gx, gy, 0, w, d, 0.26, stoneB);                 // 기단
@@ -5104,6 +5105,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     // 화로 입구
     s += vpoly([vp(gx + 0.56, gy + d, 0.72), vp(gx + 1.46, gy + d, 0.72), vp(gx + 1.46, gy + d, 0.06), vp(gx + 0.56, gy + d, 0.06)], "#1d120b");
     const fm = vp(gx + 1.01, gy + d, 0.38);
+    s += '<ellipse cx="' + fm[0] + '" cy="' + (fm[1] + 4) + '" rx="46" ry="20" fill="#ff8a1f" opacity="0.22" filter="url(#vBlurSm)"/>';
     s += '<ellipse class="v-fire" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="17" ry="8" fill="#ff8a1f" opacity="0.9"/>' +
       '<ellipse class="v-fire2" cx="' + fm[0] + '" cy="' + fm[1] + '" rx="9" ry="4.4" fill="#ffe08a" opacity="0.95"/>';
     // 굴뚝 연기
@@ -5174,9 +5176,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     // 앞쪽 집
     s += vHouse(7.55, 3.55, 1.05, 0.8, 0.72, 0.54, wallC, roof2);
     s += vWindows(7.55, 3.55, 1.05, 0.8, 0.72);
+    // 네 번째 집 (왼쪽 아래)
+    s += vHouse(8.9, 3.55, 0.95, 0.75, 0.6, 0.46, wallA, roof2);
+    s += vWindows(8.9, 3.55, 0.95, 0.75, 0.6);
     // 깃대
-    s += vbox(8.62, 3.18, 0, 0.09, 0.09, 1.75, { top: "#cfd6e2", left: "#a9b1c0", right: "#8d94a3" });
-    const fp = vp(8.71, 3.22, 1.72);
+    s += vbox(8.62, 3.18, 0, 0.09, 0.09, 1.9, { top: "#cfd6e2", left: "#a9b1c0", right: "#8d94a3" });
+    const fp = vp(8.71, 3.22, 1.87);
     s += '<path class="v-flag" d="M' + fp[0] + ',' + fp[1] + ' l17,5 l-17,6 z" fill="#7ed957" opacity="0.95"/>';
     // 광장 우물
     s += vbox(7.02, 3.62, 0, 0.5, 0.5, 0.26, { top: "#8b93a3", left: "#767e8d", right: "#626a78" });
@@ -5205,11 +5210,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     return s;
   }
 
-  function vBuildingGroup(kind, label, inner, padPt) {
+  function vBuildingGroup(kind, label, inner, padPt, scale) {
+    const sc = scale || 1;
+    const tr = sc === 1 ? "" : ' transform="translate(' + padPt[0] + ',' + padPt[1] + ') scale(' + sc +
+      ') translate(' + (-padPt[0]) + ',' + (-padPt[1]) + ')"';
     return '<g class="v-building" data-kind="' + kind + '" role="button" tabindex="0" aria-label="' + label + ' 열기">' +
       '<g class="v-building-body">' +
-      '<ellipse class="v-pad" cx="' + padPt[0] + '" cy="' + padPt[1] + '" rx="74" ry="30" fill="#00f5d4" opacity="0.16" filter="url(#vBlurSm)"/>' +
-      inner + "</g></g>";
+      '<ellipse class="v-pad" cx="' + padPt[0] + '" cy="' + padPt[1] + '" rx="' + (74 * sc).toFixed(0) + '" ry="' + (30 * sc).toFixed(0) +
+      '" fill="#00f5d4" opacity="0.18" filter="url(#vBlurSm)"/>' +
+      "<g" + tr + ">" + inner + "</g></g></g>";
   }
 
   /* ---------- 마을 전체 SVG ---------- */
@@ -5217,15 +5226,16 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const pathSet = new Set();
     for (let x = 0; x < V_N; x++) {
       for (let y = 0; y < V_N; y++) {
-        if (Math.abs((x + 0.5) - V_C) <= 0.6 || Math.abs((y + 0.5) - V_C) <= 0.6) pathSet.add(x + "," + y);
+        const xc = x + 0.5, yc = y + 0.5;
+        if (Math.abs(xc - V_C) <= 0.6 || Math.abs(yc - V_C) <= 0.6) pathSet.add(x + "," + y);
+        if (Math.abs(xc - V_C) <= 1.1 && Math.abs(yc - V_C) <= 1.1) pathSet.add(x + "," + y);   // 중앙 광장
       }
     }
     V_SITES.forEach(s => {
-      if (s.key !== "shop" && s.key !== "town") return;
       for (let x = 0; x < V_N; x++) {
         for (let y = 0; y < V_N; y++) {
           const xc = x + 0.5, yc = y + 0.5;
-          if (xc > s.gx - 0.15 && xc < s.gx + s.w + 0.15 && yc > s.gy - 0.15 && yc < s.gy + s.d + 0.15) pathSet.add(x + "," + y);
+          if (xc > s.gx - 0.1 && xc < s.gx + s.w + 0.1 && yc > s.gy - 0.1 && yc < s.gy + s.d + 0.1) pathSet.add(x + "," + y);
         }
       }
     });
@@ -5289,13 +5299,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     // 건물 배치 (뒤 -> 앞)
     const buildList = [
-      { d: shopSite.gx + shopSite.gy, s: vBuildingGroup("shop", "상점", vShop(shopSite.gx, shopSite.gy), shopPad) },
-      { d: portalSite.gx + portalSite.gy, s: vBuildingGroup("portal", "포탈", portal.svg, portalPad) },
-      { d: forgeSite.gx + forgeSite.gy, s: vBuildingGroup("forge", "대장간", vForge(forgeSite.gx, forgeSite.gy), forgePad) },
-      { d: townSite.gx + townSite.gy, s: vBuildingGroup("town", "마을", vTown(townSite.gx, townSite.gy), townPad) }
+      { d: shopSite.gx + shopSite.gy, s: vBuildingGroup("shop", "상점", vShop(shopSite.gx, shopSite.gy), shopPad, shopSite.scale) },
+      { d: portalSite.gx + portalSite.gy, s: vBuildingGroup("portal", "포탈", portal.svg, portalPad, portalSite.scale) },
+      { d: forgeSite.gx + forgeSite.gy, s: vBuildingGroup("forge", "대장간", vForge(forgeSite.gx, forgeSite.gy), forgePad, forgeSite.scale) },
+      { d: townSite.gx + townSite.gy, s: vBuildingGroup("town", "마을", vTown(townSite.gx, townSite.gy), townPad, townSite.scale) }
     ].sort((a, b) => a.d - b.d).map(o => o.s).join("");
 
-    const svg = '<svg class="villageArt tod-day" viewBox="0 0 ' + V_W + " " + V_H + '" xmlns="http://www.w3.org/2000/svg" ' +
+    const svg = '<svg class="villageArt tod-day" viewBox="' + V_VB.x + " " + V_VB.y + " " + V_VB.w + " " + V_VB.h + '" xmlns="http://www.w3.org/2000/svg" ' +
       'role="img" aria-label="코덱스 3D 아이소메트릭 마을" preserveAspectRatio="xMidYMid meet">' +
       '<defs>' +
       '<linearGradient id="vSky" x1="0" y1="0" x2="0" y2="1">' +
@@ -5316,8 +5326,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       '<rect width="' + V_W + '" height="' + V_H + '" fill="url(#vSky)"/>' +
       '<ellipse cx="' + (V_W / 2) + '" cy="' + (V_H * 0.68) + '" rx="' + (V_W * 0.52) + '" ry="' + (V_H * 0.46) + '" fill="url(#vVoid)"/>' +
       "<g>" + stars + "</g>" +
-      '<circle id="skyGlow" cx="578" cy="52" r="34" fill="#ffbe0b" opacity="0.42" filter="url(#vBlur)"/>' +
-      '<circle id="skyBody" cx="578" cy="52" r="16" fill="#fff6cf"/>' +
+      '<circle id="skyGlow" cx="600" cy="118" r="34" fill="#ffbe0b" opacity="0.42" filter="url(#vBlur)"/>' +
+      '<circle id="skyBody" cx="600" cy="118" r="16" fill="#fff6cf"/>' +
       '<ellipse cx="' + (V_W / 2) + '" cy="' + (V_H - 40) + '" rx="250" ry="26" fill="#000000" opacity="0.35" filter="url(#vBlur)"/>' +
       "<g>" + terrain + decoStr +
       vLamp(3.9, 6.6) + vLamp(6.9, 3.85) + vLamp(6.6, 7.2) +
@@ -5398,8 +5408,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       btn.type = "button";
       btn.className = "village-label " + d.key;
       btn.innerHTML = '<span class="lb-ico">' + d.icon + '</span><span>' + d.name + '</span>';
-      btn.style.left = (a[0] / V_W * 100).toFixed(2) + "%";
-      btn.style.top = (a[1] / V_H * 100).toFixed(2) + "%";
+      btn.style.left = (((a[0] - V_VB.x) / V_VB.w) * 100).toFixed(2) + "%";
+      btn.style.top = (((a[1] - V_VB.y) / V_VB.h) * 100).toFixed(2) + "%";
       btn.setAttribute("aria-label", d.name + " 열기");
       btn.addEventListener("click", e => {
         e.preventDefault();
