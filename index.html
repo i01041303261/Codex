@@ -5460,10 +5460,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       return;
     }
     Sound.click();
+    if (kind === "town") { window.openVillageView(); return; }
+    window.closeVillageView();
     if (kind === "shop") window.openShopView("sell");
     else if (kind === "forge") window.openShopView("forge");
-    else if (kind === "portal") { closeVillageView(); show("map"); }
-    else window.openVillageView();
+    else if (kind === "portal") show("map");
   };
 
   function setShopView(view) {
