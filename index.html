@@ -768,20 +768,89 @@ button.warning {
 .star-2 { animation-delay: 1s; }
 .star-3 { animation-delay: 2s; }
 
-.tod-badge {
+/* 시간대 배지 + 낮/밤 전환 토글 */
+.tod-controls {
   position: absolute;
   top: 14px;
   left: 14px;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(8px);
-  padding: 6px 14px;
-  border-radius: 99px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 8;
   display: flex;
   align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: calc(100% - 28px);
+  pointer-events: auto;
+}
+.tod-badge,
+.tod-auto {
+  font-family: inherit;
+  font-weight: 700;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
   gap: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: transform 0.14s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.tod-badge {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 6px 12px 6px 14px;
+  font-size: 0.82rem;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+.tod-badge .tod-hint {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  color: #ffe9a8;
+  background: rgba(255, 209, 102, 0.16);
+  border: 1px solid rgba(255, 209, 102, 0.3);
+}
+.tod-badge.is-night .tod-hint {
+  color: #cfe0ff;
+  background: rgba(120, 160, 255, 0.18);
+  border-color: rgba(120, 160, 255, 0.35);
+}
+.tod-badge:hover {
+  background: rgba(14, 20, 40, 0.74);
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+.tod-badge:active { transform: scale(0.94); }
+.tod-badge:focus-visible { outline: 2px solid rgba(0, 245, 212, 0.85); outline-offset: 2px; }
+.tod-badge.pop { animation: todPop 0.34s ease; }
+.tod-auto {
+  padding: 5px 10px;
+  font-size: 0.7rem;
+  color: #cfe0ff;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.tod-auto[hidden] { display: none; }
+.tod-auto:hover {
+  background: rgba(0, 245, 212, 0.2);
+  border-color: rgba(0, 245, 212, 0.55);
+  color: #ffffff;
+}
+.tod-auto:active { transform: scale(0.94); }
+.tod-auto:focus-visible { outline: 2px solid rgba(0, 245, 212, 0.85); outline-offset: 2px; }
+@keyframes todPop {
+  0% { transform: scale(0.9); opacity: 0.55; }
+  55% { transform: scale(1.07); opacity: 1; }
+  100% { transform: scale(1); }
 }
 
 .home-grid {
@@ -1847,7 +1916,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     <div class="village-wrap">
       <div class="village-stage" id="villageStage">
         <div class="village-loading" id="villageLoading">🏰 마을을 불러오는 중...</div>
-        <div class="tod-badge" id="todBadge">☀️ 낮 (마을 활성화)</div>
+        <div class="tod-controls">
+          <button class="tod-badge" id="todBadge" type="button" title="누르면 낮/밤이 바뀝니다">☀️ 낮 (마을 활성화)</button>
+          <button class="tod-auto" id="todAuto" type="button" title="실제 시간대에 맞추기" aria-label="실제 시간대에 맞추기" hidden>🕒 자동</button>
+        </div>
         <div class="village-labels" id="villageLabels"></div>
         <div class="village-hint">👆 건물·포탈을 터치해서 이동하세요</div>
       </div>
@@ -4627,11 +4699,40 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (hour >= 17 && hour < 20) return "evening";
     return "night";
   }
+
+  /* 낮/밤 수동 전환 (마을 좌상단 배지 탭) */
+  const TOD_STORE_KEY = "codex-village-tod";
+  function getTodOverride() {
+    const o = window.__villageTodOverride;
+    if (o === "day" || o === "night") return o;
+    try {
+      const saved = localStorage.getItem(TOD_STORE_KEY);
+      if (saved === "day" || saved === "night") {
+        window.__villageTodOverride = saved;
+        return saved;
+      }
+    } catch (e) { }
+    return null;
+  }
+  function setTodOverride(v) {
+    if (v === "day" || v === "night") {
+      window.__villageTodOverride = v;
+      try { localStorage.setItem(TOD_STORE_KEY, v); } catch (e) { }
+    } else {
+      window.__villageTodOverride = null;
+      try { localStorage.removeItem(TOD_STORE_KEY); } catch (e) { }
+    }
+  }
+  function getEffectiveTodPeriod() {
+    return getTodOverride() || getTodPeriod(new Date().getHours());
+  }
   function updateVillageDayNight() {
     const svg = document.querySelector(".villageArt");
     const badge = document.getElementById("todBadge");
     if (!svg) return;
-    const period = getTodPeriod(new Date().getHours());
+    const period = getEffectiveTodPeriod();
+    const manual = !!getTodOverride();
+    const isNightSide = period === "evening" || period === "night";
     const c = TOD_CONFIG[period];
     svg.classList.remove("tod-morning", "tod-day", "tod-evening", "tod-night");
     svg.classList.add("tod-" + period);
@@ -4640,7 +4741,21 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       wrap.classList.remove("tod-morning", "tod-day", "tod-evening", "tod-night");
       wrap.classList.add("tod-" + period);
     }
-    if (badge) badge.textContent = c.badge;
+    if (badge) {
+      const label = manual
+        ? (period === "night" ? "🌙 밤" : "☀️ 낮")
+        : c.badge;
+      const html = '<span class="tod-state">' + label + '</span><span class="tod-hint">탭 → ' + (isNightSide ? "낮" : "밤") + '</span>';
+      if (badge.getAttribute("data-tod") !== html) {
+        badge.innerHTML = html;
+        badge.setAttribute("data-tod", html);
+      }
+      badge.classList.toggle("is-night", isNightSide);
+      badge.title = "누르면 " + (isNightSide ? "낮" : "밤") + "으로 바뀝니다";
+      badge.setAttribute("aria-label", label + " 상태 · 누르면 " + (isNightSide ? "낮" : "밤") + "으로 전환");
+      const autoBtn = document.getElementById("todAuto");
+      if (autoBtn) autoBtn.hidden = !manual;
+    }
     const body = document.getElementById("skyBody");
     const glow = document.getElementById("skyGlow");
     const halo = document.getElementById("skyHalo");
@@ -4649,6 +4764,44 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (halo) { halo.setAttribute("cx", c.cx); halo.setAttribute("cy", c.cy); halo.setAttribute("fill", c.glow); halo.setAttribute("opacity", period === "night" ? 0.14 : 0.22); }
     document.querySelectorAll(".windowLight").forEach(el => el.style.opacity = c.winOp);
     document.querySelectorAll(".lampBulb").forEach(el => el.style.opacity = c.lampOp);
+  }
+
+  /* 배지 탭 → 낮/밤 즉시 전환, '자동' → 실제 시간대 복귀 */
+  window.toggleVillageTod = function (ev) {
+    if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+    const cur = getEffectiveTodPeriod();
+    const next = (cur === "night" || cur === "evening") ? "day" : "night";
+    setTodOverride(next);
+    updateVillageDayNight();
+    const badge = document.getElementById("todBadge");
+    if (badge) {
+      badge.classList.remove("pop");
+      void badge.offsetWidth;
+      badge.classList.add("pop");
+    }
+    try { if (window.Sound && typeof window.Sound.click === "function") window.Sound.click(); } catch (e) { }
+  };
+  window.resetVillageTod = function (ev) {
+    if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+    setTodOverride(null);
+    updateVillageDayNight();
+    try { if (window.Sound && typeof window.Sound.click === "function") window.Sound.click(); } catch (e) { }
+  };
+
+  function initTodToggle() {
+    const badge = document.getElementById("todBadge");
+    const autoBtn = document.getElementById("todAuto");
+    if (!badge || badge.getAttribute("data-tod-bound") === "1") return;
+    badge.setAttribute("data-tod-bound", "1");
+    const stop = e => e.stopPropagation();
+    badge.addEventListener("touchstart", stop, { passive: true });
+    badge.addEventListener("pointerdown", stop, { passive: true });
+    badge.addEventListener("click", window.toggleVillageTod);
+    if (autoBtn) {
+      autoBtn.addEventListener("touchstart", stop, { passive: true });
+      autoBtn.addEventListener("pointerdown", stop, { passive: true });
+      autoBtn.addEventListener("click", window.resetVillageTod);
+    }
   }
 
   // 21. 회원가입 및 로그인 계정 관리 시스템 (강제 인증 보호)
@@ -6412,7 +6565,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const job = getCurrentJob();
     const upg = getJobUpgrade(job.id);
     const st = getPlayerStats();
-    const period = getTodPeriod(new Date().getHours());
+    const period = getEffectiveTodPeriod();
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
     set("vmLevel", "Lv." + state.level);
     set("vmTokens", "🪙 " + state.tokens);
@@ -6437,6 +6590,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   document.addEventListener("DOMContentLoaded", () => {
     initBgParticles();
     buildVillage();
+    initTodToggle();
     updateVillageDayNight();
     setInterval(updateVillageDayNight, 60 * 1000);
     updateAuthUI();
