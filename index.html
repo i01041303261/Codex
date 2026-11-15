@@ -3401,6 +3401,9 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   let state = loadState();
 
+  let currentHp = null;
+  let currentMp = null;
+
   // 🗡️ 차원 검(기존 차원 룰렛) 탐험 — 3초 쿨타임 상태 & UI 헬퍼 (updateUI에서 조기 호출되므로 여기서 선언)
   const SWORD_COOLDOWN_MS = 3000;
   let swordCdUntil = 0;
@@ -3699,10 +3702,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     save();
   }
 
-  // 8. UI 동기화
-  let currentHp = null;
-  let currentMp = null;
-
+  // 8. UI 동기화 (currentHp/currentMp는 dailyCheck→save→updateUI 초기 호출보다 먼저 선언)
   function updateUI() {
     if (state.level > MAX_LEVEL) state.level = MAX_LEVEL;
     const isMaxLv = state.level >= MAX_LEVEL;
