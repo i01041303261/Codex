@@ -3242,10 +3242,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   //  - 지금은 비어 있습니다. 공개 코드를 낼 때 아래 형식으로 한 줄만 추가하면 됩니다.
   //    "CODEX-HELLO": { label: "오픈 기념", rewards: { tokens: 1000, exp: 500, items: { shard1: 1 }, title: "🎁 첫 코드 사용자" }, usableUntil: "2026-12-31T23:59:59" }
   //  - usableUntil 이 없으면 기간 무제한, items/title 은 생략 가능.
-  const REDEEM_CODES = {
-    // ⚠️ 임시 테스트용 코드 (검증 후 제거 예정)
-    "CODEX-TEST-0001": { label: "테스트 코드", rewards: { tokens: 777, exp: 500, items: { shard2: 1 } } }
-  };
+  const REDEEM_CODES = {};
 
   function normalizeCode(raw) {
     return String(raw || "").toUpperCase().replace(/\s+/g, "");
