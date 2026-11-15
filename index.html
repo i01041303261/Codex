@@ -3227,8 +3227,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     3: { itemId: "shard3", name: "서리 결정 파편",   icon: "❄️", c1: "#a2d2ff", c2: "#3a86ff", shape: "hex",     desc: "빙결 왕국을 다스리던 자가 굳혀낸 파편. 닿는 순간 숨결이 하얗게 얼어붙습니다." },
     4: { itemId: "shard4", name: "용암 심장 파편",   icon: "🔥", c1: "#ff0054", c2: "#ff8a00", shape: "flame",   desc: "인페르노 화산의 심장에서 뽑아낸 파편. 영원히 식지 않는 열기를 품고 있습니다." },
     5: { itemId: "shard5", name: "성운 별빛 파편",   icon: "🌌", c1: "#8338ec", c2: "#3a86ff", shape: "star4",   desc: "네뷸라 심우주의 별이 응축된 파편. 은하의 궤적이 그 안에서 천천히 흐릅니다." },
-    6: { itemId: "shard6", name: "공허 균열 파편",   icon: "🕳️", c1: "#00f5d4", c2: "#7b2cbf", shape: "void",    desc: "공허의 비밀 차원에서 떨어져 나온 파편. 빛도 소리도 닿지 않는 심연의 조각입니다." },
-    7: { itemId: "shard7", name: "심연 끝의 파편",   icon: "🌑", c1: "#3a1a6b", c2: "#00f5d4", shape: "spike",   desc: "시공간의 끝, 아크 네메시스의 잔해에서 건진 파편. 모든 끝의 무게가 담겨 있습니다." },
+    6: { itemId: "shard6", name: "공허 균열 파편",   icon: "🌀", c1: "#00f5d4", c2: "#7b2cbf", shape: "void",    desc: "공허의 비밀 차원에서 떨어져 나온 파편. 빛도 소리도 닿지 않는 심연의 조각입니다." },
+    7: { itemId: "shard7", name: "심연 끝의 파편",   icon: "🌠", c1: "#3a1a6b", c2: "#00f5d4", shape: "spike",   desc: "시공간의 끝, 아크 네메시스의 잔해에서 건진 파편. 모든 끝의 무게가 담겨 있습니다." },
     8: { itemId: "shard8", name: "apex 황금 파편",   icon: "⚡", c1: "#ffd166", c2: "#ff006e", shape: "apex",    desc: "지워진 여덟 번째 차원의 파편. 이름을 잃은 자들의 기록이 안에서 맥동합니다." }
   };
 
@@ -3242,7 +3242,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   //  - 지금은 비어 있습니다. 공개 코드를 낼 때 아래 형식으로 한 줄만 추가하면 됩니다.
   //    "CODEX-HELLO": { label: "오픈 기념", rewards: { tokens: 1000, exp: 500, items: { shard1: 1 }, title: "🎁 첫 코드 사용자" }, usableUntil: "2026-12-31T23:59:59" }
   //  - usableUntil 이 없으면 기간 무제한, items/title 은 생략 가능.
-  const REDEEM_CODES = {};
+  const REDEEM_CODES = {
+    // ⚠️ 임시 테스트용 코드 (검증 후 제거 예정)
+    "CODEX-TEST-0001": { label: "테스트 코드", rewards: { tokens: 777, exp: 500, items: { shard2: 1 } } }
+  };
 
   function normalizeCode(raw) {
     return String(raw || "").toUpperCase().replace(/\s+/g, "");
