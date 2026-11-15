@@ -3520,6 +3520,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const dimName = (DIMENSIONS[n] || {}).name || n + "차원";
       return { id, name: `${bName} 격파 증표`, icon: "🏅", type: "trophy", c1: "#ffbe0b", c2: "#fb5607", shape: "medal", desc: `[${dimName}] ${bName}을(를) 처음 격파한 증표. 흔들면 그날의 함성이 들려옵니다.` };
     }
+    if (POTIONS[id]) {
+      const p = POTIONS[id];
+      return { id, name: p.name, icon: p.icon, type: "potion", c1: "#38b000", c2: "#00f5d4", shape: "hex", desc: p.desc };
+    }
     if (EXTRA_ITEMS[id]) return EXTRA_ITEMS[id];
     return { id, name: id, icon: "📦", type: "etc", c1: "#64748b", c2: "#94a3b8", shape: "diamond", desc: "출처를 알 수 없는 아이템입니다." };
   }
