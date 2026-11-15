@@ -5528,12 +5528,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const stats = getPlayerStats();
     // 🧪 HP·MP는 전투 사이에도 유지된다 (세이브에 저장/복원)
     if (currentHp === null) {
-      const sh = Number(state.hp);
-      currentHp = Number.isFinite(sh) && sh > 0 ? Math.min(sh, stats.maxHp) : stats.maxHp;
+      const sh = (state.hp === null || state.hp === undefined) ? null : Number(state.hp);
+      currentHp = (sh !== null && Number.isFinite(sh) && sh > 0) ? Math.min(sh, stats.maxHp) : stats.maxHp;
     }
     if (currentMp === null) {
-      const sm = Number(state.mp);
-      currentMp = Number.isFinite(sm) && sm >= 0 ? Math.min(sm, stats.maxMp) : stats.maxMp;
+      const sm = (state.mp === null || state.mp === undefined) ? null : Number(state.mp);
+      currentMp = (sm !== null && Number.isFinite(sm) && sm > 0) ? Math.min(sm, stats.maxMp) : stats.maxMp;
     }
     if (currentHp > stats.maxHp) currentHp = stats.maxHp;
     if (currentMp > stats.maxMp) currentMp = stats.maxMp;
