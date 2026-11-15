@@ -5229,7 +5229,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const buf = new TextEncoder().encode(input.trim());
       const hash = await crypto.subtle.digest("SHA-256", buf);
       const hex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
-      return hex === "bb5444fa3f60d176e154e8e2a733c6ab713fdb62a110436537ae9a28b6e7127c";
+      return hex === "72b906f52636058a00c19130805da3ebfd5d355c77b37f9887532d223491681d";
     } catch (e) {
       return false;
     }
