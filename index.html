@@ -8242,53 +8242,6 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }
   }
 
-  window.exportSaveCode = async function() {
-    Sound.click();
-    const pw = prompt("🔒 보안 관리자 암호를 입력하세요:");
-    if (pw === null) return;
-    const ok = await checkAdminAuth(pw);
-    if (!ok) {
-      Sound.hit();
-      alert("❌ 보안 암호가 일치하지 않아 세이브 코드를 내보낼 수 없습니다.");
-      return;
-    }
-    try {
-      const code = btoa(encodeURIComponent(JSON.stringify(state)));
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(code).then(() => {
-          alert("📋 세이브 코드가 클립보드에 복사되었습니다!\n메모장 등에 안전하게 보관하세요.");
-        }).catch(() => {
-          prompt("아래 코드를 복사해서 보관하세요:", code);
-        });
-      } else {
-        prompt("아래 코드를 복사해서 보관하세요:", code);
-      }
-    } catch (e) {
-      alert("세이브 코드 생성에 실패했습니다: " + e.message);
-    }
-  };
-
-  window.importSaveCode = function() {
-    Sound.click();
-    const input = prompt("불러올 세이브 코드를 입력하세요:");
-    if (!input) return;
-    try {
-      const jsonStr = decodeURIComponent(atob(input.trim()));
-      const loaded = JSON.parse(jsonStr);
-      if (typeof loaded !== "object" || !loaded) throw new Error("올바르지 않은 데이터 형식입니다.");
-      state = Object.assign({}, defaultState, loaded);
-      state = normalizeNestedState(state);
-      save();
-      updateAuthUI();
-      updateUI();
-      Sound.levelup();
-      alert("🎉 세이브 데이터를 성공적으로 복원했습니다!");
-    } catch (e) {
-      Sound.hit();
-      alert("❌ 올바른 세이브 코드가 아닙니다: " + e.message);
-    }
-  };
-
   // ==================================================
   // 22. 3D 아이소메트릭 복셀 마을 (마을 화면 리메이크)
   // ==================================================
