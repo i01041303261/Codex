@@ -997,6 +997,140 @@ button.warning {
   white-space: pre-line;
 }
 
+/* ⚔️ 차원 검 탐험 (기존 룰렛 UI 대체) */
+.sword-stage {
+  position: relative;
+  width: 210px;
+  height: 200px;
+  margin: 6px auto 14px;
+  display: grid;
+  place-items: center;
+}
+.sword-target {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 52px;
+  background: radial-gradient(circle at 50% 45%, rgba(105, 48, 195, 0.6), rgba(6, 9, 20, 0.96) 72%);
+  border: 2px solid rgba(0, 245, 212, 0.45);
+  box-shadow: 0 0 30px rgba(0, 245, 212, 0.25), inset 0 0 30px rgba(0, 0, 0, 0.85);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.sword-icon {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  font-size: 72px;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px rgba(0, 245, 212, 0.7));
+  transform: translateX(-50%) rotate(-18deg);
+  transform-origin: 72% 82%;
+  pointer-events: none;
+}
+.sword-icon.sword-swing { animation: swordSwing 0.44s cubic-bezier(0.45, 0, 0.3, 1) forwards; }
+@keyframes swordSwing {
+  0% { transform: translateX(-50%) rotate(-30deg) translateY(-8px); }
+  58% { transform: translateX(-50%) rotate(54deg) translateY(22px) scale(1.08); }
+  78% { transform: translateX(-50%) rotate(40deg) translateY(15px) scale(1.02); }
+  100% { transform: translateX(-50%) rotate(-18deg) translateY(0) scale(1); }
+}
+.sword-slash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 170px;
+  height: 6px;
+  margin: -3px 0 0 -85px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, transparent, #fff, #00f5d4, #fff, transparent);
+  opacity: 0;
+  transform: rotate(-32deg) scaleX(0.2);
+  pointer-events: none;
+}
+.sword-slash.slash-hit { animation: swordSlash 0.44s ease-out; }
+@keyframes swordSlash {
+  0% { opacity: 0; transform: rotate(-32deg) scaleX(0.2); }
+  32% { opacity: 1; transform: rotate(-32deg) scaleX(1.1); }
+  100% { opacity: 0; transform: rotate(-32deg) scaleX(1.4) translateY(-10px); }
+}
+.sword-verdict {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-height: 26px;
+  font-weight: 900;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+}
+.sword-verdict.success { color: var(--cyan); }
+.sword-verdict.crit { color: var(--gold); font-size: 1.2rem; }
+.sword-verdict.fail { color: #ff7a90; }
+.sword-arena-crit { box-shadow: inset 0 0 90px rgba(255, 190, 11, 0.3); }
+.sword-arena-crit .sword-target {
+  border-color: var(--gold);
+  box-shadow: 0 0 46px rgba(255, 190, 11, 0.55), inset 0 0 30px rgba(0, 0, 0, 0.85);
+}
+.sword-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.sword-btn {
+  min-width: 218px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 28px;
+  font-size: 1.08rem;
+}
+.sword-btn:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+  transform: none;
+  box-shadow: none;
+}
+.sword-btn-icon { font-size: 1.18rem; }
+.sword-cd {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: var(--gold);
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 99px;
+  padding: 2px 9px;
+}
+.sword-cd-line {
+  margin-top: 12px;
+  min-height: 20px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.sword-cd-track {
+  width: min(320px, 100%);
+  height: 8px;
+  margin: 8px auto 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.sword-cd-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #ffbe0b, #ff006e);
+  transition: width 0.1s linear;
+}
+
 /* 전투 */
 .battle-stage {
   position: relative;
@@ -1825,6 +1959,171 @@ body.auth-locked #codexAuthOverlay {
 .account-info-val { color: #fff; font-weight: 800; }
 
 footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0; margin-top: auto; }
+
+/* ==============================================
+   🎒 인벤토리 · 🌀 파편 쓰기 · 🎁 코드 입력
+   ============================================== */
+.inv-summary { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.inv-stat {
+  flex: 1 1 150px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 0.86rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+.inv-stat b { display: block; font-size: 1.15rem; color: #fff; margin-top: 2px; }
+.inv-stat.shard b { color: var(--cyan); }
+.inv-stat.title b { color: var(--gold); }
+.inv-group { margin-bottom: 20px; }
+.inv-group-title {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 1.02rem; font-weight: 800; margin-bottom: 10px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.inv-group-title span.count { font-size: 0.8rem; color: var(--text-sub); font-weight: 700; }
+.inv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.inv-card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(150deg, rgba(28, 35, 64, 0.9), rgba(14, 18, 34, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 14px 14px 14px 18px;
+  display: flex; flex-direction: column; gap: 5px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.inv-card:hover { transform: translateY(-3px); border-color: rgba(0, 245, 212, 0.4); }
+.inv-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(180deg, var(--ic1, #6930c3), var(--ic2, #3a86ff));
+}
+.inv-card .inv-icon { font-size: 30px; line-height: 1; filter: drop-shadow(0 0 9px rgba(255, 255, 255, 0.28)); }
+.inv-card .inv-name { font-weight: 800; font-size: 0.93rem; word-break: keep-all; }
+.inv-card .inv-desc { font-size: 0.78rem; color: var(--text-sub); line-height: 1.5; }
+.inv-card .inv-count {
+  align-self: flex-start; margin-top: 2px;
+  font-weight: 900; font-size: 0.78rem; color: #fff;
+  background: rgba(255, 255, 255, 0.12); border-radius: 99px; padding: 2px 10px;
+}
+.inv-empty {
+  text-align: center; color: var(--text-sub); font-size: 0.9rem; line-height: 1.7;
+  background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 16px; padding: 28px 18px;
+}
+.inv-foot-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+.portal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr)); gap: 14px; margin-top: 6px; }
+.portal-card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(160deg, rgba(23, 28, 52, 0.92), rgba(11, 14, 28, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex; flex-direction: column; gap: 8px;
+  text-align: center;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+.portal-card::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--pc1, #6930c3), var(--pc2, #3a86ff));
+}
+.portal-card.filled {
+  border-color: rgba(0, 245, 212, 0.5);
+  box-shadow: 0 0 26px -6px var(--pc2, #3a86ff);
+}
+.portal-card:hover { transform: translateY(-3px); }
+.portal-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.portal-dim { font-size: 0.74rem; font-weight: 900; letter-spacing: 0.4px; color: var(--pc2, #3a86ff); }
+.portal-tag {
+  font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08); color: var(--text-sub); white-space: nowrap;
+}
+.portal-tag.ready { background: rgba(0, 245, 212, 0.16); color: var(--cyan); border: 1px solid rgba(0, 245, 212, 0.35); }
+.portal-tag.done { background: rgba(56, 176, 0, 0.2); color: #7ed957; border: 1px solid rgba(56, 176, 0, 0.4); }
+.portal-ring {
+  width: 104px; height: 104px; margin: 4px auto 2px;
+  border-radius: 50%; display: grid; place-items: center;
+  background: conic-gradient(from 0deg, var(--pc1, #6930c3), var(--pc2, #3a86ff), #0b0f1e, var(--pc1, #6930c3));
+  opacity: 0.34; filter: saturate(0.6);
+  transition: opacity 0.35s ease, filter 0.35s ease, box-shadow 0.35s ease;
+}
+.portal-card.filled .portal-ring {
+  opacity: 1; filter: saturate(1.15);
+  box-shadow: 0 0 26px var(--pc2, #3a86ff);
+  animation: portalPulse 2.6s ease-in-out infinite;
+}
+@keyframes portalPulse {
+  0%, 100% { box-shadow: 0 0 14px -2px var(--pc2, #3a86ff); }
+  50% { box-shadow: 0 0 30px 2px var(--pc2, #3a86ff); }
+}
+.portal-inner {
+  width: 78px; height: 78px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #151b33, #05070f 72%);
+  display: grid; place-items: center;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.85);
+}
+.portal-card.filled .portal-inner { background: radial-gradient(circle at 50% 38%, #1d2647, #06080f 72%); }
+.shard-shape {
+  width: 46px; height: 46px; display: grid; place-items: center;
+  font-size: 20px; line-height: 1;
+  background: linear-gradient(150deg, var(--sh1, #38b000), var(--sh2, #00f5d4));
+  transition: filter 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+}
+.portal-card:not(.filled) .shard-shape { filter: grayscale(0.75) brightness(0.62); opacity: 0.72; }
+.portal-card.filled .shard-shape { box-shadow: 0 0 18px var(--sh2, #00f5d4); }
+.shape-leaf { clip-path: polygon(50% 0%, 100% 33%, 84% 100%, 16% 100%, 0% 33%); }
+.shape-diamond { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+.shape-hex { clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0% 50%); }
+.shape-flame { clip-path: polygon(50% 0%, 70% 30%, 88% 64%, 70% 100%, 30% 100%, 12% 64%, 32% 30%); }
+.shape-star4 { clip-path: polygon(50% 0%, 63% 37%, 100% 50%, 63% 63%, 50% 100%, 37% 63%, 0% 50%, 37% 37%); }
+.shape-void { border-radius: 50%; }
+.shape-spike { clip-path: polygon(50% 0%, 80% 28%, 64% 100%, 36% 100%, 20% 28%); }
+.shape-apex { clip-path: polygon(50% 0%, 60% 26%, 85% 14%, 74% 40%, 100% 50%, 74% 60%, 85% 86%, 60% 74%, 50% 100%, 40% 74%, 15% 86%, 26% 60%, 0% 50%, 26% 40%, 15% 14%, 40% 26%); }
+.shape-medal { clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); }
+.portal-name { font-weight: 800; font-size: 0.9rem; word-break: keep-all; }
+.portal-dim-name { font-size: 0.74rem; color: var(--text-sub); word-break: keep-all; }
+.portal-hint { font-size: 0.72rem; color: #7c8aa8; line-height: 1.45; word-break: keep-all; }
+.portal-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px; }
+.portal-have { font-size: 0.78rem; font-weight: 800; color: var(--gold); }
+.portal-foot button { padding: 8px 12px; font-size: 0.84rem; }
+.portal-foot button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.portal-progress {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: rgba(0, 245, 212, 0.06); border: 1px solid rgba(0, 245, 212, 0.22);
+  border-radius: 14px; padding: 14px 16px; margin-bottom: 16px;
+}
+.portal-progress .pp-text { flex: 1 1 200px; font-size: 0.9rem; line-height: 1.6; }
+.portal-progress .pp-count { font-size: 1.5rem; font-weight: 900; color: var(--cyan); }
+.portal-complete-note {
+  margin-top: 16px; text-align: center; font-weight: 900; font-size: 0.98rem;
+  color: var(--gold); line-height: 1.7;
+}
+
+.code-panel { display: flex; gap: 8px; flex-wrap: wrap; }
+.code-input {
+  flex: 1 1 220px; min-width: 0;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 13px 14px;
+  color: var(--text-main);
+  font-size: 1rem; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.code-input::placeholder { color: #64748b; font-weight: 600; letter-spacing: 0.5px; }
+.code-input:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.15); }
+.code-msg { margin-top: 12px; min-height: 24px; font-weight: 800; font-size: 0.95rem; line-height: 1.6; }
+.code-history { margin-top: 18px; }
+.code-history-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-size: 0.84rem; padding: 10px 13px; border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+}
+.code-history-item b { color: var(--cyan); letter-spacing: 0.6px; }
+.code-history-item span { color: var(--text-sub); font-size: 0.78rem; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -1907,6 +2206,9 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       <button class="nav-btn" onclick="show('battle')" data-tab="battle">⚔️ 차원 전투</button>
       <button class="nav-btn" onclick="show('mini')" data-tab="mini">🎮 미니게임</button>
       <button class="nav-btn" onclick="show('shop')" data-tab="shop">🛒 상점 & 대장간</button>
+      <button class="nav-btn" onclick="show('inventory')" data-tab="inventory">🎒 인벤토리</button>
+      <button class="nav-btn" onclick="show('shards')" data-tab="shards">🌀 파편 쓰기</button>
+      <button class="nav-btn" onclick="show('redeem')" data-tab="redeem">🎁 코드 입력</button>
       <button class="nav-btn" onclick="show('book')" data-tab="book">🏆 도감 & 칭호</button>
       <button class="nav-btn" onclick="show('quest')" data-tab="quest">📋 일일 퀘스트</button>
     </div>
@@ -1933,6 +2235,9 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       <p class="desc">50가지의 신비로운 직업을 획득하고, 차원의 스토리를 풀어가며 최고 난이도의 6차원(Lv.300+), 최후의 7차원 '시공간의 끝 보이드'(Lv.500+), 그리고 그 너머의 8차원 'apex들의 잊혀진 차원'(Lv.750+)에 도전하세요!</p>
       <p class="desc" style="margin-top:-6px; font-size:0.85rem;">
         🛒 <b style="color:var(--gold)">상점</b>에서 아이템·뽑기권·소모품을 사고 · ⚒️ <b style="color:#ff8a5c">대장간</b>에서 영구 스탯을 강화하고 · 🌀 <b style="color:var(--cyan)">포탈</b>로 차원을 탐험하고 · 🏘️ <b style="color:#7ed957">마을</b>에서 마을 전경을 확인하세요.
+      </p>
+      <p class="desc" style="margin-top:-6px; font-size:0.85rem;">
+        👑 차원 보스를 격파하면 그 차원의 <b style="color:var(--cyan)">차원 파편</b>을 획득합니다 → 🎒 <b style="color:var(--cyan)">인벤토리</b>에서 확인 → 🌀 <b style="color:#b388ff">파편 쓰기</b>로 8개 포탈을 봉인하면 한정 칭호 획득! 🎁 <b style="color:var(--gold)">코드 입력</b>도 열려 있습니다.
       </p>
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button class="primary" onclick="villageTap('shop')">🛒 상점 열기</button>
@@ -2124,7 +2429,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   </section>
 
   <!-- ==============================================
-       5. 차원 탐험 룰렛 (ADV)
+       5. 차원 검 탐험 (ADV)
        ============================================== -->
   <section id="adv" class="screen">
     <div class="card">
@@ -2133,22 +2438,31 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         <button class="secondary" onclick="show('map')">🗺️ 지도 복귀</button>
       </div>
 
-      <div class="roulette-arena">
-        <div class="roulette-status-text" id="rouletteStatus">🎰 차원의 룰렛 준비 완료</div>
-        
-        <div class="roulette-slots-box">
-          <div class="roulette-slot" id="slotIcon">🌳</div>
+      <div class="roulette-arena sword-arena" id="swordArena">
+        <div class="roulette-status-text" id="rouletteStatus">🗡️ 차원의 검 준비 완료</div>
+
+        <div class="sword-stage">
+          <div class="sword-target" id="slotIcon">🌳</div>
+          <div class="sword-slash" id="swordSlash"></div>
+          <div class="sword-icon" id="swordBlade">🗡️</div>
+          <div class="sword-verdict" id="swordVerdict"></div>
         </div>
 
         <div class="roulette-rewards-text" id="rouletteDetail">
-          성공 확률 80% · 남은 기회 10회
+          성공 확률 80% · 남은 검 기회 10회
         </div>
 
-        <div style="margin-top: 24px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-          <button class="primary" id="exploreBtn" onclick="explore()" style="padding: 14px 28px; font-size: 1.1rem;">🎰 차원 룰렛 돌리기</button>
+        <div class="sword-actions">
+          <button class="primary sword-btn" id="exploreBtn" onclick="explore()">
+            <span class="sword-btn-icon">🗡️</span><span id="exploreBtnText">차원을 가르기</span>
+            <span class="sword-cd" id="exploreCooldown" hidden>3.0s</span>
+          </button>
           <button class="secondary" onclick="startBattle()">⚔️ 몬스터 사냥</button>
           <button class="warning" onclick="startBossFight()">👑 차원 보스 도전</button>
         </div>
+
+        <div class="sword-cd-line" id="swordCdText"></div>
+        <div class="sword-cd-track"><div class="sword-cd-fill" id="swordCdFill"></div></div>
       </div>
     </div>
   </section>
@@ -2292,8 +2606,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         </div>
         <div class="shop-card">
           <div class="shop-icon">🎰</div>
-          <div class="shop-item-name">차원 룰렛 충전권</div>
-          <div class="shop-item-desc">선택된 차원 룰렛 기회 +3회 충전</div>
+          <div class="shop-item-name">차원 검 충전권</div>
+          <div class="shop-item-desc">선택된 차원의 검 기회 +3회 충전</div>
           <div class="shop-item-price">🪙 120</div>
           <button class="secondary" onclick="buyShopItem('roulette1')">충전</button>
         </div>
@@ -2342,6 +2656,67 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   <!-- ==============================================
        9. 도감 & 칭호창 (BOOK)
        ============================================== -->
+  <!-- ==============================================
+       10. 인벤토리 (INVENTORY)
+       ============================================== -->
+  <section id="inventory" class="screen">
+    <div class="card">
+      <h2>🎒 CODEX 인벤토리</h2>
+      <p class="desc">보스 격파로 얻은 <b>차원 파편</b>과 격파 증표, 기타 획득 아이템을 한 곳에서 확인하세요. 아이템마다 아이콘·이름·보유 수량·설명이 표시됩니다.</p>
+
+      <div class="inv-summary" id="invSummary"></div>
+      <div id="invList"></div>
+
+      <div class="inv-foot-actions">
+        <button class="primary" onclick="show('shards')">🌀 파편 쓰기로 이동</button>
+        <button class="secondary" onclick="show('map')">🗺️ 차원 탐험 떠나기</button>
+        <button class="secondary" onclick="show('redeem')">🎁 코드 입력</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       11. 파편 쓰기 · 여덟 차원의 포탈 (SHARDS)
+       ============================================== -->
+  <section id="shards" class="screen">
+    <div class="card">
+      <h2>🌀 파편 쓰기 — 여덟 차원의 포탈</h2>
+      <p class="desc">차원 보스를 격파해 얻은 <b>차원 파편</b>을 각 차원의 포탈에 <b>하나씩</b> 넣으세요. 포탈마다 파편의 모양·색이 다르며, 여덟 포탈을 모두 채우면 한정 칭호 <b style="color:var(--gold)">【 🌌 여덟 차원의 결속자 】</b>를 획득합니다.</p>
+
+      <div class="portal-progress" id="portalProgress"></div>
+      <div class="portal-grid" id="portalGrid"></div>
+      <div class="portal-complete-note" id="portalCompleteNote"></div>
+
+      <div class="inv-foot-actions">
+        <button class="secondary" onclick="insertAllShards()">🌟 보유한 파편 한 번에 넣기</button>
+        <button class="secondary" onclick="show('inventory')">🎒 인벤토리 보기</button>
+        <button class="secondary" onclick="show('book')">🏆 칭호 도감</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       12. 리딤 코드 입력 (REDEEM)
+       ============================================== -->
+  <section id="redeem" class="screen">
+    <div class="card">
+      <h2>🎁 리딤 코드 입력</h2>
+      <p class="desc">공개된 코드를 입력하면 토큰·EXP·칭호·아이템 보상을 받습니다. 같은 코드는 계정당 <b>1회</b>만 사용할 수 있고, 잘못된 코드는 안내 메시지로 알려 드립니다. (대소문자·띄어쓰기는 자동 정리)</p>
+
+      <div class="code-panel">
+        <input class="code-input" id="redeemInput" type="text" placeholder="코드를 입력하세요" autocomplete="off" spellcheck="false" maxlength="40" onkeydown="if(event.key==='Enter'){event.preventDefault();redeemCode();}" />
+        <button class="primary" onclick="redeemCode()">🎁 사용하기</button>
+      </div>
+      <div class="code-msg" id="redeemMsg"></div>
+      <p class="desc" id="redeemRegistryNote" style="font-size:0.82rem; color:var(--text-sub); margin-top:4px;"></p>
+
+      <div class="code-history">
+        <div class="inv-group-title"><span>🧾 사용 기록</span><span class="count" id="redeemHistoryCount"></span></div>
+        <div id="redeemHistory"></div>
+      </div>
+    </div>
+  </section>
+
   <section id="book" class="screen">
     <div class="card">
       <h2>🏆 CODEX 모험 도감 & 칭호</h2>
@@ -2368,8 +2743,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         <div class="quest-info">
           <div class="quest-check" id="qCheck1">⬜</div>
           <div>
-            <div class="quest-title-text">차원 룰렛 탐험 1회 완료</div>
-            <div style="font-size: 0.8rem; color: var(--text-sub);">차원 탐험에서 룰렛 돌리기</div>
+            <div class="quest-title-text">차원 검 탐험 1회 완료</div>
+            <div style="font-size: 0.8rem; color: var(--text-sub);">차원 탐험에서 검 내리치기</div>
           </div>
         </div>
         <span class="quest-reward-tag">+50 EXP · 40🪙</span>
@@ -2841,6 +3216,79 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     8: { id:8, name:"⚡ apex들의 잊혀진 차원", icon:"⚡", levelReq:750, chance:20, exp:[30000,60000], tokens:[20000,40000], gradient:"linear-gradient(90deg, #ffd166, #ff006e)", desc:"★★★ [APEX] 기록에서 지워진 여덟 번째 차원. 이름을 잃은 apex들의 잔영이 영원히 순례하는 황금빛 폐허이며, 그 심장부에 기록을 삼킨 자 'apex codex'가 군림합니다. 오직 Lv.750 이상의 모험가만 입장할 수 있습니다." }
   };
 
+  // 3-1. 🌀 차원 파편 8종 · 🎒 인벤토리 아이템 · 🎁 리딤 코드 데이터
+  // 여덟 차원 포탈을 모두 봉인하면 지급되는 한정 칭호
+  const PORTAL_TITLE = "🌌 여덟 차원의 결속자";
+
+  // 차원별 파편: 이름·색·아이콘·모양(clip-path)을 모두 다르게 구분
+  const SHARD_DEFS = {
+    1: { itemId: "shard1", name: "생명의 초록 파편", icon: "🌿", c1: "#38b000", c2: "#00f5d4", shape: "leaf",   desc: "에메랄드 초원의 수호거수가 떨어뜨린 파편. 손안에서 따뜻한 생명의 기운이 맥동합니다." },
+    2: { itemId: "shard2", name: "황금 모래 파편",   icon: "🏜️", c1: "#ffbe0b", c2: "#fb5607", shape: "diamond", desc: "황금 사막의 제왕이 지니고 있던 파편. 손끝에서 모래가 황금빛으로 흘러내립니다." },
+    3: { itemId: "shard3", name: "서리 결정 파편",   icon: "❄️", c1: "#a2d2ff", c2: "#3a86ff", shape: "hex",     desc: "빙결 왕국을 다스리던 자가 굳혀낸 파편. 닿는 순간 숨결이 하얗게 얼어붙습니다." },
+    4: { itemId: "shard4", name: "용암 심장 파편",   icon: "🔥", c1: "#ff0054", c2: "#ff8a00", shape: "flame",   desc: "인페르노 화산의 심장에서 뽑아낸 파편. 영원히 식지 않는 열기를 품고 있습니다." },
+    5: { itemId: "shard5", name: "성운 별빛 파편",   icon: "🌌", c1: "#8338ec", c2: "#3a86ff", shape: "star4",   desc: "네뷸라 심우주의 별이 응축된 파편. 은하의 궤적이 그 안에서 천천히 흐릅니다." },
+    6: { itemId: "shard6", name: "공허 균열 파편",   icon: "🕳️", c1: "#00f5d4", c2: "#7b2cbf", shape: "void",    desc: "공허의 비밀 차원에서 떨어져 나온 파편. 빛도 소리도 닿지 않는 심연의 조각입니다." },
+    7: { itemId: "shard7", name: "심연 끝의 파편",   icon: "🌑", c1: "#3a1a6b", c2: "#00f5d4", shape: "spike",   desc: "시공간의 끝, 아크 네메시스의 잔해에서 건진 파편. 모든 끝의 무게가 담겨 있습니다." },
+    8: { itemId: "shard8", name: "apex 황금 파편",   icon: "⚡", c1: "#ffd166", c2: "#ff006e", shape: "apex",    desc: "지워진 여덟 번째 차원의 파편. 이름을 잃은 자들의 기록이 안에서 맥동합니다." }
+  };
+
+  // 코드 보상 등으로 획득할 수 있는 기타 아이템 (추가 확장용 표)
+  const EXTRA_ITEMS = {
+    "exp_potion": { id: "exp_potion", name: "초월의 비약", icon: "🧪", type: "etc", c1: "#22d3ee", c2: "#3a86ff", shape: "hex", desc: "마시면 즉시 경험치를 얻는 비약. 코드 보상으로 획득할 수 있습니다." },
+    "roulette_ticket": { id: "roulette_ticket", name: "차원 검 충전권", icon: "🎰", type: "etc", c1: "#f6c453", c2: "#fb5607", shape: "diamond", desc: "차원 검(탐험) 기회를 충전하는 티켓. 코드 보상으로 획득할 수 있습니다." }
+  };
+
+  // 🎁 리딤 코드 테이블
+  //  - 지금은 비어 있습니다. 공개 코드를 낼 때 아래 형식으로 한 줄만 추가하면 됩니다.
+  //    "CODEX-HELLO": { label: "오픈 기념", rewards: { tokens: 1000, exp: 500, items: { shard1: 1 }, title: "🎁 첫 코드 사용자" }, usableUntil: "2026-12-31T23:59:59" }
+  //  - usableUntil 이 없으면 기간 무제한, items/title 은 생략 가능.
+  const REDEEM_CODES = {};
+
+  function normalizeCode(raw) {
+    return String(raw || "").toUpperCase().replace(/\s+/g, "");
+  }
+
+  function getItemDef(itemId) {
+    const id = String(itemId);
+    if (/^shard[1-8]$/.test(id)) {
+      const d = SHARD_DEFS[Number(id.slice(5))];
+      if (d) return { id, name: d.name, icon: d.icon, type: "shard", c1: d.c1, c2: d.c2, shape: d.shape, desc: d.desc };
+    }
+    if (/^trophy[1-8]$/.test(id)) {
+      const n = Number(id.slice(6));
+      const bName = bossNameOf(n);
+      const dimName = (DIMENSIONS[n] || {}).name || n + "차원";
+      return { id, name: `${bName} 격파 증표`, icon: "🏅", type: "trophy", c1: "#ffbe0b", c2: "#fb5607", shape: "medal", desc: `[${dimName}] ${bName}을(를) 처음 격파한 증표. 흔들면 그날의 함성이 들려옵니다.` };
+    }
+    if (EXTRA_ITEMS[id]) return EXTRA_ITEMS[id];
+    return { id, name: id, icon: "📦", type: "etc", c1: "#64748b", c2: "#94a3b8", shape: "diamond", desc: "출처를 알 수 없는 아이템입니다." };
+  }
+
+  // BOSSES 표는 스크립트 뒤쪽에 선언되므로, 초기 렌더링 시점(TDZ)에도 안전하게 이름을 읽는다.
+  function bossNameOf(dim) {
+    try {
+      if (typeof BOSSES !== "undefined" && BOSSES[dim] && BOSSES[dim].name) return BOSSES[dim].name;
+    } catch (e) { }
+    return "차원 보스";
+  }
+
+  function invCount(itemId) {
+    if (!state.inventory || typeof state.inventory !== "object") return 0;
+    return Number(state.inventory[itemId]) || 0;
+  }
+
+  function addItem(itemId, count) {
+    if (!state.inventory || typeof state.inventory !== "object") state.inventory = {};
+    const next = (Number(state.inventory[itemId]) || 0) + count;
+    if (next <= 0) delete state.inventory[itemId];
+    else state.inventory[itemId] = next;
+    return Math.max(0, next);
+  }
+
+  function filledPortalCount() {
+    return Array.isArray(state.portalShards) ? state.portalShards.filter(n => n >= 1 && n <= 8).length : 0;
+  }
+
   // 4. 스토리 챕터 DB
   const STORY_CHAPTERS = [
     {
@@ -2895,6 +3343,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     "시크릿": ["🤫 숨겨진 차원의 주인","🕳️ 공허를 본 자","👁️ CODEX의 선택","🌑 검은 별의 방문자","🌀 무한 루프 탈출자","🔮 금지된 예언자","🪐 미지의 관찰자","🗝️ 차원의 문지기","🌘 그림자 너머","💫 시간의 흔적","🧿 잊힌 수호자","⚫ 공허의 핵","🌌 무한 성운","👑 시크릿 로드","🌀 경계의 여행자","🕯️ 마지막 불꽃","📡 차원 신호 수신자","🪽 초월의 방문자","🌌 차원을 초월한 자","👑 직업 초월 각성자"],
     "종말": ["🌑 끝을 넘어선 기록자","👑 아크 네메시스 격파자"],
     "에이펙스": ["⚡ apex codex 격파자","💠 잊혀진 차원의 정복자","🌠 잊혀진 이름의 계승자"],
+    "차원": ["🌌 여덟 차원의 결속자"],
     "리미트": ["🔒 최초의 기록자","🔒 개발자의 친구"]
   };
   const ALL_TITLES = Object.values(TITLE_CATEGORIES).flat();
@@ -2942,10 +3391,70 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     // 대장간 영구 강화
     forgeAtk: 0,
     forgeDef: 0,
-    forgeHp: 0
+    forgeHp: 0,
+    // 🎒 인벤토리 · 🌀 파편 쓰기 · 🎁 코드 입력 (기존 세이브는 자동 초기화)
+    inventory: {},
+    portalShards: [],
+    bossCleared: {},
+    redeemedCodes: {}
   };
 
   let state = loadState();
+
+  // 🗡️ 차원 검(기존 차원 룰렛) 탐험 — 3초 쿨타임 상태 & UI 헬퍼 (updateUI에서 조기 호출되므로 여기서 선언)
+  const SWORD_COOLDOWN_MS = 3000;
+  let swordCdUntil = 0;
+  let swordCdTimer = null;
+  let swordBusy = false;
+
+  function swordRemainText(remainMs) {
+    return (Math.ceil(remainMs / 100) / 10).toFixed(1);
+  }
+
+  // 쿨타임 UI 동기화 (버튼 잠금 + 남은 시간 3.0s → 2.0s → 1.0s → 해제)
+  function setSwordCooldownUI(remainMs) {
+    const active = remainMs > 0;
+    const btn = document.getElementById("exploreBtn");
+    const cdEl = document.getElementById("exploreCooldown");
+    const labelEl = document.getElementById("exploreBtnText");
+    const textEl = document.getElementById("swordCdText");
+    const fillEl = document.getElementById("swordCdFill");
+    if (btn) btn.disabled = active;
+    if (cdEl) {
+      cdEl.hidden = !active;
+      if (active) cdEl.textContent = swordRemainText(remainMs) + "s";
+    }
+    if (labelEl) labelEl.textContent = active ? "재정비 중..." : "차원을 가르기";
+    if (textEl) textEl.textContent = active ? `⏳ 다음 일격까지 ${swordRemainText(remainMs)}초 (쿨타임)` : "";
+    if (fillEl) {
+      fillEl.style.width = active
+        ? Math.max(0, Math.min(100, (remainMs / SWORD_COOLDOWN_MS) * 100)) + "%"
+        : "0%";
+    }
+  }
+
+  function syncSwordCooldownUI() {
+    const remain = swordCdUntil - Date.now();
+    setSwordCooldownUI(remain > 0 ? remain : 0);
+  }
+
+  function startSwordCooldown(ms) {
+    swordCdUntil = Date.now() + ms;
+    if (swordCdTimer) { clearInterval(swordCdTimer); swordCdTimer = null; }
+    setSwordCooldownUI(ms);
+    swordCdTimer = setInterval(() => {
+      const remain = swordCdUntil - Date.now();
+      if (remain <= 0) {
+        clearInterval(swordCdTimer);
+        swordCdTimer = null;
+        swordCdUntil = 0;
+        setSwordCooldownUI(0);
+      } else {
+        setSwordCooldownUI(remain);
+      }
+    }, 100);
+  }
+
 
   function loadState() {
     try {
@@ -2968,6 +3477,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       if (!merged.jobUpgrades || typeof merged.jobUpgrades !== "object") merged.jobUpgrades = {};
       if (!Array.isArray(merged.unlockedJobs)) merged.unlockedJobs = [merged.jobId];
       if (!merged.unlockedJobs.includes(merged.jobId)) merged.unlockedJobs.push(merged.jobId);
+      normalizeNestedState(merged);
 
       // 어드민 계정(ADMIN/어드민) 감지 시 리미트 칭호 2종 상시 자동 획득
       const currentU = getCurrentUsername();
@@ -2984,6 +3494,23 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     } catch (e) {
       return Object.assign({}, defaultState);
     }
+  }
+
+  // 구버전 세이브 자동 마이그레이션: 인벤토리 · 포탈 봉인 · 격파 기록 · 사용 코드
+  function normalizeNestedState(s) {
+    if (!s.inventory || typeof s.inventory !== "object" || Array.isArray(s.inventory)) s.inventory = {};
+    Object.keys(s.inventory).forEach(k => {
+      const n = Number(s.inventory[k]);
+      if (!Number.isFinite(n) || n <= 0) delete s.inventory[k];
+      else s.inventory[k] = Math.floor(n);
+    });
+    if (!Array.isArray(s.portalShards)) s.portalShards = [];
+    s.portalShards = s.portalShards
+      .map(Number)
+      .filter((n, i, arr) => n >= 1 && n <= 8 && arr.indexOf(n) === i);
+    if (!s.bossCleared || typeof s.bossCleared !== "object" || Array.isArray(s.bossCleared)) s.bossCleared = {};
+    if (!s.redeemedCodes || typeof s.redeemedCodes !== "object" || Array.isArray(s.redeemedCodes)) s.redeemedCodes = {};
+    return s;
   }
 
   function save() {
@@ -3270,6 +3797,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     renderJobAltar();
     renderJobsGrid();
     renderTitlesBook();
+    renderInventory();
+    renderShardPortals();
+    renderRedeemPanel();
+    syncSwordCooldownUI();
   }
 
   // 9. 직업 50개 룰렛 및 선택
@@ -3877,7 +4408,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     if (titleEl) titleEl.textContent = d.name;
     if (iconEl) iconEl.textContent = d.icon;
-    if (statusEl) statusEl.textContent = "🎰 " + d.name + " 탐험 룰렛";
+    if (statusEl) statusEl.textContent = "🗡️ " + d.name + " 차원 검 탐험";
     if (detailEl) {
       const triesStr = isInfRouletteEventActive() ? "무제한 ♾️ (이벤트 ON)" : `${state.roulette.tries}/10회`;
       const expStr = isExp2EventActive()
@@ -3886,7 +4417,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const chanceStr = isLuckEventActive()
         ? "100% (실패 없음🍀 대성공 UP)"
         : `${d.chance}%`;
-      detailEl.textContent = `성공 확률 ${chanceStr} · 남은 기회 ${triesStr}\n✨ EXP +${expStr} · 🪙 토큰 +${d.tokens[0].toLocaleString()}~${d.tokens[1].toLocaleString()}`;
+      detailEl.textContent = `성공 확률 ${chanceStr} · 남은 검 기회 ${triesStr}\n✨ EXP +${expStr} · 🪙 토큰 +${d.tokens[0].toLocaleString()}~${d.tokens[1].toLocaleString()}`;
     }
 
     state.lastEvent = `${d.name} 차원에 진입했습니다.`;
@@ -3947,45 +4478,46 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     save();
   };
 
-  // 12. 룰렛 탐험
   window.explore = function() {
+    // 🔒 연타·중복 실행 이중 가드: 쿨타임 중이거나 판정 중이면 무시
+    if (swordBusy) return;
+    if (Date.now() < swordCdUntil) { syncSwordCooldownUI(); return; }
+
     const d = DIMENSIONS[state.roulette.dimension] || DIMENSIONS[1];
     const infRoulette = isInfRouletteEventActive();
     if (!infRoulette && state.roulette.tries <= 0) {
       Sound.hit();
-      alert("🎰 이 차원의 룰렛 기회 10회를 모두 사용했습니다!\n매일 자정에 리필되거나 상점에서 충전권을 구매할 수 있습니다.");
+      alert("🗡️ 이 차원의 검 기회 10회를 모두 사용했습니다!\n매일 자정에 리필되거나 상점에서 충전권을 구매할 수 있습니다.");
       return;
     }
 
-    if (!infRoulette) {
-      state.roulette.tries--;
-    }
+    // 누르는 즉시 3초 쿨타임 시작 (버튼 비활성화)
+    swordBusy = true;
+    startSwordCooldown(SWORD_COOLDOWN_MS);
+
+    if (!infRoulette) state.roulette.tries--;
     state.questProgress.explore = (state.questProgress.explore || 0) + 1;
 
-    const slot = document.getElementById("slotIcon");
+    const arena = document.getElementById("swordArena");
+    const blade = document.getElementById("swordBlade");
+    const slash = document.getElementById("swordSlash");
+    const verdict = document.getElementById("swordVerdict");
     const status = document.getElementById("rouletteStatus");
     const detail = document.getElementById("rouletteDetail");
-    const btn = document.getElementById("exploreBtn");
 
-    if (btn) btn.disabled = true;
-    if (slot) slot.classList.add("spinning");
-    if (status) status.textContent = "🎰 차원의 기운을 회전시키는 중...";
+    if (arena) arena.classList.remove("sword-arena-crit");
+    if (blade) { blade.classList.remove("sword-swing"); void blade.offsetWidth; blade.classList.add("sword-swing"); }
+    if (slash) { slash.classList.remove("slash-hit"); void slash.offsetWidth; slash.classList.add("slash-hit"); }
+    if (verdict) { verdict.textContent = ""; verdict.className = "sword-verdict"; }
+    if (status) status.textContent = "🗡️ 차원의 검을 내리치는 중...";
+    Sound.click();
 
-    let ticks = 0;
-    const icons = ["✨", "💎", "⭐", "🌀", "🎲", "🎯", d.icon];
-    const timer = setInterval(() => {
-      Sound.click();
-      if (slot) slot.textContent = icons[ticks % icons.length];
-      ticks++;
-      if (ticks >= 12) {
-        clearInterval(timer);
-        if (slot) slot.classList.remove("spinning");
-        if (btn) btn.disabled = false;
-
+    setTimeout(() => {
+      try {
         const isLuck = isLuckEventActive();
         const roll = Math.random() * 100;
-        // 행운 100% 이벤트: 실패 확률 0% (무조건 성공)
         const isSuccess = isLuck ? true : (roll < d.chance);
+        const triesStr = infRoulette ? "무제한 ♾️ (이벤트)" : state.roulette.tries + "/10";
 
         if (isSuccess) {
           // 행운 100% 이벤트: 대성공 확률 대폭 증가 (75% 확률로 대성공!)
@@ -3994,25 +4526,33 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
           const expGain = Math.round(rand(d.exp[0], d.exp[1]) * mult);
           const tokenGain = Math.round(rand(d.tokens[0], d.tokens[1]) * mult);
 
-          if (slot) slot.textContent = isCrit ? "🌟" : "🎉";
-          if (status) status.textContent = isCrit ? (isLuck ? "💥 차원 초대성공 (CRITICAL 🍀)!" : "💥 차원 대성공 (CRITICAL)!") : "🎉 탐험 룰렛 성공!";
+          if (verdict) {
+            verdict.textContent = isCrit ? "🌟 대성공!" : "🎉 성공!";
+            verdict.className = "sword-verdict " + (isCrit ? "crit" : "success");
+          }
+          if (arena && isCrit) arena.classList.add("sword-arena-crit");
+          if (status) status.textContent = isCrit
+            ? (isLuck ? "💥 차원 초대성공 (CRITICAL 🍀)!" : "💥 차원 대성공 (CRITICAL)!")
+            : "🗡️ 차원을 갈랐습니다!";
           if (detail) {
-            detail.textContent = `${isCrit ? (isLuck ? '🍀 행운 100% 초대성공 발동!' : '🌟 대성공 보너스 발동!') : 'SUCCESS ✅'}\n✨ EXP +${expGain.toLocaleString()}${isExp2EventActive() ? ' (2배🔥)' : ''} · 🪙 토큰 +${tokenGain.toLocaleString()}\n남은 기회: ${infRoulette ? '무제한 ♾️ (이벤트)' : state.roulette.tries + '/10'}`;
+            detail.textContent = `${isCrit ? (isLuck ? "🍀 행운 100% 초대성공 발동!" : "🌟 대성공 보너스 발동!") : "SUCCESS ✅"}\n✨ EXP +${expGain.toLocaleString()}${isExp2EventActive() ? " (2배🔥)" : ""} · 🪙 토큰 +${tokenGain.toLocaleString()}\n남은 검 기회: ${triesStr}`;
           }
 
-          gainReward(expGain, tokenGain, `${d.name} 탐험 ${isCrit ? '대성공' : '성공'}! (+${expGain} EXP, +${tokenGain} 토큰)`);
+          gainReward(expGain, tokenGain, `${d.name} 탐험 ${isCrit ? "대성공" : "성공"}! (+${expGain} EXP, +${tokenGain} 토큰)`);
         } else {
           Sound.hit();
-          if (slot) slot.textContent = "❌";
-          if (status) status.textContent = "💀 룰렛 실패...";
+          if (verdict) { verdict.textContent = "💀 실패..."; verdict.className = "sword-verdict fail"; }
+          if (status) status.textContent = "💀 검이 허공을 갈랐습니다...";
           if (detail) {
-            detail.textContent = `아쉽게도 보상을 얻지 못했습니다.\n남은 기회: ${state.roulette.tries}/10`;
+            detail.textContent = `아쉽게도 보상을 얻지 못했습니다.\n남은 검 기회: ${triesStr}`;
           }
-          state.lastEvent = `${d.name} 탐험 룰렛 실패`;
+          state.lastEvent = `${d.name} 탐험 실패`;
           save();
         }
+      } finally {
+        swordBusy = false;
       }
-    }, 90);
+    }, 420);
   };
 
   // 13. 전투 엔진
@@ -4279,6 +4819,9 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const expGain = Math.round(rand(d.exp[0], d.exp[1]) * mult);
     const tokenGain = Math.round(rand(d.tokens[0], d.tokens[1]) * mult);
     const defeatedName = combat.name;
+    // 🌀 보스 격파 드롭: 차원 파편(매번) + 첫 격파 증표(1회)
+    const lootLines = isBoss ? grantBossLoot(dim) : [];
+    const lootText = lootLines.length ? `\n📦 획득 아이템: ${lootLines.join(" · ")}` : "";
 
     state.questProgress.battle = (state.questProgress.battle || 0) + 1;
     combat = null;
@@ -4304,7 +4847,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       gainReward(bonusExp, bonusTokens, `🌑 아크 네메시스 격파! (+${bonusExp} EXP, +${bonusTokens} 토큰)`);
       save();
       updateUI();
-      showResultModal(true, `🌑 [최후의 포식자, 아크 네메시스 격파!]\n시공간의 끝 보이드가 조용히 닫히고, 삼켜졌던 모든 차원의 잔해가 빛으로 돌아갑니다.\n\n👑 보스 보상: ✨ EXP +${(expGain + bonusExp).toLocaleString()} · 🪙 토큰 +${(tokenGain + bonusTokens).toLocaleString()}\n🏆 획득 칭호: ${firstClear ? bossTitles.map(t => `【 ${t} 】`).join(" ") : "이미 획득 (재격파 보너스 지급)"}\n\n당신은 이제 기록의 주인입니다.`);
+      showResultModal(true, `🌑 [최후의 포식자, 아크 네메시스 격파!]\n시공간의 끝 보이드가 조용히 닫히고, 삼켜졌던 모든 차원의 잔해가 빛으로 돌아갑니다.\n\n👑 보스 보상: ✨ EXP +${(expGain + bonusExp).toLocaleString()} · 🪙 토큰 +${(tokenGain + bonusTokens).toLocaleString()}\n🏆 획득 칭호: ${firstClear ? bossTitles.map(t => `【 ${t} 】`).join(" ") : "이미 획득 (재격파 보너스 지급)"}${lootText}\n\n당신은 이제 기록의 주인입니다.`);
       return;
     }
 
@@ -4321,11 +4864,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       gainReward(bonusExp, bonusTokens, `⚡ apex codex 격파! (+${bonusExp} EXP, +${bonusTokens} 토큰)`);
       save();
       updateUI();
-      showResultModal(true, `⚡ [기록을 삼킨 자, apex codex 격파!]\n마지막 페이지가 찢기고, 지워졌던 여덟 번째 차원의 이름이 다시 존재의 빛을 얻습니다.\n잔영들은 더 이상 순례하지 않고, 저마다의 이름을 속삭이며 황혼으로 흩어집니다.\n\n⚡ 보스 보상: ✨ EXP +${(expGain + bonusExp).toLocaleString()} · 🪙 토큰 +${(tokenGain + bonusTokens).toLocaleString()}\n🏆 획득 칭호: ${firstClear ? bossTitles.map(t => `【 ${t} 】`).join(" ") : "이미 획득 (재격파 보너스 지급)"}\n\n이제 마지막 문장은 당신의 것입니다 — CODEX의 진짜 주인.`);
+      showResultModal(true, `⚡ [기록을 삼킨 자, apex codex 격파!]\n마지막 페이지가 찢기고, 지워졌던 여덟 번째 차원의 이름이 다시 존재의 빛을 얻습니다.\n잔영들은 더 이상 순례하지 않고, 저마다의 이름을 속삭이며 황혼으로 흩어집니다.\n\n⚡ 보스 보상: ✨ EXP +${(expGain + bonusExp).toLocaleString()} · 🪙 토큰 +${(tokenGain + bonusTokens).toLocaleString()}\n🏆 획득 칭호: ${firstClear ? bossTitles.map(t => `【 ${t} 】`).join(" ") : "이미 획득 (재격파 보너스 지급)"}${lootText}\n\n이제 마지막 문장은 당신의 것입니다 — CODEX의 진짜 주인.`);
       return;
     }
 
-    showResultModal(true, `🎉 전투 승리!\n${defeatedName}을(를) 격파했습니다!\n✨ EXP +${expGain.toLocaleString()} · 🪙 토큰 +${tokenGain.toLocaleString()}\n❤️ 전투 승리로 체력과 마나가 100% 풀로 채워졌습니다!`);
+    showResultModal(true, `🎉 전투 승리!\n${defeatedName}을(를) 격파했습니다!\n✨ EXP +${expGain.toLocaleString()} · 🪙 토큰 +${tokenGain.toLocaleString()}${lootText}\n❤️ 전투 승리로 체력과 마나가 100% 풀로 채워졌습니다!`);
   }
 
   function endBattleLose() {
@@ -4549,7 +5092,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       state.roulette.tries += 3;
       Sound.win();
       save();
-      if (notice) notice.innerHTML = `<span style="color:var(--gold)">🎰 차원 룰렛 충전권 사용! 룰렛 기회 +3회 충전</span>`;
+      if (notice) notice.innerHTML = `<span style="color:var(--gold)">🗡️ 차원 검 충전권 사용! 검 기회 +3회 충전</span>`;
     } else if (item === "title") {
       const unobtained = ALL_TITLES.filter(t => !TITLE_CATEGORIES["리미트"].includes(t) && !state.titles.includes(t));
       if (!unobtained.length) {
@@ -4714,7 +5257,16 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 - ★★★ 8차원(apex들의 잊혀진 차원): Lv.750 이상 전용! 기록을 삼킨 자 [apex codex] HP 300,000 격파에 도전하세요!
 
 5. 👑 [최고 레벨 만렙]:
-- 최고 만렙 Lv.1000까지 끝없이 캐릭터를 육성하세요!`);
+- 최고 만렙 Lv.1000까지 끝없이 캐릭터를 육성하세요!
+
+6. 🗡️ [차원 검 탐험 (기존 룰렛 대체)]:
+- 차원 탐험 화면에서 검을 내리치면 차원을 가릅니다 (성공 확률·보상·레벨 제한은 기존과 같습니다).
+- 한 번 내리칠 때마다 3초 쿨타임이 걸립니다 (버튼 잠금 + 남은 시간 3.0s → 2.0s → 1.0s 표시). 연타·중복 실행은 막힙니다.
+
+7. 🎒 [인벤토리 · 파편 쓰기 · 코드 입력]:
+- 1~8차원 보스를 격파하면 그 차원 고유의 '차원 파편'과 첫 격파 '격파 증표'를 획득합니다.
+- 🌀 파편 쓰기에서 8개 포탈에 각 차원의 파편을 하나씩 넣으세요. 8개를 모두 채우면 한정 칭호 [🌌 여덟 차원의 결속자]를 획득합니다.
+- 🎁 코드 입력에 공개 코드를 넣으면 보상을 받습니다. 같은 코드는 계정당 1회만 사용할 수 있습니다.`);
   };
 
   window.show = function(screenId) {
@@ -4733,6 +5285,290 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     window.scrollTo({ top: 0, behavior: "smooth" });
     updateUI();
   };
+
+  // ==================================================
+  // 18-2. 🎒 인벤토리 · 🌀 파편 쓰기 · 🎁 리딤 코드
+  // ==================================================
+
+  // 보스 격파 시 파편(매번) + 첫 격파 증표(1회) 지급
+  function grantBossLoot(dim) {
+    const lines = [];
+    const sd = SHARD_DEFS[dim];
+    if (!sd) return lines;
+    const owned = addItem(sd.itemId, 1);
+    lines.push(`${sd.icon} ${sd.name} ×1 (보유 ${owned}개)`);
+    if (!state.bossCleared || typeof state.bossCleared !== "object") state.bossCleared = {};
+    const tid = "trophy" + dim;
+    if (invCount(tid) === 0) {
+      addItem(tid, 1);
+      state.bossCleared[dim] = true;
+      const t = getItemDef(tid);
+      lines.push(`${t.icon} ${t.name} ×1 (첫 격파 기념)`);
+    }
+    return lines;
+  }
+
+  // 8개 포탈 완성 시 한정 칭호 지급
+  function grantPortalTitle() {
+    const already = state.titles.includes(PORTAL_TITLE);
+    if (!already) state.titles.push(PORTAL_TITLE);
+    state.lastEvent = "🌌 여덟 차원의 포탈이 모두 봉인되었습니다!";
+    Sound.levelUp();
+    save();
+    renderShardPortals();
+    renderInventory();
+    showResultModal(true, `🌌 [여덟 차원의 결속!]\n\n마지막 파편이 포탈에 잠기자, 여덟 개의 빛이 하나의 원을 그리며 CODEX의 빈 페이지 위로 흘러듭니다.\n\n🏅 한정 칭호 ${already ? "재확인" : "획득"}: 【 ${PORTAL_TITLE} 】\n🏆 도감 & 칭호 탭에서 바로 장착할 수 있습니다.`);
+  }
+
+  window.insertShard = function(dimId) {
+    const dim = Number(dimId);
+    const sd = SHARD_DEFS[dim];
+    if (!sd) return;
+    if (!Array.isArray(state.portalShards)) state.portalShards = [];
+    if (state.portalShards.includes(dim)) {
+      Sound.hit();
+      alert(`🌀 [${DIMENSIONS[dim].name}] 포탈에는 이미 파편이 봉인되어 있습니다.`);
+      return;
+    }
+    if (invCount(sd.itemId) <= 0) {
+      Sound.hit();
+      alert(`🔒 ${sd.icon} ${sd.name}이(가) 인벤토리에 없습니다.\n${DIMENSIONS[dim].name}의 보스를 격파하면 이 파편을 얻을 수 있습니다.`);
+      return;
+    }
+    addItem(sd.itemId, -1);
+    state.portalShards.push(dim);
+    state.portalShards.sort((a, b) => a - b);
+    if (filledPortalCount() >= 8) { grantPortalTitle(); return; }
+    Sound.win();
+    state.lastEvent = `🌀 [${DIMENSIONS[dim].name}] 포탈에 ${sd.name}을(를) 봉인했습니다. (${filledPortalCount()}/8)`;
+    save();
+    renderShardPortals();
+    renderInventory();
+  };
+
+  window.insertAllShards = function() {
+    if (!Array.isArray(state.portalShards)) state.portalShards = [];
+    const inserted = [];
+    for (let dim = 1; dim <= 8; dim++) {
+      const sd = SHARD_DEFS[dim];
+      if (!sd || state.portalShards.includes(dim)) continue;
+      if (invCount(sd.itemId) <= 0) continue;
+      addItem(sd.itemId, -1);
+      state.portalShards.push(dim);
+      inserted.push(dim);
+    }
+    if (!inserted.length) {
+      Sound.hit();
+      alert("🌟 지금 넣을 수 있는 차원 파편이 없습니다.\n아직 봉인하지 않은 포탈에 넣을 파편을 보스 격파로 모아 오세요.");
+      return;
+    }
+    state.portalShards.sort((a, b) => a - b);
+    if (filledPortalCount() >= 8) { grantPortalTitle(); return; }
+    Sound.win();
+    state.lastEvent = `🌀 ${inserted.length}개 포탈에 파편을 한 번에 봉인했습니다. (${filledPortalCount()}/8)`;
+    save();
+    renderShardPortals();
+    renderInventory();
+    alert(`🌀 ${inserted.length}개 포탈에 파편을 봉인했습니다! (${filledPortalCount()}/8)`);
+  };
+
+  function renderInventory() {
+    const summaryEl = document.getElementById("invSummary");
+    const listEl = document.getElementById("invList");
+    if (!listEl) return;
+    const inv = (state.inventory && typeof state.inventory === "object") ? state.inventory : {};
+    const ids = Object.keys(inv).filter(id => Number(inv[id]) > 0);
+    const byDim = (a, b) => Number(String(a).replace(/\D/g, "")) - Number(String(b).replace(/\D/g, ""));
+    const shardIds = ids.filter(id => /^shard[1-8]$/.test(id)).sort(byDim);
+    const trophyIds = ids.filter(id => /^trophy[1-8]$/.test(id)).sort(byDim);
+    const etcIds = ids.filter(id => !/^shard[1-8]$/.test(id) && !/^trophy[1-8]$/.test(id));
+    const totalCount = ids.reduce((sum, id) => sum + Number(inv[id] || 0), 0);
+    const filled = filledPortalCount();
+
+    if (summaryEl) {
+      summaryEl.innerHTML = `
+        <div class="inv-stat"><span>보유 아이템</span><b>${ids.length}종 · ${totalCount.toLocaleString()}개</b></div>
+        <div class="inv-stat shard"><span>차원 파편</span><b>${shardIds.length} / 8 종</b></div>
+        <div class="inv-stat title"><span>포탈 봉인</span><b>${filled} / 8</b></div>`;
+    }
+
+    const cardHtml = (id) => {
+      const d = getItemDef(id);
+      return `
+        <div class="inv-card" style="--ic1:${d.c1}; --ic2:${d.c2};">
+          <div class="inv-icon">${d.icon}</div>
+          <div class="inv-name">${escapeHtml(d.name)}</div>
+          <div class="inv-desc">${escapeHtml(d.desc)}</div>
+          <div class="inv-count">× ${Number(inv[id] || 0).toLocaleString()}</div>
+        </div>`;
+    };
+    const groupHtml = (title, list) => list.length ? `
+      <div class="inv-group">
+        <div class="inv-group-title"><span>${title}</span><span class="count">${list.length}종</span></div>
+        <div class="inv-grid">${list.map(cardHtml).join("")}</div>
+      </div>` : "";
+
+    if (!ids.length) {
+      listEl.innerHTML = `
+        <div class="inv-empty">
+          🎒 아직 보관한 아이템이 없습니다.<br>
+          차원 지도에서 <b>보스를 격파</b>하면 그 차원의 <b>차원 파편</b>과 <b>격파 증표</b>가 이곳에 들어옵니다.<br><br>
+          <button class="primary" onclick="show('map')">🗺️ 차원 지도 열기</button>
+        </div>`;
+      return;
+    }
+
+    listEl.innerHTML =
+      groupHtml("🌀 차원 파편 (1~8차원)", shardIds) +
+      groupHtml("🏅 격파 증표", trophyIds) +
+      groupHtml("📦 기타 아이템", etcIds);
+  }
+
+  function renderShardPortals() {
+    const grid = document.getElementById("portalGrid");
+    if (!grid) return;
+    const progEl = document.getElementById("portalProgress");
+    const noteEl = document.getElementById("portalCompleteNote");
+    const filled = Array.isArray(state.portalShards) ? state.portalShards : [];
+    const filledCount = filledPortalCount();
+    const allDone = filledCount >= 8;
+    let ownedTotal = 0;
+    for (let dim = 1; dim <= 8; dim++) ownedTotal += invCount(SHARD_DEFS[dim].itemId);
+
+    if (progEl) {
+      progEl.innerHTML = `
+        <div class="pp-count">${filledCount} / 8</div>
+        <div class="pp-text">${allDone
+          ? "🌌 여덟 차원의 포탈이 모두 봉인되었습니다!"
+          : `봉인 완료 <b>${filledCount}</b>개 · 남은 포탈 <b>${8 - filledCount}</b>개<br>인벤토리에 보관된 파편 <b>${ownedTotal}</b>개`}</div>
+        <div class="bar-track" style="flex:1 1 100%;"><div class="bar-fill" style="width:${Math.round(filledCount / 8 * 100)}%; background:linear-gradient(90deg,#00f5d4,#8338ec);"></div></div>`;
+    }
+    if (noteEl) {
+      noteEl.innerHTML = allDone
+        ? `🏅 한정 칭호 【 ${PORTAL_TITLE} 】 획득 완료! 도감 & 칭호에서 장착할 수 있습니다.`
+        : "";
+    }
+
+    grid.innerHTML = [1, 2, 3, 4, 5, 6, 7, 8].map(dim => {
+      const sd = SHARD_DEFS[dim];
+      const dimName = (DIMENSIONS[dim] || {}).name || `${dim}차원`;
+      const bossName = bossNameOf(dim);
+      const have = invCount(sd.itemId);
+      const isFilled = filled.includes(dim);
+      const tag = isFilled
+        ? '<span class="portal-tag done">✅ 완료</span>'
+        : (have > 0 ? '<span class="portal-tag ready">넣기 가능</span>' : '<span class="portal-tag">파편 없음</span>');
+      const btn = isFilled
+        ? '<button class="secondary" disabled>봉인 완료</button>'
+        : (have > 0
+          ? `<button class="primary" onclick="insertShard(${dim})">넣기</button>`
+          : '<button class="secondary" disabled>파편 필요</button>');
+      return `
+        <div class="portal-card ${isFilled ? "filled" : ""}" style="--pc1:${sd.c1}; --pc2:${sd.c2}; --sh1:${sd.c1}; --sh2:${sd.c2};">
+          <div class="portal-head"><span class="portal-dim">${dim}차원</span>${tag}</div>
+          <div class="portal-ring"><div class="portal-inner"><div class="shard-shape shape-${sd.shape}"><span>${sd.icon}</span></div></div></div>
+          <div class="portal-name">${escapeHtml(sd.name)}</div>
+          <div class="portal-dim-name">${escapeHtml(dimName)}</div>
+          <div class="portal-hint">${escapeHtml(bossName)} 격파 시 획득</div>
+          <div class="portal-foot"><span class="portal-have">보유 ${have}개</span>${btn}</div>
+        </div>`;
+    }).join("");
+  }
+
+  window.redeemCode = function() {
+    const inputEl = document.getElementById("redeemInput");
+    const msgEl = document.getElementById("redeemMsg");
+    const setMsg = html => { if (msgEl) msgEl.innerHTML = html; };
+    const code = normalizeCode(inputEl ? inputEl.value : "");
+    if (!code) {
+      Sound.hit();
+      setMsg('<span style="color:var(--red)">❌ 코드를 입력해 주세요.</span>');
+      return;
+    }
+    const entry = REDEEM_CODES[code];
+    if (!entry) {
+      Sound.hit();
+      setMsg(`<span style="color:var(--red)">❌ [${escapeHtml(code)}] 는 등록되지 않은 코드입니다.</span> 띄어쓰기와 오타를 확인해 주세요.`);
+      return;
+    }
+    if (!state.redeemedCodes || typeof state.redeemedCodes !== "object") state.redeemedCodes = {};
+    if (state.redeemedCodes[code]) {
+      Sound.hit();
+      const when = (() => { try { return new Date(state.redeemedCodes[code]).toLocaleString("ko-KR"); } catch (e) { return state.redeemedCodes[code]; } })();
+      setMsg(`<span style="color:var(--gold)">⚠️ 이미 사용한 코드입니다.</span> 같은 코드는 계정당 1회만 사용할 수 있습니다. <span style="font-size:0.8rem; color:var(--text-sub);">(사용일 ${when})</span>`);
+      return;
+    }
+    if (entry.usableUntil) {
+      const until = new Date(entry.usableUntil).getTime();
+      if (Number.isFinite(until) && Date.now() > until) {
+        Sound.hit();
+        setMsg(`<span style="color:var(--red)">⏰ 사용 기간이 만료된 코드입니다.</span> (만료일 ${new Date(until).toLocaleDateString("ko-KR")})`);
+        return;
+      }
+    }
+    const rewards = entry.rewards || {};
+    const got = [];
+    if (rewards.items && typeof rewards.items === "object") {
+      Object.keys(rewards.items).forEach(id => {
+        const n = Math.max(0, Math.floor(Number(rewards.items[id]) || 0));
+        if (n > 0) {
+          addItem(id, n);
+          const d = getItemDef(id);
+          got.push(`${d.icon} ${d.name} ×${n}`);
+        }
+      });
+    }
+    if (rewards.title) {
+      if (!state.titles.includes(rewards.title)) {
+        state.titles.push(rewards.title);
+        got.push(`🏆 칭호 【 ${rewards.title} 】`);
+      } else {
+        got.push(`🏆 칭호 【 ${rewards.title} 】 (이미 보유)`);
+      }
+    }
+    const tokenGain = Math.max(0, Math.floor(Number(rewards.tokens) || 0));
+    if (tokenGain) {
+      state.tokens += tokenGain;
+      got.push(`🪙 토큰 +${tokenGain.toLocaleString()}`);
+    }
+    const expGain = Math.max(0, Math.floor(Number(rewards.exp) || 0));
+    state.redeemedCodes[code] = new Date().toISOString();
+    if (expGain) gainReward(expGain, 0, `🎁 코드 [${code}] 사용!`);
+    save();
+    Sound.levelUp();
+    if (inputEl) inputEl.value = "";
+    renderRedeemPanel();
+    renderInventory();
+    setMsg(`<span style="color:var(--green)">✅ 코드 사용 완료!</span> ${entry.label ? escapeHtml(entry.label) + " 보상이 지급되었습니다." : "보상이 지급되었습니다."}`);
+    showResultModal(true, `🎁 [리딤 코드 사용 완료]\n\n코드: ${code}${entry.label ? `\n이벤트: ${entry.label}` : ""}\n\n${got.length ? got.join("\n") : "보상이 지급되었습니다."}${expGain ? `\n✨ EXP +${expGain.toLocaleString()}` : ""}\n\n🎒 인벤토리에서 획득 아이템을 확인하세요.`);
+  };
+
+  function renderRedeemPanel() {
+    const noteEl = document.getElementById("redeemRegistryNote");
+    const listEl = document.getElementById("redeemHistory");
+    const countEl = document.getElementById("redeemHistoryCount");
+    const registered = Object.keys(REDEEM_CODES || {});
+    if (noteEl) {
+      noteEl.textContent = registered.length
+        ? `현재 사용 가능한 공개 코드 ${registered.length}개가 등록되어 있습니다.`
+        : "현재 등록된 공개 코드는 0개입니다. 새 코드는 공지·이벤트를 통해 배포됩니다.";
+    }
+    if (!listEl) return;
+    const used = Object.entries(state.redeemedCodes || {});
+    if (countEl) countEl.textContent = `${used.length}건`;
+    if (!used.length) {
+      listEl.innerHTML = '<div class="inv-empty" style="padding:18px;">아직 사용한 코드가 없습니다.</div>';
+      return;
+    }
+    used.sort((a, b) => new Date(b[1]).getTime() - new Date(a[1]).getTime());
+    listEl.innerHTML = used.map(([code, when]) => {
+      const meta = REDEEM_CODES[code];
+      const label = meta && meta.label ? escapeHtml(meta.label) : "사용 완료";
+      let time = String(when);
+      try { time = new Date(when).toLocaleString("ko-KR"); } catch (e) { }
+      return `<div class="code-history-item"><div><b>${escapeHtml(code)}</b> <span style="color:var(--text-sub); font-size:0.8rem;">${label}</span></div><span>${escapeHtml(time)}</span></div>`;
+    }).join("");
+  }
 
   // 19. 우주 배경 파티클
   function initBgParticles() {
@@ -5270,6 +6106,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const loaded = JSON.parse(jsonStr);
       if (typeof loaded !== "object" || !loaded) throw new Error("올바르지 않은 데이터 형식입니다.");
       state = Object.assign({}, defaultState, loaded);
+      state = normalizeNestedState(state);
       save();
       updateAuthUI();
       updateUI();
