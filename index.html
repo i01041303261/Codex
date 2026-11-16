@@ -4979,7 +4979,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     const curUser = getCurrentUser();
     const preview = savePreviewText(loaded);
     const curPreview = curUser ? savePreviewText(state) : "없음 (새 기기)";
-    if (!confirm(`📥 복원 미리보기\n\n복원할 세이브: ${preview}\n현재 세이브: ${curPreview}\n\n이 코드로 복원할까요?`)) return;
+    if (!confirm(`📥 복원 미리보기\n\n복원할 세이브: ${preview}\n현재 세이브: ${curPreview}\n\n이 코드로 복원할까요?${curUser ? "\n(복원 전 지금 상태는 '최근 자동 백업'에 저장됩니다)" : ""}`)) return;
 
     let ident = null;
     try {
@@ -4991,12 +4991,27 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     }
     if (!ident) return;
 
+    // 복원 전 현재 상태를 안전하게 이정표 백업으로 남긴다 (잘못된 코드로 덮어썼을 때 되돌리기용)
+    let preBackup = null;
+    if (curUser) {
+      try { preBackup = { label: `복원 전 자동 백업 (${curUser.username})`, ts: Date.now(), code: buildSaveCode() }; } catch (e) { preBackup = null; }
+    }
+
     try {
       applyRestoredSave(loaded, ident);
     } catch (e) {
       Sound.hit();
       say("❌ 복원에 실패했어요: " + e.message, "var(--red)");
       return;
+    }
+    if (preBackup) {
+      try {
+        if (!Array.isArray(state.milestones)) state.milestones = [];
+        state.milestones.unshift(preBackup);
+        if (state.milestones.length > 5) state.milestones.length = 5;
+        save();
+        renderAccountTab();
+      } catch (e) { /* 백업 보관 실패는 복원 자체에 영향을 주지 않는다 */ }
     }
     closeSaveCodeModal();
     Sound.win();
