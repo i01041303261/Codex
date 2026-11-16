@@ -6241,7 +6241,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       attendCelebrate();
       setTimeout(function () {
         try {
-          showResultModal(true, "📅 출석 " + newStreak + "일 연속 달성!\n\n" + grant.plain.join("\n") + "\n\n" + attendMilestoneDesc(grant.reward.m) + "\n\n내일도 이어가면 다음 특별 보상이 더 커집니다!", "📅 출석 " + newStreak + "일 연속 달성!");
+          showResultModal(true, "연속 " + newStreak + "일째 출석 보상을 받았어요!\n\n" + grant.plain.join("\n") + "\n\n" + attendMilestoneDesc(grant.reward.m) + "\n\n내일도 이어가면 다음 특별 보상이 더 커집니다!", "📅 출석 " + newStreak + "일 연속 달성!");
         } catch (e) { }
       }, 420);
     }
