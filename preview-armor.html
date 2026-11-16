@@ -3289,7 +3289,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 /* CODEX 갑주 테스트용 임시 시드/계측 스크립트 (프리뷰 전용, 배포본에는 없음) */
 window.__codexErrors = [];
 window.addEventListener("error", function (e) {
-  window.__codexErrors.push("error: " + (e.message || "") + " @" + (e.filename || "") + ":" + (e.lineno || 0));
+  window.__codexErrors.push("error: " + (e.message || "") + " @" + (e.filename || "") + ":" + (e.lineno || 0) + "\n" + ((e.error && e.error.stack) ? String(e.error.stack).slice(0,1200) : "no-stack"));
 });
 window.addEventListener("unhandledrejection", function (e) {
   window.__codexErrors.push("rejection: " + String(e.reason));
