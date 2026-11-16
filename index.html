@@ -3339,7 +3339,6 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   <div class="notice-modal" role="dialog" aria-modal="true" aria-label="업데이트 공지">
     <div class="notice-head">
       <h3>📢 업데이트 소식</h3>
-      <span class="notice-new" id="noticeNewTag">NEW</span>
       <button class="notice-x" onclick="closeNoticeModal()" title="닫기" aria-label="닫기">&times;</button>
     </div>
     <div class="notice-body" id="noticeBody"></div>
@@ -6053,8 +6052,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   }
   function attendShortTokens(n) {
     const v = Math.floor(Number(n) || 0);
-    if (v >= 1000) return (Math.round(v / 100) / 10) + "k";
-    return String(v);
+    if (v >= 2000) return (Math.round(v / 100) / 10) + "k";
+    return v.toLocaleString("ko-KR");
   }
   // 보상 지급 — 기존 재화·아이템 체계만 사용합니다
   function attendGrant(pos) {
@@ -6242,7 +6241,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       attendCelebrate();
       setTimeout(function () {
         try {
-          showResultModal(true, "📅 출석 " + newStreak + "일 연속 달성!\n\n" + grant.plain.join("\n") + "\n\n" + attendMilestoneDesc(grant.reward.m) + "\n\n내일도 이어가면 다음 특별 보상이 더 커집니다!");
+          showResultModal(true, "📅 출석 " + newStreak + "일 연속 달성!\n\n" + grant.plain.join("\n") + "\n\n" + attendMilestoneDesc(grant.reward.m) + "\n\n내일도 이어가면 다음 특별 보상이 더 커집니다!", "📅 출석 " + newStreak + "일 연속 달성!");
         } catch (e) { }
       }, 420);
     }
@@ -6319,8 +6318,6 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     overlay.setAttribute("data-mark-seen", markSeen ? "1" : "0");
     overlay.classList.add("show");
     body.scrollTop = 0;
-    const tag = document.getElementById("noticeNewTag");
-    if (tag) tag.style.display = hasUnseenNotice() ? "" : "none";
     try { Sound.click(); } catch (e) { }
   };
   window.closeNoticeModal = function () {
@@ -8499,14 +8496,14 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     save();
   };
 
-  function showResultModal(isWin, text) {
+  function showResultModal(isWin, text, customTitle) {
     const overlay = document.getElementById("codexResultOverlay");
     const box = document.getElementById("codexResultBox");
     const title = document.getElementById("codexResultTitle");
     const body = document.getElementById("codexResultText");
     if (!overlay || !box) return;
     box.className = isWin ? "win" : "fail";
-    if (title) title.textContent = isWin ? "🎉 성공 / 승리!" : "💀 결과 안내";
+    if (title) title.textContent = customTitle || (isWin ? "🎉 성공 / 승리!" : "💀 결과 안내");
     if (body) body.textContent = text;
     overlay.style.display = "flex";
   }
