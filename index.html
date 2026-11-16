@@ -2014,6 +2014,82 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 }
 .inv-foot-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
 
+/* ==============================================
+   🛡️ 방어구(갑주) · 갑주 APEX 각성 · 직업 APEX
+   ============================================== */
+.armor-eq-bar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.10), rgba(0, 245, 212, 0.07));
+  border: 1px solid rgba(255, 209, 102, 0.35);
+  border-radius: 16px; padding: 12px 14px; margin-bottom: 12px;
+}
+.armor-eq-bar.empty { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.12); }
+.armor-eq-bar .ae-icon { font-size: 26px; filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.5)); }
+.armor-eq-bar .ae-main { flex: 1 1 220px; min-width: 0; }
+.armor-eq-bar .ae-name { font-weight: 900; font-size: 0.98rem; color: #fff; }
+.armor-eq-bar .ae-sub { font-size: 0.8rem; color: var(--text-sub); margin-top: 3px; line-height: 1.5; }
+.armor-eq-bar .ae-total { font-size: 0.82rem; font-weight: 800; color: var(--cyan); }
+.armor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.armor-card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(155deg, rgba(26, 32, 58, 0.94), rgba(11, 15, 30, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 16px; padding: 13px 13px 12px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.armor-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(180deg, var(--ac1, #3a86ff), var(--ac2, #00b4d8));
+}
+.armor-card:hover { transform: translateY(-3px); border-color: rgba(0, 245, 212, 0.42); }
+.armor-card.equipped { border-color: rgba(0, 245, 212, 0.55); box-shadow: 0 0 18px rgba(0, 245, 212, 0.22), inset 0 0 22px rgba(0, 245, 212, 0.06); }
+.armor-card.is-apex {
+  border-color: rgba(255, 209, 102, 0.75);
+  box-shadow: 0 0 24px rgba(255, 209, 102, 0.3), 0 0 40px rgba(0, 245, 212, 0.18);
+  animation: armorApexGlow 2.6s ease-in-out infinite;
+}
+@keyframes armorApexGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 209, 102, 0.24), 0 0 34px rgba(0, 245, 212, 0.14); }
+  50% { box-shadow: 0 0 32px rgba(255, 209, 102, 0.45), 0 0 52px rgba(0, 245, 212, 0.28); }
+}
+.armor-card .ar-top { display: flex; gap: 10px; align-items: flex-start; }
+.armor-card .ar-icon { font-size: 28px; line-height: 1.1; filter: drop-shadow(0 0 9px rgba(255, 255, 255, 0.3)); }
+.armor-card .ar-name { font-weight: 900; font-size: 0.93rem; color: #fff; word-break: keep-all; line-height: 1.35; }
+.armor-card .ar-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
+.armor-grade-badge {
+  font-size: 0.7rem; font-weight: 900; letter-spacing: 0.2px;
+  padding: 2px 8px; border-radius: 99px; color: #fff;
+  background: linear-gradient(135deg, var(--gb1, #3a86ff), var(--gb2, #00b4d8));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.armor-grade-badge.g-apex {
+  background: linear-gradient(135deg, #ffd166, #ff006e 55%, #00f5d4);
+  color: #0b0f1e; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.armor-dim-badge { font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 99px; color: #cbd5e1; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); }
+.armor-card .ar-stats { display: flex; flex-direction: column; gap: 3px; font-size: 0.79rem; font-weight: 700; color: #dbe4f3; }
+.armor-card .ar-stats i { font-style: normal; color: var(--text-sub); font-weight: 700; }
+.armor-card .ar-lore { font-size: 0.74rem; color: #8fa2c4; line-height: 1.45; }
+.armor-card .ar-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+.armor-card .ar-actions button { padding: 7px 10px; font-size: 0.78rem; border-radius: 10px; flex: 1 1 auto; }
+.armor-card .ar-actions button.apex { background: linear-gradient(135deg, #ffd166, #ff006e); color: #10131f; border: 1px solid rgba(255, 255, 255, 0.35); font-weight: 900; }
+.armor-card .ar-actions button.apex:disabled { opacity: 0.5; filter: grayscale(0.5); }
+.armor-note { font-size: 0.78rem; color: var(--text-sub); line-height: 1.55; margin-top: 10px; }
+.armor-note b { color: var(--gold); }
+.inv-stat.armor b { color: #ffd166; }
+.damage-number.apex-crit {
+  color: #ffd166; font-size: 2.2rem; font-weight: 900;
+  text-shadow: 0 0 14px rgba(255, 209, 102, 0.85), 0 0 26px rgba(0, 245, 212, 0.55);
+}
+.battle-btn.apex-skill {
+  background: linear-gradient(135deg, #ffd166, #ff006e 60%, #00f5d4) !important;
+  color: #0c1020 !important; font-weight: 900 !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 0 18px rgba(255, 209, 102, 0.5) !important;
+}
+.armor-battle-line { font-size: 0.78rem; color: #ffd166; font-weight: 800; margin-top: 4px; }
+
 .portal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr)); gap: 14px; margin-top: 6px; }
 .portal-card {
   position: relative; overflow: hidden;
@@ -2414,6 +2490,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         <div class="val" style="font-size: 1.05rem;">
           ⚔️ 공격력 <b id="homeAtk" style="color:var(--cyan)">10</b> · 🛡️ 방어력 <b id="homeDef" style="color:var(--gold)">3</b>
         </div>
+        <div id="homeArmorLine" style="font-size:0.86rem; color:#ffd166; font-weight:800; margin-top:6px;"></div>
       </div>
       <div class="stat-box">
         <h4>👑 현재 장착 직업</h4>
@@ -2469,13 +2546,13 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       <div class="card job-upgrade-altar" style="background: linear-gradient(135deg, rgba(20, 15, 45, 0.95), rgba(10, 10, 25, 0.98)); border: 2px solid var(--purple); border-radius: 20px; padding: 22px; margin: 20px 0; box-shadow: 0 0 25px rgba(131, 56, 236, 0.25);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
           <h3 style="margin: 0; font-size: 1.35rem; color: #fff; display: flex; align-items: center; gap: 8px;">
-            <span>⚡ 차원의 직업 승급 & 초월각성 제단</span>
+            <span>⚡ 차원의 직업 승급 & 초월각성 · APEX 각성 제단</span>
           </h3>
           <div id="jobUpgradeBadge" class="upgrade-status-badge">기본 단계</div>
         </div>
 
         <p class="desc" style="margin-bottom: 16px;">
-          현재 장착한 직업을 <b>최대 5차 승급</b>하고, 궁극의 <b>초월각성(Transcendent Awakening)</b>에 도달하세요! 직업의 모든 보너스 스탯이 폭발적으로 증폭되고, 초월각성 시 전투 전용 궁극기 <b>[초월: 시공간 붕괴]</b>가 해금됩니다.
+          현재 장착한 직업을 <b>최대 5차 승급</b>하고, 궁극의 <b>초월각성(Transcendent Awakening)</b>에 도달하세요! 직업의 모든 보너스 스탯이 폭발적으로 증폭되고, 초월각성 시 전투 전용 궁극기 <b>[초월: 시공간 붕괴]</b>가 해금됩니다. 초월각성 이후에는 <b style="color:#ffd166">⚡ APEX 각성</b>으로 한 단계 더 — 스탯 600%(6배)와 전용 궁극기 <b>[APEX: 종말의 기록]</b>이 열립니다.
         </p>
 
         <!-- 현재 장착 직업 요약 -->
@@ -2536,6 +2613,20 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
             </div>
             <button class="warning" id="btnAwakenJob" onclick="awakenCurrentJob()" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #ff007f, #7928ca); border: none;">
               🌌 초월각성 단행! (🪙 10,000)
+            </button>
+          </div>
+
+          <!-- ⚡ APEX 각성 패널 -->
+          <div class="altar-panel apex-panel" id="altarApexPanel" style="border:1px solid rgba(255,209,102,0.45); background:linear-gradient(160deg, rgba(255,209,102,0.10), rgba(0,245,212,0.06));">
+            <h4 style="margin: 0 0 8px 0; color: #ffd166; display: flex; align-items: center; gap: 6px;">
+              <span>⚡ APEX 각성</span>
+            </h4>
+            <div id="apexReqText" style="font-size: 0.86rem; color: #e2e8f0; margin-bottom: 12px; min-height: 48px;">
+              조건: <b>초월각성 완료</b> + <b>Lv.900 이상</b> + <b>신화 이상 갑주 장착</b> + <b>🪙 100,000 토큰</b><br>
+              효과: <b>직업 스탯 600% (6배)</b> + <b>[APEX: 종말의 기록]</b>
+            </div>
+            <button class="warning" id="btnApexJob" onclick="apexCurrentJob()" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 900; background: linear-gradient(135deg, #ffd166, #ff006e 60%, #00f5d4); border: 1px solid rgba(255,255,255,0.4); color: #0c1020;">
+              ⚡ APEX 각성 단행! (🪙 100,000)
             </button>
           </div>
         </div>
@@ -2669,6 +2760,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
             <div style="font-size: 0.82rem; color: var(--text-sub); margin-top: 6px;">
               ⚔️ 공격 <b id="playerAtk">10</b> · 🛡️ 방어 <b id="playerDef">3</b>
             </div>
+            <div class="armor-battle-line" id="playerArmorLine" style="display:none;"></div>
           </div>
 
           <div class="vs-badge">VS</div>
@@ -2698,6 +2790,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
           <button class="battle-btn heal" id="healBtn" onclick="playerAction('heal')">🧪 회복 포션 (0개)</button>
           <button class="battle-btn ult" id="ultBtn" onclick="playerAction('ult')">🔥 차원 폭발 (30 MP)</button>
           <button class="battle-btn awaken-skill" id="awakenSkillBtn" onclick="playerAction('awaken')" style="display:none;">🌌 [초월: 시공간 붕괴] (45 MP)</button>
+          <button class="battle-btn apex-skill" id="apexSkillBtn" onclick="playerAction('apex')" style="display:none;">⚡ [APEX: 종말의 기록] (60 MP)</button>
         </div>
         <div id="battleOverBox" style="display:none;"></div>
 
@@ -2902,9 +2995,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   <section id="inventory" class="screen">
     <div class="card">
       <h2>🎒 CODEX 인벤토리</h2>
-      <p class="desc">보스 격파로 얻은 <b>차원 파편</b>과 격파 증표, 기타 획득 아이템을 한 곳에서 확인하세요. 아이템마다 아이콘·이름·보유 수량·설명이 표시됩니다.</p>
+      <p class="desc">보스 격파로 얻은 <b>차원 파편</b>과 격파 증표, 기타 획득 아이템을 한 곳에서 확인하세요. 아이템마다 아이콘·이름·보유 수량·설명이 표시됩니다. 아래 <b style="color:#ffd166">방어구(갑주)</b> 칸에서 전투 드롭으로 얻은 갑주를 <b>장착/해제</b>하고, <b>신화 갑주를 APEX 등급으로 각성</b>할 수 있습니다.</p>
 
       <div class="inv-summary" id="invSummary"></div>
+      <div id="armorSection"></div>
       <div id="invList"></div>
 
       <div class="inv-foot-actions">
@@ -3498,6 +3592,189 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     "roulette_ticket": { id: "roulette_ticket", name: "차원 검 충전권", icon: "🎰", type: "etc", c1: "#f6c453", c2: "#fb5607", shape: "diamond", desc: "차원 검(탐험) 기회를 충전하는 티켓. 코드 보상으로 획득할 수 있습니다." }
   };
 
+  // ==================================================
+  // 🛡️ 방어구(갑주) 시스템 — 2026-11-16 신규
+  //   · 몬스터/보스를 '공격'하면 일정 확률로 갑주가 드롭됩니다 (희귀 → 영웅 → 전설 → 신화)
+  //   · 신화 갑주는 토큰을 들여 'APEX 등급'으로 각성할 수 있습니다
+  // ==================================================
+  const ARMOR_GRADES = {
+    rare:      { key: "rare",      name: "희귀", icon: "🔹", order: 1, c1: "#3a86ff", c2: "#00b4d8", def: [8, 14],   red: [2, 3],   hp: [25, 45],   weight: { normal: 70, boss: 24 } },
+    heroic:    { key: "heroic",    name: "영웅", icon: "🔸", order: 2, c1: "#a855f7", c2: "#6d28d9", def: [20, 31],  red: [4, 6],   hp: [70, 110],  weight: { normal: 22, boss: 37 } },
+    legendary: { key: "legendary", name: "전설", icon: "🔶", order: 3, c1: "#ff8a00", c2: "#ff0054", def: [38, 56],  red: [7, 9],   hp: [150, 215], weight: { normal: 6.8, boss: 26 } },
+    mythic:    { key: "mythic",    name: "신화", icon: "🔺", order: 4, c1: "#ff0054", c2: "#ffd166", def: [65, 92],  red: [11, 14], hp: [300, 430], weight: { normal: 1.2, boss: 13 } },
+    apex:      { key: "apex",      name: "APEX", icon: "⚡", order: 5, c1: "#ffd166", c2: "#00f5d4", def: [0, 0],    red: [0, 0],   hp: [0, 0],     weight: { normal: 0, boss: 0 } }
+  };
+  const ARMOR_GRADE_ORDER = ["rare", "heroic", "legendary", "mythic", "apex"];
+  const ARMOR_SLOT_LIMIT = 60;
+  const ARMOR_APEX_REQ = { tokens: 30000, reqLv: 500 };
+
+  // 차원별 갑주 디자인 — 등급 배지(희귀~APEX)가 함께 붙어 같은 갑주도 등급별로 다른 성능이 됩니다.
+  const ARMOR_TEMPLATES = [
+    { key: "moss_plate",     dim: 1, name: "이끼 수호자의 판금",  icon: "🌿", lore: "초원의 이끼가 수백 년을 감싸 굳어진 판금." },
+    { key: "dawn_chain",     dim: 1, name: "새벽이슬 사슬갑옷",  icon: "💧", lore: "해 뜨기 전 풀잎의 이슬을 엮어 만든 사슬." },
+    { key: "dune_lamellar",  dim: 2, name: "모래결 곡옥 갑주",   icon: "🏜️", lore: "사막의 곡옥 조각을 모래로 붙여 만든 갑주." },
+    { key: "sun_gem_cuirass",dim: 2, name: "태양석 흉갑",        icon: "☀️", lore: "정오의 태양열을 머금은 흉갑." },
+    { key: "frost_iceplate", dim: 3, name: "서릿결 빙갑",        icon: "❄️", lore: "영원히 녹지 않는 서리로 벼려낸 갑주." },
+    { key: "tundra_crystal", dim: 3, name: "동토의 결정 판금",   icon: "🧊", lore: "동토 깊은 곳의 결정을 깎아 만든 판금." },
+    { key: "lava_heart",     dim: 4, name: "용암 심장 흉갑",     icon: "🔥", lore: "식지 않는 용암 심장을 감싼 흉갑." },
+    { key: "ash_chain",      dim: 4, name: "재의 화염 사슬",     icon: "🌋", lore: "화산재가 굳어 만들어진 검은 사슬." },
+    { key: "nebula_weave",   dim: 5, name: "성운 직조 로브갑",   icon: "🌌", lore: "성운의 실을 엮어 만든 유연한 로브갑." },
+    { key: "meteor_plate",   dim: 5, name: "유성 파편 판금",     icon: "☄️", lore: "유성 잔해를 두드려 만든 판금." },
+    { key: "void_rift",      dim: 6, name: "공허 균열 갑주",     icon: "🌀", lore: "공허의 균열을 몸에 두른 갑주." },
+    { key: "silent_plate",   dim: 6, name: "무성(無聲) 판금",    icon: "🕳️", lore: "소리도 빛도 삼키는 검은 판금." },
+    { key: "arc_scale",      dim: 7, name: "아크의 마지막 비늘", icon: "🌠", lore: "최후의 포식자가 떨궈낸 마지막 비늘." },
+    { key: "end_plate",      dim: 7, name: "종말의 잔해 판금",   icon: "🌑", lore: "멸망한 차원의 잔해로 벼려낸 판금." },
+    { key: "apex_gold",      dim: 8, name: "apex 황금 갑주",     icon: "⚡", lore: "지워진 이름들이 남긴 황금빛 갑주." },
+    { key: "nameless_plate", dim: 8, name: "지워진 이름의 판금", icon: "💠", lore: "기록 위에서 이름만 지워진 이들의 판금." }
+  ];
+
+  function armorGradeOf(inst) {
+    return (inst && ARMOR_GRADES[inst.grade]) ? ARMOR_GRADES[inst.grade] : ARMOR_GRADES.rare;
+  }
+  function armorTemplateOf(inst) {
+    return ARMOR_TEMPLATES.find(t => t.key === (inst && inst.key)) || ARMOR_TEMPLATES[0];
+  }
+  function armorDimName(dim) {
+    const d = DIMENSIONS && DIMENSIONS[dim];
+    if (!d || !d.name) return dim + "차원";
+    return String(d.name).replace(/^\S+\s+/, "") + " " + dim + "차원";
+  }
+  function armorTemplatesForDim(dim) {
+    const own = ARMOR_TEMPLATES.filter(t => t.dim === dim);
+    return own.length ? own : ARMOR_TEMPLATES.slice(0, 4);
+  }
+  function armorStorage(stateArg) {
+    const s = stateArg || state;
+    if (!Array.isArray(s.armors)) s.armors = [];
+    return s.armors;
+  }
+  function getEquippedArmor() {
+    const list = armorStorage();
+    if (!state.equippedArmor) return null;
+    return list.find(a => a.uid === state.equippedArmor) || null;
+  }
+  function armorBonusSummary() {
+    const inst = getEquippedArmor();
+    if (!inst) return { def: 0, red: 0, hp: 0, atk: 0, inst: null, grade: null, name: null };
+    const g = armorGradeOf(inst);
+    return {
+      def: Math.max(0, Number(inst.def) || 0),
+      red: Math.max(0, Math.min(60, Number(inst.red) || 0)),
+      hp: Math.max(0, Number(inst.hp) || 0),
+      atk: Math.max(0, Number(inst.atk) || 0),
+      inst: inst, grade: g, name: armorTemplateOf(inst).name
+    };
+  }
+  // 드롭 확률: 일반 몬스터 9% / 보스 16% · 행운 이벤트 1.5배 · 밤 사냥 1.15배 · 연속 미획득 보정(2%p씩, 최대 +30%p)
+  function armorDropChance(isBoss) {
+    const base = isBoss ? 0.16 : 0.09;
+    const luck = isLuckEventActive() ? 1.5 : 1;
+    const night = isBoss ? 1 : (isNightNow() ? 1.15 : 1);
+    const pity = Math.min(0.30, (Number(state.armorPity) || 0) * 0.02);
+    return Math.min(0.95, base * luck * night + pity);
+  }
+  function rollArmorGrade(isBoss) {
+    const luckBoost = isLuckEventActive() ? 1.6 : 1;
+    const rows = ["rare", "heroic", "legendary", "mythic"].map(k => {
+      let w = ARMOR_GRADES[k].weight[isBoss ? "boss" : "normal"];
+      if (k !== "rare") w *= luckBoost;
+      return { k: k, w: w };
+    });
+    const total = rows.reduce((sum, r) => sum + r.w, 0);
+    let roll = Math.random() * total;
+    for (let i = 0; i < rows.length; i++) {
+      roll -= rows[i].w;
+      if (roll <= 0) return rows[i].k;
+    }
+    return "rare";
+  }
+  function createArmorInstance(gradeKey, dim) {
+    const g = ARMOR_GRADES[gradeKey] || ARMOR_GRADES.rare;
+    const d = Math.max(1, Math.min(8, Number(dim) || 1));
+    const pool = armorTemplatesForDim(d);
+    const tpl = pool[rand(0, pool.length - 1)];
+    const scale = 1 + (d - 1) * 0.09;
+    const rollRange = (r) => Math.max(1, Math.round((r[0] + Math.random() * (r[1] - r[0])) * scale));
+    const red = g.red[1] > 0 ? Math.round((g.red[0] + Math.random() * (g.red[1] - g.red[0])) * 10) / 10 : 0;
+    return {
+      uid: "ar" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      key: tpl.key,
+      grade: g.key,
+      dim: d,
+      def: rollRange(g.def),
+      red: red,
+      hp: rollRange(g.hp),
+      atk: 0,
+      at: Date.now()
+    };
+  }
+  function grantArmor(inst) {
+    const list = armorStorage();
+    list.push(inst);
+    if (list.length > ARMOR_SLOT_LIMIT) {
+      // 보관 한도 초과 시 가장 낮은 등급의 오래된 갑주부터 정리 (장착 중인 갑주는 보존)
+      const candidates = list.filter(a => a.uid !== state.equippedArmor)
+        .sort((a, b) => (armorGradeOf(a).order - armorGradeOf(b).order) || (a.at - b.at));
+      while (list.length > ARMOR_SLOT_LIMIT && candidates.length) {
+        const victim = candidates.shift();
+        const idx = list.indexOf(victim);
+        if (idx >= 0) list.splice(idx, 1);
+      }
+    }
+    return inst;
+  }
+  // 공격 1회마다 판정 — 드롭 시 즉시 인벤토리에 저장하고 전투 로그·토스트로 알립니다.
+  function tryArmorDrop(isBoss) {
+    if (!combat) return null;
+    if (Math.random() >= armorDropChance(!!isBoss)) {
+      state.armorPity = Math.min(30, (Number(state.armorPity) || 0) + 1);
+      return null;
+    }
+    state.armorPity = 0;
+    const dim = Math.max(1, Math.min(8, Number(state.roulette && state.roulette.dimension) || 1));
+    const gradeKey = rollArmorGrade(!!isBoss);
+    const inst = grantArmor(createArmorInstance(gradeKey, dim));
+    const g = armorGradeOf(inst);
+    const tpl = armorTemplateOf(inst);
+    if (!state.stats) state.stats = {};
+    state.stats.armorDrops = (Number(state.stats.armorDrops) || 0) + 1;
+    combatLog(`🛡️ <b style="color:${g.c1}">[${g.name} 갑주]</b> ${tpl.icon} <b>${escapeHtml(tpl.name)}</b> 획득! <span style="color:#94a3b8">(방어 +${inst.def} · 피해감소 ${inst.red}% · HP +${inst.hp})</span>`);
+    showToast(`${g.icon} <b>${g.name} 갑주 드롭!</b><br>${tpl.icon} ${escapeHtml(tpl.name)} <span style="opacity:.85">(방어 +${inst.def})</span>`, gradeKey === "mythic" ? "boss" : (gradeKey === "legendary" ? "title" : "heal"));
+    if (gradeKey === "mythic") Sound.win();
+    else if (gradeKey === "legendary") Sound.levelUp();
+    state.lastEvent = `🛡️ [${g.name}] ${tpl.name} 획득!`;
+    save();
+    return inst;
+  }
+  function normalizeArmorSave(s) {
+    const validKeys = ARMOR_TEMPLATES.map(t => t.key);
+    const raw = Array.isArray(s.armors) ? s.armors : [];
+    const seen = {};
+    const out = [];
+    raw.forEach(a => {
+      if (!a || typeof a !== "object") return;
+      if (typeof a.key !== "string" || !ARMOR_GRADES[a.grade]) return;
+      let uid = String(a.uid || ("ar" + Math.random().toString(36).slice(2, 10)));
+      if (seen[uid]) uid = uid + Math.random().toString(36).slice(2, 5);
+      seen[uid] = 1;
+      out.push({
+        uid: uid,
+        key: validKeys.indexOf(a.key) >= 0 ? a.key : validKeys[0],
+        grade: a.grade,
+        dim: Math.max(1, Math.min(8, Math.floor(Number(a.dim) || 1))),
+        def: Math.max(0, Math.floor(Number(a.def) || 0)),
+        red: Math.max(0, Math.min(60, Math.round((Number(a.red) || 0) * 10) / 10)),
+        hp: Math.max(0, Math.floor(Number(a.hp) || 0)),
+        atk: Math.max(0, Math.floor(Number(a.atk) || 0)),
+        at: Math.max(0, Math.floor(Number(a.at) || Date.now()))
+      });
+    });
+    s.armors = out;
+    if (typeof s.equippedArmor !== "string" || !out.some(a => a.uid === s.equippedArmor)) s.equippedArmor = null;
+    s.armorPity = Math.max(0, Math.min(30, Math.floor(Number(s.armorPity) || 0)));
+    return s;
+  }
+
   // 🎁 리딤 코드 테이블
   //  - 지금은 비어 있습니다. 공개 코드를 낼 때 아래 형식으로 한 줄만 추가하면 됩니다.
   //    "CODEX-HELLO": { label: "오픈 기념", rewards: { tokens: 1000, exp: 500, items: { shard1: 1 }, title: "🎁 첫 코드 사용자" }, usableUntil: "2026-12-31T23:59:59" }
@@ -3606,7 +3883,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     "전설": ["🏆 보스 브레이커","👑 차원의 왕","🐲 용의 정복자","🌌 우주 지배자","🔱 차원 최강자","⚔️ 전설의 검객","🌀 무한의 개척자","💎 전설의 보물왕","🔥 불멸의 화염","❄️ 영원의 빙결","🌠 별의 지배자","👁️ 차원 감시자","🗝️ 끝의 열쇠","🛡️ 전설의 수호자","🌟 끝없는 탐험가","⚡ 4차 승급 극의","👑 5차 최고승급자"],
     "시크릿": ["🤫 숨겨진 차원의 주인","🕳️ 공허를 본 자","👁️ CODEX의 선택","🌑 검은 별의 방문자","🌀 무한 루프 탈출자","🔮 금지된 예언자","🪐 미지의 관찰자","🗝️ 차원의 문지기","🌘 그림자 너머","💫 시간의 흔적","🧿 잊힌 수호자","⚫ 공허의 핵","🌌 무한 성운","👑 시크릿 로드","🌀 경계의 여행자","🕯️ 마지막 불꽃","📡 차원 신호 수신자","🪽 초월의 방문자","🌌 차원을 초월한 자","👑 직업 초월 각성자"],
     "종말": ["🌑 끝을 넘어선 기록자","👑 아크 네메시스 격파자"],
-    "에이펙스": ["⚡ apex codex 격파자","💠 잊혀진 차원의 정복자","🌠 잊혀진 이름의 계승자"],
+    "에이펙스": ["⚡ apex codex 격파자","💠 잊혀진 차원의 정복자","🌠 잊혀진 이름의 계승자","⚡ APEX 각성자","💠 기록을 초월한 자","👑 apex의 계승자","🛡️ APEX 갑주 장인"],
     "차원": ["🌌 여덟 차원의 결속자"],
     "리미트": ["🔒 최초의 기록자","🔒 개발자의 친구"]
   };
@@ -3709,10 +3986,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const base = JOB_SKILLS[jobId] || JOB_SKILLS[1];
     if (!upg) upg = getJobUpgrade(jobId);
     const lv = Number((state.tpSkills || {})[jobId]) || 0;
-    const rankStep = upg && upg.awakened ? 6 : (upg ? (upg.rank || 0) : 0);
+    const rankStep = upg && upg.apex ? 7 : (upg && upg.awakened ? 6 : (upg ? (upg.rank || 0) : 0));
     const power = 1 + rankStep * 0.085 + lv * 0.06;
-    const mp = Math.max(6, Math.round(base.mp * (upg && upg.awakened ? 1.2 : 1)));
-    return Object.assign({}, base, { power: power, mp: mp, level: lv, rank: upg ? upg.rank : 0, awakened: !!(upg && upg.awakened) });
+    const mp = Math.max(6, Math.round(base.mp * (upg && upg.apex ? 1.3 : (upg && upg.awakened ? 1.2 : 1))));
+    return Object.assign({}, base, { power: power, mp: mp, level: lv, rank: upg ? upg.rank : 0, awakened: !!(upg && upg.awakened), apex: !!(upg && upg.apex) });
   }
 
   function jobSkillPowerText(sk) {
@@ -5105,6 +5382,22 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     desc: "직업 보너스 스탯 400% (4배) 폭증 + 전투 초월기 [시공간 붕괴] 해금 + 턴당 5% 체력 재생"
   };
 
+  // ⚡ 직업 APEX 각성 (초월각성 다음 단계 — 2026-11-16 신규)
+  const APEX_JOB_REQ = {
+    reqAwakened: true,
+    reqLv: 900,
+    reqTokens: 100000,
+    reqArmorGrade: "mythic",
+    bonusMult: 6.0,
+    titles: ["⚡ APEX 각성자", "💠 기록을 초월한 자", "👑 apex의 계승자"],
+    desc: "직업 보너스 스탯 600% (6배) 폭증 + APEX 전용 궁극기 [APEX: 종말의 기록] + 턴당 6% 체력 재생 + APEX 오라"
+  };
+  function isMythicOrApexArmorEquipped() {
+    const inst = getEquippedArmor();
+    if (!inst) return false;
+    return armorGradeOf(inst).order >= ARMOR_GRADES[APEX_JOB_REQ.reqArmorGrade].order;
+  }
+
   // 6. 상태 관리
   const defaultState = {
     tokens: 100,
@@ -5136,6 +5429,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     portalShards: [],
     bossCleared: {},
     redeemedCodes: {},
+    // 🛡️ 방어구(갑주) 시스템 (2026-11-16 신규 — 구버전 세이브는 자동 초기화)
+    armors: [],
+    equippedArmor: null,
+    armorPity: 0,
     // ★ 2026-11-16 확장 필드
     hp: null,
     mp: null,
@@ -5278,7 +5575,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (!s.stats || typeof s.stats !== "object" || Array.isArray(s.stats)) s.stats = {};
     ["kills","bossKills","explores","exploreWins","miniPlays","miniWins","nightKills","dayKills",
      "potionsUsed","maxCombo","innStays","forges","purchases","goldEarned","maxDim","bestReaction",
-     "combatWins","deaths","tpSpent","levelUps"].forEach(k => {
+     "combatWins","deaths","tpSpent","levelUps","armorDrops","armorAwakens"].forEach(k => {
       const n = Number(s.stats[k]);
       s.stats[k] = Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
     });
@@ -5305,6 +5602,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (!s.mini || typeof s.mini !== "object" || Array.isArray(s.mini)) s.mini = {};
     if (!s.mini.best || typeof s.mini.best !== "object" || Array.isArray(s.mini.best)) s.mini.best = {};
     if (!Array.isArray(s.milestones)) s.milestones = [];
+    normalizeArmorSave(s);
     if (s.hp !== null && s.hp !== undefined) {
       const hp = Number(s.hp);
       s.hp = Number.isFinite(hp) && hp > 0 ? Math.floor(hp) : null;
@@ -5356,6 +5654,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
   function getJobFullTitle(job, upg) {
     if (!upg) upg = getJobUpgrade(job.id);
+    if (upg.apex) return `⚡ [APEX] ${job.name}`;
     if (upg.awakened) return `🌌 [초월각성] ${job.name}`;
     if (upg.rank > 0) return `${job.name} (★${upg.rank}차)`;
     return job.name;
@@ -5372,12 +5671,14 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     return Math.max(50, state.level * 25);
   }
 
-  // 총 캐릭터 스탯 계산 (기본 스탯 + 레벨 스케일링 + 대장간 강화 + 직업 보너스 * 승급/초월 배율)
+  // 총 캐릭터 스탯 계산 (기본 스탯 + 레벨 스케일링 + 대장간 강화 + 직업 보너스 * 승급/초월/APEX 배율 + 장착 갑주)
   function getPlayerStats() {
     const job = getCurrentJob();
     const upg = getJobUpgrade(job.id);
     let mult = 1.0;
-    if (upg.awakened) {
+    if (upg.apex) {
+      mult = APEX_JOB_REQ.bonusMult;
+    } else if (upg.awakened) {
       mult = AWAKENING_REQ.bonusMult;
     } else if (upg.rank > 0 && JOB_PROMOTIONS[upg.rank]) {
       mult = JOB_PROMOTIONS[upg.rank].bonusMult;
@@ -5393,11 +5694,17 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const tDef = 1 + traitBonus("guard");
     const tHp = 1 + traitBonus("vitality");
     const tMp = 1 + traitBonus("mana");
-    const baseAtk = Math.round((10 + (state.level * 2) + (state.forgeAtk || 0) + jobAtk) * tAtk);
-    const baseDef = Math.round((3 + Math.floor(state.level * 0.8) + (state.forgeDef || 0) + jobDef) * tDef);
-    const maxHp = Math.round((100 + (state.level * 15) + (state.forgeHp || 0) + jobHp) * tHp);
+    // 🛡️ 장착 갑주 보너스 (방어력 · 추가 HP · 피해감소 · APEX 공격력)
+    const armor = armorBonusSummary();
+    const baseAtk = Math.round((10 + (state.level * 2) + (state.forgeAtk || 0) + jobAtk) * tAtk) + armor.atk;
+    const baseDef = Math.round((3 + Math.floor(state.level * 0.8) + (state.forgeDef || 0) + jobDef) * tDef) + armor.def;
+    const maxHp = Math.round((100 + (state.level * 15) + (state.forgeHp || 0) + jobHp) * tHp) + armor.hp;
     const maxMp = Math.round((50 + (state.level * 3) + jobMp) * tMp);
-    return { atk: baseAtk, def: baseDef, maxHp, maxMp, jobAtk, jobDef, jobHp, jobMp, mult };
+    return {
+      atk: baseAtk, def: baseDef, maxHp: maxHp, maxMp: maxMp, jobAtk, jobDef, jobHp, jobMp, mult,
+      armorDef: armor.def, armorRed: armor.red, armorHp: armor.hp, armorAtk: armor.atk,
+      armorName: armor.name, armorGrade: armor.grade ? armor.grade.name : null, armorInst: armor.inst
+    };
   }
 
   function rand(min, max) {
@@ -5570,9 +5877,16 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const upg = getJobUpgrade(job.id);
     const hudJobBadge = document.getElementById("hudJobBadge");
     if (hudJobBadge) {
-      if (upg.awakened) {
+      if (upg.apex) {
+        hudJobBadge.innerHTML = `<span class="awakened-sparkle">⚡</span> [APEX] ${job.name}`;
+        hudJobBadge.classList.add("job-awakened-glow");
+        hudJobBadge.style.background = "linear-gradient(90deg,#ffd166,#00f5d4)";
+        hudJobBadge.style.color = "#0c1020";
+      } else if (upg.awakened) {
         hudJobBadge.innerHTML = `<span class="awakened-sparkle">🌌</span> [초월] ${job.name}`;
         hudJobBadge.classList.add("job-awakened-glow");
+        hudJobBadge.style.background = "";
+        hudJobBadge.style.color = "";
       } else if (upg.rank > 0) {
         hudJobBadge.textContent = `${job.icon} ${job.name} (★${upg.rank}차)`;
         hudJobBadge.classList.remove("job-awakened-glow");
@@ -5603,8 +5917,19 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     updateEventBanner();
     if (homeAtk) homeAtk.textContent = stats.atk;
     if (homeDef) homeDef.textContent = stats.def;
+    const homeArmorLine = document.getElementById("homeArmorLine");
+    if (homeArmorLine) {
+      if (stats.armorInst) {
+        const ag = armorGradeOf(stats.armorInst);
+        homeArmorLine.innerHTML = `🛡️ <span style="color:${ag.c1}">[${ag.name}]</span> ${escapeHtml(stats.armorName)} — 방어 +${stats.armorDef} · 피해감소 ${stats.armorRed}% · HP +${stats.armorHp}`;
+      } else {
+        homeArmorLine.innerHTML = `<span style="color:#64748b">🛡️ 장착한 갑주 없음 — 전투에서 갑주를 얻어 인벤토리에서 장착하세요</span>`;
+      }
+    }
     if (homeJobText) {
-      if (upg.awakened) {
+      if (upg.apex) {
+        homeJobText.innerHTML = `<span style="color:#ffd166; font-weight:900;">⚡ [APEX] ${job.icon} ${job.name} (${job.tier})</span> <span style="font-size:0.82rem; color:#00f5d4;">[스탯 600% · APEX 각성]</span>`;
+      } else if (upg.awakened) {
         homeJobText.innerHTML = `<span style="color:#00f5d4; font-weight:900;">🌌 [초월각성] ${job.icon} ${job.name} (${job.tier})</span> <span style="font-size:0.82rem; color:var(--gold);">[스탯 400% 폭증]</span>`;
       } else if (upg.rank > 0) {
         const bonusPct = Math.round((JOB_PROMOTIONS[upg.rank].bonusMult - 1) * 100);
@@ -5733,14 +6058,17 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const isCur = j.id === current.id;
       const upg = getJobUpgrade(j.id);
       let mult = 1.0;
-      if (upg.awakened) mult = AWAKENING_REQ.bonusMult;
+      if (upg.apex) mult = APEX_JOB_REQ.bonusMult;
+      else if (upg.awakened) mult = AWAKENING_REQ.bonusMult;
       else if (upg.rank > 0 && JOB_PROMOTIONS[upg.rank]) mult = JOB_PROMOTIONS[upg.rank].bonusMult;
 
       const atk = Math.round(j.atk * mult);
       const def = Math.round(j.def * mult);
 
       let upgBadge = "";
-      if (upg.awakened) {
+      if (upg.apex) {
+        upgBadge = `<div class="mini-awakened-badge" style="background:linear-gradient(135deg,#ffd166,#00f5d4); color:#0c1020;">⚡ APEX</div>`;
+      } else if (upg.awakened) {
         upgBadge = `<div class="mini-awakened-badge">🌌 초월</div>`;
       } else if (upg.rank > 0) {
         upgBadge = `<div class="mini-rank-badge">★${upg.rank}차</div>`;
@@ -5771,7 +6099,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     previewJobId = id;
     const upg = getJobUpgrade(j.id);
     let mult = 1.0;
-    if (upg.awakened) mult = AWAKENING_REQ.bonusMult;
+    if (upg.apex) mult = APEX_JOB_REQ.bonusMult;
+    else if (upg.awakened) mult = AWAKENING_REQ.bonusMult;
     else if (upg.rank > 0 && JOB_PROMOTIONS[upg.rank]) mult = JOB_PROMOTIONS[upg.rank].bonusMult;
 
     const atk = Math.round(j.atk * mult);
@@ -5786,17 +6115,27 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const descEl = document.getElementById("jobDisplayDesc");
     if (iconEl) iconEl.textContent = j.icon;
     if (nameEl) {
-      if (upg.awakened) nameEl.innerHTML = `🌌 [초월각성] ${escapeHtml(j.name)}`;
+      if (upg.apex) nameEl.innerHTML = `⚡ [APEX] ${escapeHtml(j.name)}`;
+      else if (upg.awakened) nameEl.innerHTML = `🌌 [초월각성] ${escapeHtml(j.name)}`;
       else if (upg.rank > 0) nameEl.innerHTML = `${escapeHtml(j.name)} <small style="color:var(--gold); font-size:0.9rem;">(★${upg.rank}차)</small>`;
       else nameEl.textContent = j.name;
     }
     if (badgeEl) {
-      if (upg.awakened) {
+      if (upg.apex) {
+        badgeEl.textContent = "⚡ APEX 각성";
+        badgeEl.className = "tier-tag tier-신화";
+        badgeEl.style.background = "linear-gradient(135deg,#ffd166,#00f5d4)";
+        badgeEl.style.color = "#0c1020";
+      } else if (upg.awakened) {
         badgeEl.textContent = "🌌 초월각성";
         badgeEl.className = "tier-tag tier-신화";
+        badgeEl.style.background = "";
+        badgeEl.style.color = "";
       } else {
         badgeEl.textContent = j.tier;
         badgeEl.className = "tier-tag tier-" + j.tier;
+        badgeEl.style.background = "";
+        badgeEl.style.color = "";
       }
     }
     if (descEl) {
@@ -5805,7 +6144,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }
     if (statsEl) {
       let statExtra = "";
-      if (upg.awakened) statExtra = `<br><span style="color:#00f5d4; font-size:0.85rem;">★초월각성 4배 스탯 적용</span>`;
+      if (upg.apex) statExtra = `<br><span style="color:#ffd166; font-size:0.85rem;">★APEX 각성 6배 스탯 적용</span>`;
+      else if (upg.awakened) statExtra = `<br><span style="color:#00f5d4; font-size:0.85rem;">★초월각성 4배 스탯 적용</span>`;
       else if (upg.rank > 0) statExtra = `<br><span style="color:var(--gold); font-size:0.85rem;">★${upg.rank}차 승급 (+${Math.round((mult-1)*100)}% 증폭 적용)</span>`;
       statsEl.innerHTML = `⚔️ 공격력 +${atk} · 🛡️ 방어력 +${def} · ❤️ HP +${hp} · 💧 MP +${mp} ${statExtra}`;
     }
@@ -5961,6 +6301,53 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     showResultModal(true, `🌌 [궁극의 초월각성 달성!]\n\n축하합니다! 【 ${job.icon} ${job.name} 】이(가) 차원의 법칙을 깨부수고 궁극의 초월각성에 도달했습니다!\n\n✨ 효과:\n• 직업 스탯 400% (4배) 폭발적 증폭!\n• 전투 전용 초월기 [시공간 붕괴] 해금!\n• 전투 중 매 턴 5% 자동 체력 재생!\n• 초월자 전용 네온 오라 발동!\n\n칭호 [${t1}], [${t2}]을(를) 획득했습니다!`);
   };
 
+  // ⚡ 직업 APEX 각성 단행 (초월각성 → APEX)
+  window.apexCurrentJob = function() {
+    const job = getCurrentJob();
+    const upg = getJobUpgrade(job.id);
+
+    if (upg.apex) {
+      Sound.hit();
+      alert("⚡ 이미 이 직업은 최고 경지인 [APEX 각성] 상태입니다!");
+      return;
+    }
+    if (!upg.awakened) {
+      Sound.hit();
+      alert("❌ 먼저 [🌌 초월각성]을 완료해야 APEX 각성에 도전할 수 있습니다!");
+      return;
+    }
+    if (state.level < APEX_JOB_REQ.reqLv) {
+      Sound.hit();
+      alert(`❌ 레벨이 부족합니다!\nAPEX 각성 필요 레벨: Lv.${APEX_JOB_REQ.reqLv} 이상 (현재: Lv.${state.level})`);
+      return;
+    }
+    if (!isMythicOrApexArmorEquipped()) {
+      Sound.hit();
+      alert("❌ 신화 이상 등급의 갑주를 장착해야 APEX 각성을 할 수 있습니다!\n(🎒 인벤토리에서 신화 갑주를 장착하세요)");
+      return;
+    }
+    const infRoulette = isInfRouletteEventActive();
+    if (!infRoulette && state.tokens < APEX_JOB_REQ.reqTokens) {
+      Sound.hit();
+      alert(`❌ 토큰이 부족합니다!\nAPEX 각성 필요 토큰: 🪙 ${APEX_JOB_REQ.reqTokens.toLocaleString()} (현재: 🪙 ${state.tokens.toLocaleString()})`);
+      return;
+    }
+
+    if (!infRoulette) state.tokens -= APEX_JOB_REQ.reqTokens;
+    upg.apex = true;
+    Sound.win();
+
+    APEX_JOB_REQ.titles.forEach(t => { if (!state.titles.includes(t)) state.titles.push(t); });
+    state.lastEvent = `⚡ 직업 [${job.name}] APEX 각성 달성!`;
+    recordMilestone(`⚡ ${job.name} APEX 각성`);
+    save();
+    checkTitleGoals();
+    selectJobPreview(job.id);
+
+    showResultModal(true, `⚡ [APEX 각성 달성!]\n\n【 ${job.icon} ${job.name} 】의 기록이 다시 쓰였습니다.\n초월각성의 마지막 페이지 위에 APEX의 문장이 새겨졌습니다.\n\n✨ 효과:\n• 직업 스탯 600% (6배) 폭증!\n• 전투 전용 궁극기 [APEX: 종말의 기록] 해금 (MP 60 / 적 행동 봉인)\n• 매 턴 체력 6% 자동 재생\n• APEX 황금빛 오라 발동\n\n칭호 [⚡ APEX 각성자], [💠 기록을 초월한 자], [👑 apex의 계승자]를 획득했습니다!`);
+  };
+
+
   function renderJobAltar() {
     const job = getCurrentJob();
     const upg = getJobUpgrade(job.id);
@@ -5985,11 +6372,25 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }
 
     if (altarAwakenedTag) {
-      altarAwakenedTag.style.display = upg.awakened ? "inline-block" : "none";
+      if (upg.apex) {
+        altarAwakenedTag.style.display = "inline-block";
+        altarAwakenedTag.textContent = "⚡ APEX 각성";
+        altarAwakenedTag.style.background = "linear-gradient(135deg,#ffd166,#ff006e 60%,#00f5d4)";
+        altarAwakenedTag.style.color = "#0c1020";
+      } else if (upg.awakened) {
+        altarAwakenedTag.style.display = "inline-block";
+        altarAwakenedTag.textContent = "🌌 초월각성";
+        altarAwakenedTag.style.background = "";
+        altarAwakenedTag.style.color = "";
+      } else {
+        altarAwakenedTag.style.display = "none";
+      }
     }
 
     if (altarBonus) {
-      if (upg.awakened) {
+      if (upg.apex) {
+        altarBonus.innerHTML = `<span style="color:#ffd166; font-weight:900;">⚡ APEX 각성 상태: 직업 보너스 스탯 600% (6배) 증폭 중! [APEX: 종말의 기록] 사용 가능</span>`;
+      } else if (upg.awakened) {
         altarBonus.innerHTML = `<span style="color:#00f5d4; font-weight:900;">🌌 초월각성 상태: 직업 보너스 스탯 400% (4배) 증폭 중!</span>`;
       } else if (upg.rank > 0) {
         const bonusPct = Math.round((JOB_PROMOTIONS[upg.rank].bonusMult - 1) * 100);
@@ -6006,9 +6407,16 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     }
 
     if (altarStatusBadge) {
-      if (upg.awakened) {
+      if (upg.apex) {
+        altarStatusBadge.textContent = "⚡ APEX 각성 완료";
+        altarStatusBadge.className = "upgrade-status-badge awakened";
+        altarStatusBadge.style.background = "linear-gradient(135deg,#ffd166,#ff006e 60%,#00f5d4)";
+        altarStatusBadge.style.color = "#0c1020";
+      } else if (upg.awakened) {
         altarStatusBadge.textContent = "🌌 초월각성 완료";
         altarStatusBadge.className = "upgrade-status-badge awakened";
+        altarStatusBadge.style.background = "";
+        altarStatusBadge.style.color = "";
       } else if (upg.rank >= 5) {
         altarStatusBadge.textContent = "👑 5차 최고승급";
         altarStatusBadge.className = "upgrade-status-badge max";
@@ -6026,9 +6434,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const stepsIndicator = document.getElementById("altarStepsIndicator");
 
     let progressPct = 0;
-    if (upg.awakened) {
+    if (upg.apex) {
       progressPct = 100;
-      if (rankStepText) rankStepText.textContent = "🌌 초월각성 완료 (MAX)";
+      if (rankStepText) rankStepText.textContent = "⚡ APEX 각성 완료 (MAX)";
+    } else if (upg.awakened) {
+      progressPct = 100;
+      if (rankStepText) rankStepText.textContent = "🌌 초월각성 완료 (APEX 대기)";
     } else {
       progressPct = (upg.rank / 6) * 100;
       if (rankStepText) rankStepText.textContent = `${upg.rank} / 5차 승급 ${upg.rank >= 5 ? "(초월각성 대기)" : ""}`;
@@ -6042,12 +6453,16 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         dotsHtml += `<span class="step-dot ${active ? 'active' : ''}">${i === 0 ? '기본' : i + '차'}</span>`;
       }
       dotsHtml += `<span class="step-dot awakened ${upg.awakened ? 'active' : ''}">🌌초월</span>`;
+      dotsHtml += `<span class="step-dot awakened ${upg.apex ? 'active' : ''}" style="${upg.apex ? 'background:linear-gradient(135deg,#ffd166,#00f5d4);color:#0c1020;' : ''}">⚡APEX</span>`;
       stepsIndicator.innerHTML = dotsHtml;
     }
 
     const promoReqText = document.getElementById("promoteReqText");
     const btnPromote = document.getElementById("btnPromoteJob");
-    if (upg.awakened) {
+    if (upg.apex) {
+      if (promoReqText) promoReqText.innerHTML = `⚡ <b style="color:#ffd166">APEX 각성 완료!</b><br>직업의 마지막 페이지까지 열렸습니다. (스탯 600%)`;
+      if (btnPromote) { btnPromote.disabled = true; btnPromote.textContent = "⚡ 최고 경지 도달"; }
+    } else if (upg.awakened) {
       if (promoReqText) promoReqText.innerHTML = `🌌 <b>궁극의 초월각성 완료!</b><br>직업의 모든 잠재력이 개방되어 최고의 스탯을 발휘 중입니다.`;
       if (btnPromote) { btnPromote.disabled = true; btnPromote.textContent = "⚡ 최고 경지 도달"; }
     } else if (upg.rank >= 5) {
@@ -6076,7 +6491,10 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 
     const awakenReqText = document.getElementById("awakenReqText");
     const btnAwaken = document.getElementById("btnAwakenJob");
-    if (upg.awakened) {
+    if (upg.apex) {
+      if (awakenReqText) awakenReqText.innerHTML = `⚡ <b style="color:#ffd166">APEX 각성 완료!</b><br>초월기를 초과한 [APEX: 종말의 기록]과 턴당 6% 재생이 작동 중입니다.`;
+      if (btnAwaken) { btnAwaken.disabled = true; btnAwaken.textContent = "⚡ APEX 각성 완료"; }
+    } else if (upg.awakened) {
       if (awakenReqText) awakenReqText.innerHTML = `🌌 <b>초월각성 활성화됨!</b><br>전투 전용 초월기 [시공간 붕괴]와 턴당 5% 체력 재생 패시브가 작동 중입니다.`;
       if (btnAwaken) { btnAwaken.disabled = true; btnAwaken.textContent = "🌌 초월각성 완료"; }
     } else {
@@ -6095,6 +6513,36 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       if (btnAwaken) {
         btnAwaken.disabled = false;
         btnAwaken.textContent = `🌌 초월각성 단행! (🪙 ${AWAKENING_REQ.reqTokens.toLocaleString()})`;
+      }
+    }
+
+    // ⚡ APEX 각성 패널 (초월각성 완료 후 열립니다)
+    const apexReqText = document.getElementById("apexReqText");
+    const btnApex = document.getElementById("btnApexJob");
+    if (upg.apex) {
+      if (apexReqText) apexReqText.innerHTML = `⚡ <b style="color:#ffd166">APEX 각성 활성화됨!</b><br>스탯 600% · [APEX: 종말의 기록] · 턴당 6% 재생 · APEX 오라가 작동 중입니다.`;
+      if (btnApex) { btnApex.disabled = true; btnApex.textContent = "⚡ APEX 각성 완료"; }
+    } else {
+      const canAw = !!upg.awakened;
+      const canLv = state.level >= APEX_JOB_REQ.reqLv;
+      const canArmor = isMythicOrApexArmorEquipped();
+      const canTok = isInfRouletteEventActive() || state.tokens >= APEX_JOB_REQ.reqTokens;
+      const eq = getEquippedArmor();
+      const eqTxt = eq ? `${armorGradeOf(eq).name} · ${escapeHtml(armorTemplateOf(eq).name)}` : "갑주 없음";
+      if (apexReqText) {
+        apexReqText.innerHTML = `
+          조건 1: <b style="color:${canAw?'var(--cyan)':'#ff0054'}">초월각성 완료 (${canAw ? "✓" : "미완료"})</b><br>
+          조건 2: <b style="color:${canLv?'var(--cyan)':'#ff0054'}">Lv.${APEX_JOB_REQ.reqLv} 이상 (현재: ${state.level})</b><br>
+          조건 3: <b style="color:${canArmor?'var(--cyan)':'#ff0054'}">신화 이상 갑주 장착 (현재: ${eqTxt})</b><br>
+          조건 4: <b style="color:${canTok?'var(--gold)':'#ff0054'}">🪙 ${APEX_JOB_REQ.reqTokens.toLocaleString()} 토큰 (보유: ${state.tokens.toLocaleString()})</b><br>
+          효과: <b>직업 스탯 600% (6배) + [APEX: 종말의 기록] + 턴당 6% 재생</b>
+        `;
+      }
+      if (btnApex) {
+        const ready = canAw && canLv && canArmor && canTok;
+        btnApex.disabled = false;
+        btnApex.style.opacity = ready ? "1" : "0.68";
+        btnApex.textContent = ready ? `⚡ APEX 각성 단행! (🪙 ${APEX_JOB_REQ.reqTokens.toLocaleString()})` : `⚡ APEX 각성 (조건 미달)`;
       }
     }
 
@@ -6195,6 +6643,41 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       `;
 
       tableBody.innerHTML = rowsHtml;
+
+      // ⚡ APEX 각성 행 (인벤토리의 신화 갑주와 연동)
+      const apexReady = !upg.apex && !!upg.awakened && state.level >= APEX_JOB_REQ.reqLv &&
+        isMythicOrApexArmorEquipped() && (isInfRouletteEventActive() || state.tokens >= APEX_JOB_REQ.reqTokens);
+      const apexBadge = upg.apex
+        ? `<span class="upgrade-table-badge awakened" style="background:linear-gradient(135deg,#ffd166,#00f5d4); color:#0c1020;">⚡ APEX 완료</span>`
+        : (apexReady
+          ? `<span class="upgrade-table-badge ready" style="background:linear-gradient(135deg,#ffd166,#ff006e); color:#fff; border-color:#00f5d4;">⚡ APEX 각성 가능!</span>`
+          : `<span class="upgrade-table-badge locked">🔒 조건 미달성</span>`);
+      const eqForTable = getEquippedArmor();
+      tableBody.innerHTML = rowsHtml + `
+        <tr style="${upg.apex ? 'background:linear-gradient(90deg, rgba(255,209,102,0.12), rgba(0,245,212,0.1));' : (apexReady ? 'background:rgba(255,209,102,0.1);' : '')}">
+          <td style="font-weight:900; color:#ffd166;">⚡ APEX 각성</td>
+          <td>
+            <b style="color:${upg.awakened ? 'var(--cyan)' : '#ff0054'};">초월각성 완료 필수</b><br>
+            <b style="color:${state.level >= APEX_JOB_REQ.reqLv ? 'var(--cyan)' : '#ff0054'};">Lv.${APEX_JOB_REQ.reqLv} 이상</b><br>
+            <b style="color:${isMythicOrApexArmorEquipped() ? 'var(--cyan)' : '#ff0054'};">신화 이상 갑주 장착 (${eqForTable ? armorGradeOf(eqForTable).name : "없음"})</b><br>
+            <b style="color:${(isInfRouletteEventActive() || state.tokens >= APEX_JOB_REQ.reqTokens) ? 'var(--gold)' : '#ff0054'};">🪙 ${APEX_JOB_REQ.reqTokens.toLocaleString()} 토큰</b>
+          </td>
+          <td>
+            <b style="color:#ffd166; font-size:0.92rem;">직업 스탯 600% (6배) 증폭!</b><br>
+            <span style="color:#e2e8f0; font-size:0.8rem;">
+              • ⚡ <b>[APEX: 종말의 기록]</b> 전용 궁극기 해금 (MP 60 / 7.6배 + 400 피해 + 적 행동 1턴 봉인)<br>
+              • 🛡️ 턴당 체력 6% 자동 재생<br>
+              • ✨ 직업명 [APEX] 접두사 & 황금 APEX 오라, 치명타 확률 55% → 70%
+            </span>
+          </td>
+          <td>
+            <span class="tag" style="background:rgba(255,209,102,0.2); color:#ffd166; border:1px solid #ffd166; font-size:0.75rem;">⚡ APEX 각성자</span><br>
+            <span class="tag" style="background:rgba(0,245,212,0.18); color:#00f5d4; border:1px solid #00f5d4; font-size:0.75rem; margin-top:2px;">💠 기록을 초월한 자</span><br>
+            <span class="tag" style="background:rgba(255,0,110,0.2); color:#ff70a6; border:1px solid #ff006e; font-size:0.75rem; margin-top:2px;">👑 apex의 계승자</span>
+          </td>
+          <td style="text-align:center;">${apexBadge}</td>
+        </tr>
+      `;
     }
   }
 
@@ -6504,6 +6987,23 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (awakenBtn) {
       awakenBtn.style.display = upg.awakened ? "inline-block" : "none";
     }
+    // ⚡ 직업 APEX 궁극기 버튼
+    const apexBtn = document.getElementById("apexSkillBtn");
+    if (apexBtn) {
+      apexBtn.style.display = upg.apex ? "inline-block" : "none";
+      apexBtn.style.opacity = currentMp >= 60 ? "1" : "0.55";
+    }
+    // 🛡️ 장착 갑주 표시 (전투 화면)
+    const armorLine = document.getElementById("playerArmorLine");
+    if (armorLine) {
+      if (stats.armorInst) {
+        const ag = armorGradeOf(stats.armorInst);
+        armorLine.style.display = "";
+        armorLine.innerHTML = `🛡️ <b style="color:${ag.c1}">[${ag.name}]</b> ${escapeHtml(stats.armorName)} · 피해감소 ${stats.armorRed}%`;
+      } else {
+        armorLine.style.display = "none";
+      }
+    }
     // 🗡️ 직업 고유 스킬 버튼
     const sk = jobSkillInfo(job.id, upg);
     const jsBtn = document.getElementById("jobSkillBtn");
@@ -6670,13 +7170,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       Sound.hit();
       if (pIcon) { pIcon.classList.add("attack-lunge"); setTimeout(() => pIcon.classList.remove("attack-lunge"), 250); }
       const isLuck = isLuckEventActive();
-      const critChance = upg.awakened ? (isLuck ? 0.90 : 0.55) : (isLuck ? 0.75 : 0.28);
-      const critMult = upg.awakened ? (isLuck ? 2.8 : 2.4) : (isLuck ? 2.2 : 1.9);
+      const apexed = !!upg.apex;
+      const critChance = apexed ? (isLuck ? 0.95 : 0.70) : upg.awakened ? (isLuck ? 0.90 : 0.55) : (isLuck ? 0.75 : 0.28);
+      const critMult = apexed ? (isLuck ? 3.2 : 2.7) : upg.awakened ? (isLuck ? 2.8 : 2.4) : (isLuck ? 2.2 : 1.9);
       const isCrit = Math.random() < critChance;
       const baseDmg = stats.atk + rand(0, 6);
       const dmg = Math.round((isCrit ? Math.round(baseDmg * critMult) : baseDmg) * weakMult());
-      dealToEnemy(dmg, `🗡️ 탐험가의 공격! ${isCrit ? (upg.awakened ? "<b>[초월 치명타!]</b> " : "<b>[치명타!]</b> ") : ""}<b>${fmtNum(dmg)}</b> 피해.${weakTxt()}`,
-        isCrit ? (upg.awakened ? "awaken-crit" : "crit") : "player-dmg");
+      dealToEnemy(dmg, `🗡️ 탐험가의 공격! ${isCrit ? (apexed ? "<b>[APEX 치명타!]</b> " : (upg.awakened ? "<b>[초월 치명타!]</b> " : "<b>[치명타!]</b> ")) : ""}<b>${fmtNum(dmg)}</b> 피해.${weakTxt()}`,
+        isCrit ? (apexed ? "apex-crit" : (upg.awakened ? "awaken-crit" : "crit")) : "player-dmg");
+      tryArmorDrop(!!combat.isBoss);
 
     } else if (act === "jobskill") {
       const sk = jobSkillInfo(job.id, upg);
@@ -6700,6 +7202,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       if (pIcon) { pIcon.classList.add("attack-lunge"); setTimeout(() => pIcon.classList.remove("attack-lunge"), 250); }
       dealToEnemy(total, `${sk.i} <b>[${escapeHtml(sk.n)}]</b> 시전!${hits > 1 ? ` ${hits}연타` : ""} <b>${fmtNum(total)}</b> 피해.${critAny ? " <b>[치명타!]</b>" : ""}${weakTxt()}`,
         critAny || sk.m >= 2.4 ? "crit" : "player-dmg");
+      tryArmorDrop(!!combat.isBoss);
       if (sk.heal) {
         const healAmt = Math.round(stats.maxHp * sk.heal);
         currentHp = Math.min(stats.maxHp, currentHp + healAmt);
@@ -6748,6 +7251,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       Sound.crit();
       const dmg = Math.round((stats.atk * 3.8 + 50) * weakMult());
       dealToEnemy(dmg, `🔥 <b>[차원 폭발]</b> 시전!! <b>${fmtNum(dmg)}</b> 극대 피해!${weakTxt()}`, "crit");
+      tryArmorDrop(!!combat.isBoss);
 
     } else if (act === "awaken") {
       if (!upg.awakened) { showToast("🌌 초월각성을 달성한 직업만 사용할 수 있는 궁극기입니다!", "warn"); Sound.hit(); return false; }
@@ -6757,6 +7261,18 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const dmg = Math.round((stats.atk * 5.5 + 150) * weakMult());
       if (eIcon) { eIcon.classList.add("hit-flash"); setTimeout(() => eIcon.classList.remove("hit-flash"), 400); }
       dealToEnemy(dmg, `🌌 <b>[초월: 시공간 붕괴]</b> 발동!! 시공간이 산산조각 나며 <b>${fmtNum(dmg)}</b>의 초월적 치명타 피해!${weakTxt()}`, "awaken-crit");
+      tryArmorDrop(!!combat.isBoss);
+
+    } else if (act === "apex") {
+      if (!upg.apex) { showToast("⚡ APEX 각성을 달성한 직업만 사용할 수 있는 궁극기입니다!", "warn"); Sound.hit(); return false; }
+      if (currentMp < 60) { showToast(`💧 APEX 궁극기를 쓰려면 MP가 60 필요합니다! (현재 MP: ${Math.round(currentMp)})`, "warn"); Sound.hit(); return false; }
+      currentMp -= 60;
+      Sound.crit();
+      if (pIcon) { pIcon.classList.add("attack-lunge"); setTimeout(() => pIcon.classList.remove("attack-lunge"), 250); }
+      const dmg = Math.round((stats.atk * 7.6 + 400) * weakMult());
+      dealToEnemy(dmg, `⚡ <b>[APEX: 종말의 기록]</b> 발동!! 기록의 마지막 장이 찢기며 공간째로 내리쳤다 — <b>${fmtNum(dmg)}</b> 피해!${weakTxt()}`, "apex-crit");
+      tryArmorDrop(!!combat.isBoss);
+      if (combat && combat.hp > 0) { combat.stunned = Math.max(combat.stunned || 0, 1); combatLog(`⚡ <b>[기록 말소]</b> 적의 다음 행동이 봉인됩니다!`); }
     }
 
     syncBattleUI();
@@ -6836,12 +7352,21 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       }
     }
 
+    // 🛡️ 장착 갑주 피해감소 적용 (최대 45%)
+    const armorRedPct = Math.max(0, Math.min(45, Number(stats.armorRed) || 0));
+    if (armorRedPct > 0 && dmg > 1) {
+      const beforeArmor = dmg;
+      dmg = Math.max(1, Math.round(dmg * (1 - armorRedPct / 100)));
+      if (beforeArmor > dmg) {
+        combatLog(`🛡️ <b>[${escapeHtml(stats.armorName || "갑주")}]</b> 피해감소 ${armorRedPct}% — <b>${fmtNum(beforeArmor - dmg)}</b> 경감 (${fmtNum(beforeArmor)} → ${fmtNum(dmg)})`);
+      }
+    }
+
     currentHp = Math.max(0, currentHp - dmg);
     if (pIcon) { pIcon.classList.add("hit-flash"); setTimeout(() => pIcon.classList.remove("hit-flash"), 300); }
     spawnDamageNumber(pIcon, "-" + fmtNum(dmg), "player-dmg");
 
     combat.turns = (combat.turns || 0) + 1;
-
     syncBattleUI();
     updateBossBar();
     save();
@@ -6849,11 +7374,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (combat.hp <= 0) { endBattleWin(); return; }
     if (currentHp <= 0) { endBattleLose(); return; }
 
-    // 초월 패시브 재생 (포션 경제와 균형: 5% → 2.5%)
+    // 초월/APEX 패시브 재생 (포션 경제와 균형: 2.5% / APEX 4%)
     const job = getCurrentJob();
     const upg = getJobUpgrade(job.id);
-    if (upg.awakened && currentHp > 0) {
-      const regenAmt = Math.max(1, Math.round(stats.maxHp * 0.025));
+    if ((upg.awakened || upg.apex) && currentHp > 0) {
+      const regenAmt = Math.max(1, Math.round(stats.maxHp * (upg.apex ? 0.04 : 0.025)));
       currentHp = Math.min(stats.maxHp, currentHp + regenAmt);
       if (pIcon) spawnDamageNumber(pIcon, "+" + fmtNum(regenAmt), "heal");
       combatLog(`🌌 <b>[초월자의 위엄]</b> 재생 효과로 체력 <b>+${fmtNum(regenAmt)}</b> 회복.`);
@@ -7548,6 +8073,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const summaryEl = document.getElementById("invSummary");
     const listEl = document.getElementById("invList");
     if (!listEl) return;
+    renderArmorSection();
     const inv = (state.inventory && typeof state.inventory === "object") ? state.inventory : {};
     const ids = Object.keys(inv).filter(id => Number(inv[id]) > 0);
     const byDim = (a, b) => Number(String(a).replace(/\D/g, "")) - Number(String(b).replace(/\D/g, ""));
@@ -7558,10 +8084,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     const filled = filledPortalCount();
 
     if (summaryEl) {
+      const armors = armorStorage();
+      const eqA = getEquippedArmor();
+      const bestArmor = armors.length ? armors.reduce((best, a) => (armorGradeOf(a).order > armorGradeOf(best).order ? a : best), armors[0]) : null;
       summaryEl.innerHTML = `
         <div class="inv-stat"><span>보유 아이템</span><b>${ids.length}종 · ${totalCount.toLocaleString()}개</b></div>
         <div class="inv-stat shard"><span>차원 파편</span><b>${shardIds.length} / 8 종</b></div>
-        <div class="inv-stat title"><span>포탈 봉인</span><b>${filled} / 8</b></div>`;
+        <div class="inv-stat title"><span>포탈 봉인</span><b>${filled} / 8</b></div>
+        <div class="inv-stat armor"><span>보유 갑주</span><b>${armors.length}벌 · 최고 ${bestArmor ? armorGradeOf(bestArmor).name : "-"}</b></div>
+        <div class="inv-stat armor"><span>장착 갑주</span><b>${eqA ? armorGradeOf(eqA).name : "없음"}</b></div>`;
     }
 
     const cardHtml = (id) => {
@@ -7595,6 +8126,173 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       groupHtml("🏅 격파 증표", trophyIds) +
       groupHtml("📦 기타 아이템", etcIds);
   }
+
+  // ==================================================
+  // 🛡️ 방어구(갑주) 인벤토리 · 장착/해제 · 신화 → APEX 각성
+  // ==================================================
+  function armorGradeBadge(gradeKey) {
+    const g = armorGradeOf({ grade: gradeKey });
+    return `<span class="armor-grade-badge ${g.key === "apex" ? "g-apex" : ""}" style="--gb1:${g.c1}; --gb2:${g.c2};">${g.icon} ${g.name}</span>`;
+  }
+
+  function renderArmorSection() {
+    const host = document.getElementById("armorSection");
+    if (!host) return;
+    const list = armorStorage();
+    const eq = getEquippedArmor();
+    const sig = list.map(a => a.uid + a.grade + a.def + a.hp + a.red + a.atk).join("|") + "#" + (state.equippedArmor || "") + "#" + (state.tokens || 0) + "#" + (state.level || 0);
+    if (host.dataset.sig === sig) return;
+    host.dataset.sig = sig;
+
+    const sorted = list.slice().sort((a, b) => {
+      if (a.uid === state.equippedArmor) return -1;
+      if (b.uid === state.equippedArmor) return 1;
+      return (armorGradeOf(b).order - armorGradeOf(a).order) || (b.dim - a.dim) || (b.at - a.at);
+    });
+
+    let eqBar = "";
+    if (eq) {
+      const g = armorGradeOf(eq);
+      const tpl = armorTemplateOf(eq);
+      eqBar = `
+        <div class="armor-eq-bar">
+          <div class="ae-icon">${tpl.icon}</div>
+          <div class="ae-main">
+            <div class="ae-name">${g.icon} [${g.name}] ${escapeHtml(tpl.name)} <span style="font-size:0.78rem; color:#00f5d4;">— 장착 중</span></div>
+            <div class="ae-sub">방어력 +${fmtNum(eq.def)} · 피해감소 ${eq.red}% · 추가 HP +${fmtNum(eq.hp)}${eq.atk ? ` · 공격력 +${fmtNum(eq.atk)}` : ""}</div>
+          </div>
+          <div class="ae-total">피해 ${100 - Math.min(45, eq.red)}%만 받음</div>
+          <button class="secondary" onclick="unequipArmor()">장착 해제</button>
+        </div>`;
+    } else {
+      eqBar = `
+        <div class="armor-eq-bar empty">
+          <div class="ae-icon">🛡️</div>
+          <div class="ae-main">
+            <div class="ae-name">장착한 갑주가 없습니다</div>
+            <div class="ae-sub">아래 갑주 카드의 [장착] 버튼을 누르면 방어력·피해감소·추가 HP가 바로 적용됩니다.</div>
+          </div>
+        </div>`;
+    }
+
+    const cards = sorted.map(inst => {
+      const g = armorGradeOf(inst);
+      const tpl = armorTemplateOf(inst);
+      const isEq = inst.uid === state.equippedArmor;
+      const canApex = state.level >= ARMOR_APEX_REQ.reqLv && state.tokens >= ARMOR_APEX_REQ.tokens;
+      const apexBtn = inst.grade === "mythic"
+        ? `<button class="apex" ${canApex ? "" : "disabled"} onclick="awakenArmorApex('${inst.uid}')" title="Lv.${ARMOR_APEX_REQ.reqLv} 이상 · 🪙 ${fmtNum(ARMOR_APEX_REQ.tokens)} 토큰 필요">⚡ APEX 각성 (🪙 ${fmtNum(ARMOR_APEX_REQ.tokens)})</button>`
+        : "";
+      return `
+        <div class="armor-card ${isEq ? "equipped" : ""} ${inst.grade === "apex" ? "is-apex" : ""}" style="--ac1:${g.c1}; --ac2:${g.c2};">
+          <div class="ar-top">
+            <div class="ar-icon">${tpl.icon}</div>
+            <div style="flex:1; min-width:0;">
+              <div class="ar-name">${inst.grade === "apex" ? "⚡ " : ""}${escapeHtml(tpl.name)}</div>
+              <div class="ar-badges">
+                ${armorGradeBadge(inst.grade)}
+                <span class="armor-dim-badge">${inst.dim}차원</span>
+                ${isEq ? `<span class="armor-dim-badge" style="color:#00f5d4; border-color:rgba(0,245,212,0.5);">장착 중</span>` : ""}
+              </div>
+            </div>
+          </div>
+          <div class="ar-stats">
+            <span><i>방어력</i> +${fmtNum(inst.def)}</span>
+            <span><i>피해감소</i> ${inst.red}%</span>
+            <span><i>추가 HP</i> +${fmtNum(inst.hp)}</span>
+            ${inst.atk ? `<span><i>공격력</i> +${fmtNum(inst.atk)}</span>` : ""}
+          </div>
+          <div class="ar-lore">${escapeHtml(tpl.lore)}</div>
+          <div class="ar-actions">
+            ${isEq
+              ? `<button class="secondary" onclick="unequipArmor()">해제</button>`
+              : `<button class="primary" onclick="equipArmor('${inst.uid}')">장착</button>`}
+            ${apexBtn}
+          </div>
+        </div>`;
+    }).join("");
+
+    host.innerHTML = `
+      <div class="inv-group">
+        <div class="inv-group-title"><span>🛡️ 방어구(갑주) — 희귀 · 영웅 · 전설 · 신화 · APEX</span><span class="count">${list.length}벌 / ${ARMOR_SLOT_LIMIT}</span></div>
+        ${eqBar}
+        ${sorted.length ? `<div class="armor-grid">${cards}</div>` : `<div class="inv-empty">🛡️ 아직 보유한 갑주가 없습니다.<br>차원 전투에서 <b>공격</b>하면 일정 확률로 갑주가 드롭됩니다. (보스가 더 잘 줍니다)</div>`}
+        <div class="armor-note">
+          · 공격 시 드롭: 일반 몬스터 <b>9%</b> · 보스 <b>16%</b> (행운 이벤트 1.5배 / 연속 미획득 보정 최대 +30%p)<br>
+          · 장착하면 <b>방어력 · 추가 HP</b>가 캐릭터 스탯에, <b>피해감소</b>는 받는 데미지 계산에 즉시 반영됩니다. (피해감소 최대 45%)<br>
+          · <b>신화 갑주</b>는 Lv.${ARMOR_APEX_REQ.reqLv} 이상 + 🪙 ${fmtNum(ARMOR_APEX_REQ.tokens)} 토큰으로 <b style="color:#ffd166">APEX 등급</b>으로 각성합니다. (방어·HP 2.3배, 피해감소 +9%p, 공격력 보너스)<br>
+          · 보관 한도 ${ARMOR_SLOT_LIMIT}벌 — 초과하면 가장 낮은 등급의 오래된 갑주부터 자동 정리됩니다.
+        </div>
+      </div>`;
+  }
+
+  window.equipArmor = function (uid) {
+    const inst = armorStorage().find(a => a.uid === uid);
+    if (!inst) return;
+    Sound.click();
+    const before = getPlayerStats();
+    state.equippedArmor = inst.uid;
+    const after = getPlayerStats();
+    if (typeof currentHp === "number" && after.maxHp > before.maxHp) {
+      currentHp = Math.min(after.maxHp, currentHp + (after.maxHp - before.maxHp));
+    }
+    const g = armorGradeOf(inst);
+    const tpl = armorTemplateOf(inst);
+    state.lastEvent = `🛡️ [${g.name}] ${tpl.name} 장착! (방어 +${inst.def} · 피해감소 ${inst.red}% · HP +${inst.hp})`;
+    showToast(`🛡️ <b>${g.icon} ${g.name} 갑주 장착</b><br>${tpl.icon} ${escapeHtml(tpl.name)}`, "title");
+    if (typeof Sound.levelUp === "function") Sound.levelUp();
+    save();
+  };
+
+  window.unequipArmor = function () {
+    if (!state.equippedArmor) return;
+    Sound.click();
+    const inst = getEquippedArmor();
+    state.equippedArmor = null;
+    const after = getPlayerStats();
+    if (typeof currentHp === "number" && currentHp > after.maxHp) currentHp = after.maxHp;
+    state.lastEvent = inst ? `🛡️ [${armorTemplateOf(inst).name}] 장착을 해제했습니다.` : "🛡️ 갑주를 해제했습니다.";
+    showToast("🛡️ 갑주 장착을 해제했습니다.", "warn");
+    save();
+  };
+
+  // 신화 갑주 → APEX 등급 각성
+  window.awakenArmorApex = function (uid) {
+    const inst = armorStorage().find(a => a.uid === uid);
+    if (!inst) return;
+    if (inst.grade === "apex") { Sound.hit(); alert("⚡ 이미 APEX 등급으로 각성한 갑주입니다!"); return; }
+    if (inst.grade !== "mythic") { Sound.hit(); alert("❌ 신화 등급 갑주만 APEX로 각성할 수 있습니다."); return; }
+    if (state.level < ARMOR_APEX_REQ.reqLv) {
+      Sound.hit();
+      alert(`❌ 레벨이 부족합니다!\nAPEX 각성 필요 레벨: Lv.${ARMOR_APEX_REQ.reqLv} 이상 (현재: Lv.${state.level})`);
+      return;
+    }
+    if (state.tokens < ARMOR_APEX_REQ.tokens) {
+      Sound.hit();
+      alert(`❌ 토큰이 부족합니다!\n필요 토큰: 🪙 ${fmtNum(ARMOR_APEX_REQ.tokens)} (보유: 🪙 ${fmtNum(state.tokens)})`);
+      return;
+    }
+    state.tokens -= ARMOR_APEX_REQ.tokens;
+    const tpl = armorTemplateOf(inst);
+    const oldDef = inst.def, oldRed = inst.red, oldHp = inst.hp;
+    inst.grade = "apex";
+    inst.def = Math.round(inst.def * 2.3);
+    inst.red = Math.min(45, Math.round((inst.red + 9) * 10) / 10);
+    inst.hp = Math.round(inst.hp * 2.3);
+    inst.atk = Math.round(inst.def * 0.6);
+    inst.apexAt = Date.now();
+    if (!state.stats) state.stats = {};
+    state.stats.armorAwakens = (Number(state.stats.armorAwakens) || 0) + 1;
+    const t = "🛡️ APEX 갑주 장인";
+    const newTitle = !state.titles.includes(t);
+    if (newTitle) state.titles.push(t);
+    Sound.win();
+    state.lastEvent = `⚡ [APEX] ${tpl.name} 각성 완료! (방어 +${inst.def})`;
+    recordMilestone(`⚡ ${tpl.name} APEX 각성`);
+    save();
+    checkTitleGoals();
+    showResultModal(true, `⚡ [APEX 갑주 각성!]\n\n${tpl.icon} 【 ${tpl.name} 】\n신화의 마지막 못이 뽑히고, 황금빛 기록이 갑주 위로 흘러듭니다.\n\n✨ 강화 결과:\n• 방어력 ${oldDef} → ${inst.def}\n• 피해감소 ${oldRed}% → ${inst.red}%\n• 추가 HP ${oldHp} → ${inst.hp}\n• 추가 공격력 +${inst.atk} (APEX 전용)\n\n비용: 🪙 ${fmtNum(ARMOR_APEX_REQ.tokens)} 토큰\n${newTitle ? "\n칭호 [🛡️ APEX 갑주 장인]을(를) 획득했습니다!" : ""}`);
+  };
 
   function renderShardPortals() {
     const grid = document.getElementById("portalGrid");

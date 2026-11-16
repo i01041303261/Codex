@@ -6725,7 +6725,8 @@ window.addEventListener("unhandledrejection", function (e) {
 
       tableBody.innerHTML = rowsHtml;
 
-      // ⚡ APEX 각성 행 (인벤토리의 신화 갑주와 연동)      const apexReady = !upg.apex && !!upg.awakened && state.level >= APEX_JOB_REQ.reqLv &&
+      // ⚡ APEX 각성 행 (인벤토리의 신화 갑주와 연동)
+      const apexReady = !upg.apex && !!upg.awakened && state.level >= APEX_JOB_REQ.reqLv &&
         isMythicOrApexArmorEquipped() && (isInfRouletteEventActive() || state.tokens >= APEX_JOB_REQ.reqTokens);
       const apexBadge = upg.apex
         ? `<span class="upgrade-table-badge awakened" style="background:linear-gradient(135deg,#ffd166,#00f5d4); color:#0c1020;">⚡ APEX 완료</span>`
