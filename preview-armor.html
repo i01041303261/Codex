@@ -3286,7 +3286,26 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 </div>
 
 <script>
-/* CODEX 갑주 테스트용 임시 시드 스크립트 (프리뷰 전용, 배포본에는 없음) */
+/* CODEX 갑주 테스트용 임시 시드/계측 스크립트 (프리뷰 전용, 배포본에는 없음) */
+window.__codexErrors = [];
+window.addEventListener("error", function (e) {
+  window.__codexErrors.push("error: " + (e.message || "") + " @" + (e.filename || "") + ":" + (e.lineno || 0));
+});
+window.addEventListener("unhandledrejection", function (e) {
+  window.__codexErrors.push("rejection: " + String(e.reason));
+});
+(function () {
+  var _ce = console.error;
+  console.error = function () {
+    try { window.__codexErrors.push("console.error: " + Array.prototype.join.call(arguments, " ")); } catch (e) { }
+    return _ce.apply(console, arguments);
+  };
+  var _cw = console.warn;
+  console.warn = function () {
+    try { window.__codexErrors.push("console.warn: " + Array.prototype.join.call(arguments, " ")); } catch (e) { }
+    return _cw.apply(console, arguments);
+  };
+})();
 (function () {
   try {
     var q = location.search || "";
