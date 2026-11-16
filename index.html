@@ -2356,6 +2356,144 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   body.aura-blaze::after { box-shadow: inset 0 0 120px rgba(255,106,0,0.18); }
   body.aura-galaxy::after { box-shadow: inset 0 0 140px rgba(131,56,236,0.22); }
 
+/* ==================================================
+   📅 출석 보상 · 📢 업데이트 공지 (2026-11-16)
+   ================================================== */
+.attend-hero-top { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+.attend-ring {
+  width: 106px; height: 106px; border-radius: 50%; flex: 0 0 auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 32%, rgba(131,56,236,.5), rgba(7,9,19,.94) 72%);
+  border: 2px solid rgba(255,190,11,.5);
+  box-shadow: 0 0 26px rgba(131,56,236,.45), inset 0 0 18px rgba(0,245,212,.18);
+  position: relative;
+}
+.attend-ring::after {
+  content: ""; position: absolute; inset: -7px; border-radius: 50%;
+  border: 1px dashed rgba(0,245,212,.35); animation: attendSpin 16s linear infinite;
+}
+@keyframes attendSpin { to { transform: rotate(360deg); } }
+.attend-ring-num { font-size: 1.85rem; font-weight: 900; color: #ffd166; line-height: 1; text-shadow: 0 0 16px rgba(255,190,11,.65); }
+.attend-ring-label { font-size: .7rem; color: #a0aec0; font-weight: 800; margin-top: 5px; }
+.attend-meta { display: flex; flex-direction: column; gap: 8px; flex: 1 1 220px; min-width: 190px; }
+.attend-meta-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .88rem; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 9px 12px; }
+.attend-meta-row span { color: #a0aec0; font-weight: 700; flex: 0 0 auto; }
+.attend-meta-row b { color: #fff; font-weight: 800; text-align: right; }
+.attend-claim-btn {
+  width: 100%; margin-top: 4px; padding: 16px 18px; font-size: 1.06rem; font-weight: 900;
+  border-radius: 16px; background: linear-gradient(135deg, #ffbe0b, #ff006e); color: #160d02;
+  box-shadow: 0 6px 26px rgba(255,0,110,.4); min-height: 54px;
+}
+.attend-claim-btn.ready { animation: attendPulse 1.8s ease-in-out infinite; }
+@keyframes attendPulse {
+  0%, 100% { box-shadow: 0 6px 26px rgba(255,0,110,.4); }
+  50% { box-shadow: 0 10px 36px rgba(255,190,11,.8); }
+}
+.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b96a8; box-shadow: none; animation: none; cursor: default; }
+.attend-msg { margin-top: 10px; text-align: center; font-weight: 800; font-size: .93rem; color: #ffd166; min-height: 1.1em; }
+.attend-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 7px; }
+.attend-cell {
+  position: relative; border-radius: 12px; padding: 8px 3px; text-align: center;
+  background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.08);
+  min-height: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+}
+.attend-cell-day { font-size: .74rem; font-weight: 800; color: #94a3b8; }
+.attend-cell-ic { font-size: 1.15rem; line-height: 1.1; }
+.attend-cell-tok { font-size: .6rem; color: #ffd166; font-weight: 800; }
+.attend-cell.done { background: linear-gradient(160deg, rgba(56,176,0,.22), rgba(0,245,212,.08)); border-color: rgba(0,245,212,.45); }
+.attend-cell.done .attend-cell-day { color: #d7fff4; }
+.attend-cell.done::after { content: "✓"; position: absolute; top: 2px; right: 4px; font-size: .68rem; font-weight: 900; color: #00f5d4; }
+.attend-cell.milestone { border-color: rgba(255,0,110,.5); background: linear-gradient(160deg, rgba(131,56,236,.3), rgba(255,0,110,.14)); }
+.attend-cell.milestone .attend-cell-ic { filter: drop-shadow(0 0 6px rgba(255,0,110,.75)); }
+.attend-cell.milestone .attend-cell-tok { color: #ff9ec4; }
+.attend-cell.today {
+  border-color: #ffbe0b; background: linear-gradient(160deg, rgba(255,190,11,.3), rgba(255,0,110,.16));
+  animation: attendTodayGlow 2.2s ease-in-out infinite;
+}
+@keyframes attendTodayGlow {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(255,190,11,.25), 0 0 14px rgba(255,190,11,.35); }
+  50% { box-shadow: 0 0 0 3px rgba(255,190,11,.55), 0 0 26px rgba(255,0,110,.5); }
+}
+.attend-cell.today .attend-cell-day { color: #fff; }
+.attend-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: .76rem; color: #94a3b8; font-weight: 700; }
+.attend-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
+.attend-mile { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); margin-bottom: 8px; flex-wrap: wrap; }
+.attend-mile.reached { border-color: rgba(0,245,212,.45); background: linear-gradient(135deg, rgba(0,245,212,.14), rgba(56,176,0,.08)); }
+.attend-mile.next { border-color: rgba(255,190,11,.5); box-shadow: 0 0 16px rgba(255,190,11,.16); }
+.attend-mile-day { font-weight: 900; color: #ffd166; min-width: 50px; font-size: .92rem; }
+.attend-mile-desc { flex: 1 1 170px; font-size: .86rem; color: #e2e8f0; font-weight: 700; line-height: 1.45; }
+.attend-mile-tag { font-size: .72rem; font-weight: 800; color: #a0aec0; background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.12); border-radius: 99px; padding: 3px 9px; white-space: nowrap; }
+.attend-mile-tag.done { color: #08140f; background: linear-gradient(135deg, #00f5d4, #38b000); border-color: transparent; }
+.attend-mile-tag.now { color: #160d02; background: linear-gradient(135deg, #ffbe0b, #fb5607); border-color: transparent; }
+.attend-home-line { font-size: .92rem; font-weight: 800; color: #ffd166; line-height: 1.5; }
+.attend-home-btn { flex: 1 1 auto; }
+.attend-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: #ff006e; box-shadow: 0 0 8px rgba(255,0,110,.95); display: inline-block; }
+.attend-burst { position: fixed; inset: 0; pointer-events: none; z-index: 9998; overflow: hidden; }
+.attend-spark { position: absolute; width: 9px; height: 14px; border-radius: 2px; opacity: .95; animation: attendFall 1.5s ease-out forwards; }
+@keyframes attendFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(74vh) rotate(540deg); opacity: 0; }
+}
+@media (max-width: 520px) {
+  .attend-cal { gap: 4px; }
+  .attend-cell { padding: 6px 1px; min-height: 64px; border-radius: 10px; }
+  .attend-cell-day { font-size: .64rem; }
+  .attend-cell-ic { font-size: 1rem; }
+  .attend-cell-tok { font-size: .52rem; }
+  .attend-ring { width: 92px; height: 92px; }
+  .attend-ring-num { font-size: 1.55rem; }
+  .attend-meta-row { font-size: .82rem; padding: 8px 10px; }
+}
+
+/* 📢 업데이트 공지 모달 */
+#codexNoticeOverlay {
+  position: fixed; inset: 0; background: rgba(5,7,15,.87); backdrop-filter: blur(12px);
+  z-index: 9999; display: none; align-items: center; justify-content: center; padding: 16px;
+}
+#codexNoticeOverlay.show { display: flex; }
+.notice-modal {
+  width: min(560px, 100%); max-height: 86vh; display: flex; flex-direction: column;
+  background: linear-gradient(160deg, rgba(24,20,48,.98), rgba(10,12,26,.99));
+  border: 1px solid rgba(0,245,212,.35); border-radius: 22px; overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0,0,0,.7), 0 0 42px rgba(131,56,236,.35);
+  animation: noticeIn .35s cubic-bezier(.2,1.2,.4,1);
+}
+@keyframes noticeIn { from { transform: translateY(22px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+.notice-head {
+  display: flex; align-items: center; gap: 10px; padding: 15px 18px;
+  background: linear-gradient(135deg, rgba(131,56,236,.5), rgba(255,0,110,.24));
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.notice-head h3 { margin: 0; font-size: 1.1rem; font-weight: 900; color: #fff; }
+.notice-head .notice-new {
+  margin-left: auto; font-size: .68rem; font-weight: 900; color: #160d02;
+  background: linear-gradient(135deg, #ffbe0b, #ff006e); padding: 3px 9px; border-radius: 99px;
+}
+.notice-x {
+  background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.18); color: #fff;
+  width: 34px; height: 34px; border-radius: 10px; font-size: 1.1rem; font-weight: 900;
+  padding: 0; flex: 0 0 auto; line-height: 1;
+}
+.notice-body { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 16px; flex: 1 1 auto; }
+.notice-item {
+  background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px; padding: 13px 15px; margin-bottom: 10px;
+}
+.notice-item.latest { border-color: rgba(0,245,212,.5); background: linear-gradient(150deg, rgba(0,245,212,.1), rgba(131,56,236,.12)); box-shadow: 0 0 18px rgba(0,245,212,.12); }
+.notice-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.notice-ver { font-size: .7rem; font-weight: 900; color: #ffd166; background: rgba(255,190,11,.14); border: 1px solid rgba(255,190,11,.35); border-radius: 99px; padding: 2px 8px; }
+.notice-date { font-size: .7rem; color: #94a3b8; font-weight: 700; }
+.notice-title { font-size: .97rem; font-weight: 900; color: #fff; margin: 0 0 7px 0; line-height: 1.4; }
+.notice-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.notice-list li { font-size: .87rem; line-height: 1.55; color: #dbe4f0; padding-left: 15px; position: relative; }
+.notice-list li::before { content: "•"; position: absolute; left: 2px; color: #00f5d4; font-weight: 900; }
+.notice-foot {
+  padding: 12px 16px; border-top: 1px solid rgba(255,255,255,.08);
+  display: flex; gap: 10px; align-items: center; background: rgba(0,0,0,.3);
+}
+.notice-foot button { flex: 1 1 auto; }
+.notice-hint { font-size: .72rem; color: #7d8aa0; font-weight: 700; }
+
 </style>
 </head>
 <body>
@@ -2375,6 +2513,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         <button id="authBtn" class="tool-btn auth-btn" onclick="openAuthModal('login')">🔑 로그인</button>
         <button id="registerBtn" class="tool-btn auth-btn highlight" onclick="openAuthModal('register')">✨ 회원가입</button>
         <button id="soundToggleBtn" class="tool-btn" onclick="toggleSound()">🔊 사운드 ON</button>
+        <button class="tool-btn" onclick="openNoticeModal(false)" style="position:relative;">📢 공지<span class="attend-nav-dot" id="noticeNewDot" style="position:absolute; top:-3px; right:-3px;" hidden></span></button>
         <button class="tool-btn" onclick="showHelpModal()">❓ 가이드</button>
       </div>
     </div>
@@ -2432,6 +2571,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   <div class="nav-scroll">
     <div class="nav-tabs">
       <button class="nav-btn active" onclick="show('home')" data-tab="home">🏠 마을</button>
+      <button class="nav-btn" onclick="show('attendance')" data-tab="attendance" title="매일 출석하고 보상 받기">📅 출석 보상<span class="attend-nav-dot" id="attendNavDot" hidden></span></button>
       <button class="nav-btn" onclick="show('story')" data-tab="story">📜 차원 스토리</button>
       <button class="nav-btn" onclick="show('jobs')" data-tab="jobs">🔮 50개 직업소</button>
       <button class="nav-btn" onclick="show('map')" data-tab="map">🗺️ 차원 탐험</button>
@@ -2496,6 +2636,14 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
         <h4>👑 현재 장착 직업</h4>
         <div class="val" style="font-size: 1.05rem;">
           <span id="homeJobText" style="color:var(--purple)">⚔️ 검성</span>
+        </div>
+      </div>
+      <div class="stat-box">
+        <h4>📅 오늘의 출석</h4>
+        <div class="val attend-home-line" id="attendHomeText">아직 오늘 출석하지 않았어요.</div>
+        <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+          <button class="primary attend-home-btn" id="attendHomeBtn" onclick="attendClaim()">📅 출석 받기</button>
+          <button class="secondary" onclick="show('attendance')" style="flex:0 0 auto;">🗓️ 달력</button>
         </div>
       </div>
     </div>
@@ -3114,6 +3262,52 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
   </section>
 
   <!-- ==============================================
+       📅 출석 보상 (ATTENDANCE)
+       ============================================== -->
+  <section id="attendance" class="screen">
+    <div class="card" id="attendRoot">
+      <h2>📅 출석 보상</h2>
+      <p class="desc">매일 <b>자정(한국 시간)</b>에 새 출석이 열립니다. 연속으로 출석할수록 보상이 커지고 <b>7·14·21·28일</b>째에는 특별 보상이 함께 지급됩니다. 하루를 건너뛰면 연속 기록이 1일차로 돌아갑니다.</p>
+
+      <div class="attend-hero-top">
+        <div class="attend-ring">
+          <div class="attend-ring-num" id="attendStreakNum">0</div>
+          <div class="attend-ring-label" id="attendStreakLabel">연속 출석</div>
+        </div>
+        <div class="attend-meta">
+          <div class="attend-meta-row"><span>오늘의 보상</span><b id="attendTodayReward">🪙 100</b></div>
+          <div class="attend-meta-row"><span>다음 특별 보상</span><b id="attendNextMilestone">7일차</b></div>
+          <div class="attend-meta-row"><span id="attendTimerLabel">오늘 출석 마감까지</span><b id="attendTimer" data-claimed="0">--:--:--</b></div>
+        </div>
+      </div>
+
+      <button class="primary attend-claim-btn" id="attendClaimBtn" onclick="attendClaim()">📅 출석 체크하고 보상 받기</button>
+      <div class="attend-msg" id="attendMsg"></div>
+    </div>
+
+    <div class="card">
+      <h2>🗓️ 28일 출석 달력</h2>
+      <p class="desc">받은 날(✓)과 오늘 위치(노란 테두리), 특별 보상일(보라·핑크)을 한눈에 볼 수 있습니다. 28일을 채우면 다시 1일차부터 새 사이클이 시작됩니다.</p>
+      <div class="attend-cal" id="attendCalendar"></div>
+      <div class="attend-legend">
+        <span><i style="background:#00f5d4;"></i>받은 날</span>
+        <span><i style="background:#ffbe0b;"></i>오늘</span>
+        <span><i style="background:#ff006e;"></i>특별 보상일</span>
+        <span><i style="background:rgba(255,255,255,.12);"></i>예정</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎁 주기 보상</h2>
+      <p class="desc">보정 상한은 <b>28일차</b>입니다. 28일을 넘기면 다시 1일차 보상부터 사이클이 반복되니, 끊기지 않게 이어가세요.</p>
+      <div id="attendMilestoneList"></div>
+      <div style="margin-top:12px; font-size:0.82rem; color:var(--text-sub); line-height:1.6;">
+        최근 기록: <span id="attendLog">아직 출석 기록이 없습니다.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
        ♾️ 초월의 전당 (TRANSCEND)
        ============================================== -->
   <section id="transcend" class="screen">
@@ -3135,6 +3329,22 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     <div id="codexResultTitle">🎉 승리!</div>
     <div id="codexResultText" class="codexResultText">전투에서 승리했습니다.</div>
     <button class="primary" onclick="closeResultOverlay()" style="padding: 12px 28px;">확인</button>
+  </div>
+</div>
+
+<!-- 📢 업데이트 공지 모달 -->
+<div id="codexNoticeOverlay" onclick="noticeBackdrop(event)">
+  <div class="notice-modal" role="dialog" aria-modal="true" aria-label="업데이트 공지">
+    <div class="notice-head">
+      <h3>📢 업데이트 소식</h3>
+      <span class="notice-new" id="noticeNewTag">NEW</span>
+      <button class="notice-x" onclick="closeNoticeModal()" title="닫기" aria-label="닫기">&times;</button>
+    </div>
+    <div class="notice-body" id="noticeBody"></div>
+    <div class="notice-foot">
+      <span class="notice-hint">닫으면 이 버전 공지는 다시 뜨지 않아요.</span>
+      <button class="primary" onclick="closeNoticeModal()">확인했어요</button>
+    </div>
   </div>
 </div>
 
@@ -4966,6 +5176,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       renderTranscend();
       renderMiniButtons();
       if (typeof syncSwordPathUI === "function") syncSwordPathUI();
+      renderAttendance();
+      updateNoticeBadge();
     } catch (e) { console.warn("[refreshNewUI]", e); }
   }
 
@@ -5454,7 +5666,11 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     pity: { fails: 0, luck: 0 },
     swordPath: "normal",
     mini: { best: {}, weekly: null, dailyDate: null, dailyExp: 0, dailyTokens: 0 },
-    milestones: []
+    milestones: [],
+    // 📅 출석 보상 (2026-11-16 신규) — 마지막 출석 날짜와 연속 일수만 저장합니다
+    attendance: { lastDate: null, streak: 0 },
+    // 📢 업데이트 공지 확인 버전 (구버전 세이브는 null → 첫 접속에 한 번 공지 표시)
+    noticeSeenVersion: null
   };
 
   let state = loadState();
@@ -5611,6 +5827,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       const mp = Number(s.mp);
       s.mp = Number.isFinite(mp) && mp >= 0 ? Math.floor(mp) : null;
     } else s.mp = null;
+    // 📅 출석 보상 저장값 정리 (출석 필드가 없던 구버전 세이브도 오류 없이 시작)
+    if (!s.attendance || typeof s.attendance !== "object" || Array.isArray(s.attendance)) {
+      s.attendance = { lastDate: null, streak: 0 };
+    }
+    if (typeof s.attendance.lastDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(s.attendance.lastDate)) s.attendance.lastDate = null;
+    s.attendance.streak = Math.max(0, Math.min(99999, Math.floor(Number(s.attendance.streak) || 0)));
+    if (!s.attendance.lastDate) s.attendance.streak = 0;
+    // 📢 업데이트 공지 확인 버전
+    if (typeof s.noticeSeenVersion !== "string") s.noticeSeenVersion = null;
     return s;
   }
 
@@ -5728,8 +5953,396 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       state.questProgress = { explore: 0, battle: 0, mini: 0 };
       state.lastRouletteRefill = today;
       save();
+      // 📅 날짜가 바뀌면 출석 패널·HUD도 새로 그립니다 (수령은 버튼으로만)
+      try { renderAttendance(); } catch (e) { console.warn("[attendance]", e); }
     }
   }
+
+  // ==================================================
+  // 📅 출석 보상 시스템 (2026-11-16 신규)
+  //   · 하루 1회, 기기 로컬(한국) 자정 리셋. 세이브에는 { lastDate, streak }만 저장합니다.
+  //   · 28일 사이클: 7일 = 신화 갑주 확정 / 14·21일 = 차원 파편 / 28일 = 대량 토큰 + 신화 갑주 + TP
+  //   · 지급 재화는 기존 인게임 재화(🪙 토큰 · 차원 파편 · 신화 갑주 · TP)만 사용합니다.
+  // ==================================================
+  const ATTEND_CYCLE_DAYS = 28;
+  const ATTEND_MILESTONES = {
+    7:  { icon: "🎖️", label: "신화 갑주 확정", tokens: 1000,  mythic: true },
+    14: { icon: "🌀", label: "차원 파편",     tokens: 2000,  shard: true },
+    21: { icon: "🌀", label: "차원 파편",     tokens: 4000,  shard: true },
+    28: { icon: "👑", label: "대량 토큰 + 신화 갑주", tokens: 10000, mythic: true, tp: 10 }
+  };
+  const ATTEND_MILESTONE_DAYS = [7, 14, 21, 28];
+  let attendLogLines = [];
+
+  function attendParseDate(str) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(str || ""));
+    if (!m) return null;
+    const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    return isNaN(d.getTime()) ? null : d;
+  }
+  function attendDayDiff(fromStr, toStr) {
+    const a = attendParseDate(fromStr), b = attendParseDate(toStr);
+    if (!a || !b) return null;
+    return Math.round((b.getTime() - a.getTime()) / 86400000);
+  }
+  function attendEnsure() {
+    if (!state.attendance || typeof state.attendance !== "object" || Array.isArray(state.attendance)) {
+      state.attendance = { lastDate: null, streak: 0 };
+    }
+    if (typeof state.attendance.lastDate !== "string" || !attendParseDate(state.attendance.lastDate)) state.attendance.lastDate = null;
+    state.attendance.streak = Math.max(0, Math.min(99999, Math.floor(Number(state.attendance.streak) || 0)));
+    if (!state.attendance.lastDate) state.attendance.streak = 0;
+    return state.attendance;
+  }
+  function attendInfo() {
+    const att = attendEnsure();
+    const today = todayStr();
+    const last = att.lastDate;
+    const claimedToday = last === today;
+    const diff = last ? attendDayDiff(last, today) : null;
+    const broken = !!(last && diff !== 0 && diff !== 1);
+    const streak = broken ? 0 : att.streak;
+    const posToday = claimedToday
+      ? ((((Math.max(1, streak) - 1) % ATTEND_CYCLE_DAYS) + ATTEND_CYCLE_DAYS) % ATTEND_CYCLE_DAYS) + 1
+      : (streak % ATTEND_CYCLE_DAYS) + 1;
+    const claimedCount = claimedToday ? posToday : (streak % ATTEND_CYCLE_DAYS);
+    const cycleNo = Math.floor(Math.max(0, claimedToday ? streak - 1 : streak) / ATTEND_CYCLE_DAYS) + 1;
+    return { today: today, last: last, streak: streak, claimedToday: claimedToday, broken: broken, diff: diff, posToday: posToday, claimedCount: claimedCount, cycleNo: cycleNo };
+  }
+  function attendRewardOf(pos) {
+    const p = Math.max(1, Math.min(ATTEND_CYCLE_DAYS, Math.floor(Number(pos) || 1)));
+    const m = ATTEND_MILESTONES[p] || null;
+    const base = 100 + (p - 1) * 40;
+    return { pos: p, base: base, bonus: m ? m.tokens : 0, tokens: base + (m ? m.tokens : 0), m: m };
+  }
+  function attendRewardText(pos) {
+    const r = attendRewardOf(pos);
+    let t = "🪙 " + fmtNum(r.tokens);
+    if (r.m) t += " + " + r.m.icon + " " + r.m.label;
+    return t;
+  }
+  function attendMilestoneDesc(m) {
+    const parts = [];
+    if (m.mythic) parts.push("🎖️ 신화 갑주 1개 확정");
+    if (m.shard) parts.push("🌀 무작위 차원 파편 1개");
+    if (m.tp) parts.push("♾️ " + m.tp + " TP");
+    if (m.tokens) parts.push("🪙 " + fmtNum(m.tokens) + " 보너스 토큰");
+    return parts.join(" · ");
+  }
+  function attendNextMilestone(info) {
+    const from = info.claimedToday ? info.posToday + 1 : info.posToday;
+    for (let i = 0; i < ATTEND_MILESTONE_DAYS.length; i++) {
+      const p = ATTEND_MILESTONE_DAYS[i];
+      if (p >= from) return { pos: p, m: ATTEND_MILESTONES[p], daysLeft: Math.max(0, p - info.posToday) };
+    }
+    const p0 = ATTEND_MILESTONE_DAYS[0];
+    return { pos: p0, m: ATTEND_MILESTONES[p0], daysLeft: (ATTEND_CYCLE_DAYS - info.posToday) + p0 };
+  }
+  function attendNextResetMs() {
+    const now = new Date();
+    const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+    return Math.max(0, next.getTime() - now.getTime());
+  }
+  function attendClockText(ms) {
+    const total = Math.max(0, Math.floor(Number(ms) / 1000));
+    const h = Math.floor(total / 3600), m = Math.floor((total % 3600) / 60), s = total % 60;
+    return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+  }
+  function attendShortTokens(n) {
+    const v = Math.floor(Number(n) || 0);
+    if (v >= 1000) return (Math.round(v / 100) / 10) + "k";
+    return String(v);
+  }
+  // 보상 지급 — 기존 재화·아이템 체계만 사용합니다
+  function attendGrant(pos) {
+    const r = attendRewardOf(pos);
+    const lines = [], plain = [];
+    state.tokens = Math.max(0, Math.floor(Number(state.tokens) || 0)) + r.tokens;
+    if (!state.stats || typeof state.stats !== "object" || Array.isArray(state.stats)) state.stats = {};
+    state.stats.goldEarned = (Number(state.stats.goldEarned) || 0) + r.tokens;
+    lines.push("🪙 <b>" + fmtNum(r.tokens) + " 토큰</b>");
+    plain.push("🪙 " + fmtNum(r.tokens) + " 토큰");
+    if (r.m) {
+      if (r.m.mythic) {
+        const dim = Math.max(1, Math.min(8, Number(state.roulette && state.roulette.dimension) || 1));
+        const inst = grantArmor(createArmorInstance("mythic", dim));
+        const g = armorGradeOf(inst), tpl = armorTemplateOf(inst);
+        lines.push(g.icon + " <b>[" + g.name + " 갑주 확정]</b> " + tpl.icon + " " + escapeHtml(tpl.name) + " <span style=\"opacity:.8\">(방어 +" + inst.def + " · 피해감소 " + inst.red + "% · HP +" + inst.hp + ")</span>");
+        plain.push(g.icon + " [" + g.name + "] " + tpl.name);
+      }
+      if (r.m.shard) {
+        const dim = rand(1, 8);
+        const sd = SHARD_DEFS[dim];
+        if (sd) {
+          const owned = addItem(sd.itemId, 1);
+          lines.push(sd.icon + " <b>" + escapeHtml(sd.name) + "</b> ×1 <span style=\"opacity:.8\">(보유 " + owned + "개)</span>");
+          plain.push(sd.icon + " " + sd.name + " ×1");
+        }
+      }
+      if (r.m.tp) {
+        state.tp = Math.max(0, Math.floor(Number(state.tp) || 0)) + r.m.tp;
+        state.tpEarned = Math.max(Number(state.tpEarned) || 0, state.tp);
+        lines.push("♾️ <b>" + r.m.tp + " TP</b>");
+        plain.push("♾️ " + r.m.tp + " TP");
+      }
+    }
+    return { reward: r, lines: lines, plain: plain };
+  }
+  function attendCelebrate() {
+    try {
+      const wrap = document.createElement("div");
+      wrap.className = "attend-burst";
+      const colors = ["#ffbe0b", "#ff006e", "#00f5d4", "#8338ec", "#ffffff"];
+      for (let i = 0; i < 26; i++) {
+        const sp = document.createElement("span");
+        sp.className = "attend-spark";
+        sp.style.left = (Math.random() * 96) + "%";
+        sp.style.top = (-14 - Math.random() * 20) + "px";
+        sp.style.background = colors[i % colors.length];
+        sp.style.animationDelay = (Math.random() * 0.3).toFixed(2) + "s";
+        wrap.appendChild(sp);
+      }
+      document.body.appendChild(wrap);
+      setTimeout(() => { try { wrap.remove(); } catch (e) { } }, 2000);
+    } catch (e) { }
+  }
+  function renderAttendance() {
+    const info = attendInfo();
+    const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+    setText("attendStreakNum", String(info.streak));
+    const labelEl = document.getElementById("attendStreakLabel");
+    if (labelEl) labelEl.textContent = info.broken ? "기록 끊김" : "연속 출석";
+
+    setText("attendTodayReward", info.claimedToday ? "✅ 수령 완료 · " + attendRewardText(info.posToday) : attendRewardText(info.posToday));
+    const nm = attendNextMilestone(info);
+    setText("attendNextMilestone", nm.m.icon + " " + nm.m.label + " (" + (nm.daysLeft <= 0 ? nm.pos + "일차 · 오늘!" : nm.pos + "일차 · " + nm.daysLeft + "일 뒤") + ")");
+    setText("attendTimerLabel", info.claimedToday ? "다음 출석까지" : "오늘 출석 마감까지");
+
+    const timerEl = document.getElementById("attendTimer");
+    if (timerEl) {
+      timerEl.textContent = attendClockText(attendNextResetMs());
+      timerEl.setAttribute("data-claimed", info.claimedToday ? "1" : "0");
+    }
+
+    const btn = document.getElementById("attendClaimBtn");
+    if (btn) {
+      btn.disabled = info.claimedToday;
+      if (info.claimedToday) btn.classList.remove("ready");
+      else btn.classList.add("ready");
+      btn.textContent = info.claimedToday ? "✅ 오늘 출석 완료 — 내일 다시 만나요" : "📅 출석 체크하고 보상 받기";
+    }
+    const msgEl = document.getElementById("attendMsg");
+    if (msgEl) {
+      if (info.claimedToday) msgEl.textContent = "연속 " + info.streak + "일째 · 다음 출석까지 " + attendClockText(attendNextResetMs());
+      else if (info.broken) msgEl.textContent = "연속 기록이 끊겼어요. 오늘 받으면 다시 1일차부터 시작합니다!";
+      else if (info.streak > 0) msgEl.textContent = "연속 " + info.streak + "일째 — 오늘 받으면 " + (info.streak + 1) + "일차!";
+      else msgEl.textContent = "첫 출석이면 🪙 100 토큰부터 시작합니다.";
+    }
+
+    const cal = document.getElementById("attendCalendar");
+    if (cal) {
+      let html = "";
+      for (let d = 1; d <= ATTEND_CYCLE_DAYS; d++) {
+        const m = ATTEND_MILESTONES[d];
+        const rr = attendRewardOf(d);
+        const done = d <= info.claimedCount;
+        const isToday = d === info.posToday;
+        const cls = ["attend-cell"];
+        if (done) cls.push("done");
+        if (m) cls.push("milestone");
+        if (isToday) cls.push("today");
+        html += '<div class="' + cls.join(" ") + '" title="' + d + '일차 — ' + attendRewardText(d).replace(/"/g, "") + '">' +
+          '<div class="attend-cell-day">' + (isToday ? "오늘" : d + "일") + '</div>' +
+          '<div class="attend-cell-ic">' + (m ? m.icon : "🪙") + '</div>' +
+          '<div class="attend-cell-tok">🪙' + attendShortTokens(rr.tokens) + '</div>' +
+        '</div>';
+      }
+      cal.innerHTML = html;
+    }
+
+    const listEl = document.getElementById("attendMilestoneList");
+    if (listEl) {
+      let html = "";
+      ATTEND_MILESTONE_DAYS.forEach(function (p) {
+        const m = ATTEND_MILESTONES[p];
+        const done = info.claimedCount >= p;
+        const isNext = !done && nm.pos === p;
+        html += '<div class="attend-mile' + (done ? " reached" : "") + (isNext ? " next" : "") + '">' +
+          '<span class="attend-mile-day">' + m.icon + ' ' + p + '일</span>' +
+          '<span class="attend-mile-desc">' + escapeHtml(attendMilestoneDesc(m)) + '</span>' +
+          '<span class="attend-mile-tag ' + (done ? "done" : (isNext ? "now" : "")) + '">' + (done ? "달성 ✓" : (isNext ? (nm.daysLeft <= 0 ? "오늘!" : nm.daysLeft + "일 남음") : "예정")) + '</span>' +
+        '</div>';
+      });
+      html += '<div style="font-size:.78rem;color:#7d8aa0;font-weight:700;margin-top:6px;">현재 ' + info.cycleNo + '번째 28일 사이클 · 보정 상한 28일차</div>';
+      listEl.innerHTML = html;
+    }
+
+    const logEl = document.getElementById("attendLog");
+    if (logEl) {
+      if (attendLogLines.length) logEl.textContent = attendLogLines.join(" / ");
+      else if (info.claimedToday) logEl.textContent = "오늘 " + info.streak + "일차 출석 완료";
+      else if (info.streak > 0) logEl.textContent = "연속 " + info.streak + "일 기록 · 오늘 아직 받지 않았어요";
+      else logEl.textContent = "아직 출석 기록이 없습니다.";
+    }
+
+    const homeText = document.getElementById("attendHomeText");
+    if (homeText) {
+      if (info.claimedToday) homeText.innerHTML = '✅ 오늘 출석 완료 · <b>연속 ' + info.streak + '일</b><br><span style="color:#a0aec0;font-size:.82rem;">다음 출석까지 ' + attendClockText(attendNextResetMs()) + '</span>';
+      else if (info.broken) homeText.innerHTML = '⏰ 연속 기록이 끊겼어요.<br><span style="color:#a0aec0;font-size:.82rem;">지금 받으면 다시 1일차부터 시작!</span>';
+      else homeText.innerHTML = '⏰ 오늘 보상 <b>' + attendRewardText(info.posToday) + '</b><br><span style="color:#a0aec0;font-size:.82rem;">' + (info.streak > 0 ? "연속 " + info.streak + "일째 · " : "") + attendClockText(attendNextResetMs()) + ' 남음</span>';
+    }
+    const homeBtn = document.getElementById("attendHomeBtn");
+    if (homeBtn) {
+      homeBtn.disabled = info.claimedToday;
+      homeBtn.textContent = info.claimedToday ? "✅ 오늘 출석 완료" : "📅 출석 받기";
+      homeBtn.style.opacity = info.claimedToday ? "0.6" : "";
+    }
+    const navDot = document.getElementById("attendNavDot");
+    if (navDot) navDot.hidden = info.claimedToday;
+  }
+  function refreshAttendanceUI() { renderAttendance(); }
+  function updateAttendClock() {
+    const el = document.getElementById("attendTimer");
+    if (!el) return;
+    const info = attendInfo();
+    el.textContent = attendClockText(attendNextResetMs());
+    if (el.getAttribute("data-claimed") !== (info.claimedToday ? "1" : "0")) renderAttendance();
+  }
+  setInterval(function () { try { updateAttendClock(); } catch (e) { } }, 1000);
+
+  window.attendClaim = function () {
+    if (!getCurrentUser()) { openAuthModal(); return; }
+    const info = attendInfo();
+    if (info.claimedToday) {
+      showToast("📅 오늘 출석은 이미 완료했어요.<br>다음 출석은 <b>" + attendClockText(attendNextResetMs()) + "</b> 후에 열립니다.", "warn");
+      return;
+    }
+    const newStreak = (info.broken ? 0 : info.streak) + 1;
+    const pos = ((newStreak - 1) % ATTEND_CYCLE_DAYS) + 1;
+    attendEnsure();
+    state.attendance.lastDate = info.today;
+    state.attendance.streak = newStreak;
+    const grant = attendGrant(pos);
+    const head = grant.reward.m
+      ? "📅 <b>출석 " + newStreak + "일째 · " + grant.reward.m.icon + " 특별 보상!</b>"
+      : "📅 <b>출석 " + newStreak + "일 연속 보상!</b>";
+    state.lastEvent = "📅 출석 " + newStreak + "일 연속 — " + grant.plain.join(" · ");
+    attendLogLines.unshift(newStreak + "일차 · " + grant.plain.join(" · "));
+    attendLogLines = attendLogLines.slice(0, 5);
+    save();
+    renderAttendance();
+    showToast(head + "<br>" + grant.lines.join("<br>"), grant.reward.m ? "boss" : "win");
+    Sound.win();
+    if (grant.reward.m) { setTimeout(function () { try { Sound.levelUp(); } catch (e) { } }, 240); attendCelebrate(); }
+    const btn = document.getElementById("attendClaimBtn");
+    if (btn) { btn.classList.remove("attend-pop"); void btn.offsetWidth; btn.classList.add("attend-pop"); }
+  };
+  window.attendOpen = function () { show("attendance"); };
+
+  // ==================================================
+  // 📢 업데이트 공지(패치노트) — 2026-11-16 신규
+  //   새 공지를 올릴 때는 아래 PATCH_NOTES 배열 맨 위에 항목 하나만 추가하면 됩니다.
+  //   version 값이 세이브의 noticeSeenVersion 과 다르면 접속 시 자동으로 한 번 뜹니다.
+  // ==================================================
+  const PATCH_NOTES = [
+    {
+      version: "2026.11.16",
+      date: "2026-11-16",
+      title: "🛡️ 갑주 · 📅 매일 출석 보상 업데이트",
+      items: [
+        "🛡️ 방어구(갑주)가 생겼어요. 몬스터를 공격하면 확률로 떨어지고, 인벤토리에서 장착하면 방어력·HP가 바로 올라갑니다.",
+        "⚡ 신화 갑주는 APEX 등급으로 각성할 수 있고, 직업도 APEX까지 각성해 더 강해집니다.",
+        "📅 매일 출석 체크가 추가됐어요. 연속으로 받을수록 보상이 커지고, 7·14·21·28일째에는 신화 갑주·차원 파편·대량 토큰을 같이 줍니다.",
+        "🐛 날짜가 바뀐 뒤 처음 접속하면 게임 초기화가 멈추던 문제를 고쳤어요. 이제 아침에 그냥 접속하면 됩니다."
+      ]
+    },
+    {
+      version: "2026.11.14",
+      date: "2026-11-14",
+      title: "🏘️ 3D 마을 · 👑 만렙 1000 · 8차원 개방",
+      items: [
+        "🏘️ 마을이 3D 아이소메트릭 섬으로 새로 그려졌어요. 상점·대장간·포탈·마을 광장을 직접 눌러 이동합니다.",
+        "🌙 마을이 실제 시간에 맞춰 낮과 밤으로 바뀝니다. 배지를 누르면 바로 바꿀 수 있어요.",
+        "👑 최고 만렙이 Lv.1000으로 열렸고, 7차원 「시공간의 끝 보이드」와 8차원 「apex들의 잊혀진 차원」이 추가됐습니다."
+      ]
+    },
+    {
+      version: "2026.11.13",
+      date: "2026-11-13",
+      title: "🔮 직업 1~5차 승급 · 초월각성",
+      items: [
+        "🔮 직업을 1차 숙련부터 5차 신화까지 승급할 수 있어요. 단계마다 칭호와 스탯 보너스가 붙습니다.",
+        "🌌 초월각성을 달성하면 스탯 4배와 전용기 [초월: 시공간 붕괴]가 열립니다."
+      ]
+    }
+  ];
+  const NOTICE_LATEST_VERSION = PATCH_NOTES.length ? PATCH_NOTES[0].version : "";
+
+  function noticeSeenVersion() {
+    const v = state && state.noticeSeenVersion;
+    return typeof v === "string" ? v : null;
+  }
+  function hasUnseenNotice() {
+    return !!NOTICE_LATEST_VERSION && noticeSeenVersion() !== NOTICE_LATEST_VERSION;
+  }
+  function noticeItemHtml(n, isLatest) {
+    const items = Array.isArray(n.items) ? n.items : [];
+    return '<div class="notice-item' + (isLatest ? " latest" : "") + '">' +
+      '<div class="notice-meta"><span class="notice-ver">v' + escapeHtml(n.version) + '</span>' +
+      '<span class="notice-date">' + escapeHtml(n.date || "") + '</span>' +
+      (isLatest ? '<span class="notice-new" style="margin-left:0;">NEW</span>' : "") + '</div>' +
+      '<p class="notice-title">' + escapeHtml(n.title || "") + '</p>' +
+      '<ul class="notice-list">' + items.map(function (t) { return "<li>" + escapeHtml(t) + "</li>"; }).join("") + '</ul>' +
+    '</div>';
+  }
+  function updateNoticeBadge() {
+    const dot = document.getElementById("noticeNewDot");
+    if (dot) dot.hidden = !hasUnseenNotice();
+  }
+  window.openNoticeModal = function (markSeen) {
+    const overlay = document.getElementById("codexNoticeOverlay");
+    const body = document.getElementById("noticeBody");
+    if (!overlay || !body) return;
+    body.innerHTML = PATCH_NOTES.map(function (n, i) { return noticeItemHtml(n, i === 0); }).join("");
+    overlay.setAttribute("data-mark-seen", markSeen ? "1" : "0");
+    overlay.classList.add("show");
+    body.scrollTop = 0;
+    const tag = document.getElementById("noticeNewTag");
+    if (tag) tag.style.display = hasUnseenNotice() ? "" : "none";
+    try { Sound.click(); } catch (e) { }
+  };
+  window.closeNoticeModal = function () {
+    const overlay = document.getElementById("codexNoticeOverlay");
+    if (!overlay) return;
+    const mark = overlay.getAttribute("data-mark-seen") === "1";
+    overlay.classList.remove("show");
+    if (mark && hasUnseenNotice()) {
+      state.noticeSeenVersion = NOTICE_LATEST_VERSION;
+      save();
+      updateNoticeBadge();
+      showToast("📢 업데이트 공지를 확인했어요. 다음 소식도 알려드릴게요!", "tp");
+    }
+    try { Sound.click(); } catch (e) { }
+  };
+  window.noticeBackdrop = function (e) {
+    if (e.target && e.target.id === "codexNoticeOverlay") window.closeNoticeModal();
+  };
+  // 로그인 직후·첫 접속 시 최신 공지가 아직 확인 전이면 한 번만 띄웁니다.
+  function maybeShowNotice() {
+    if (!getCurrentUser() || !hasUnseenNotice()) return;
+    const attempt = function (tries) {
+      if (!getCurrentUser() || !hasUnseenNotice()) return;
+      const res = document.getElementById("codexResultOverlay");
+      const auth = document.getElementById("codexAuthOverlay");
+      const busy = (res && res.style.display === "flex") || (auth && auth.style.display === "flex");
+      if (busy && tries > 0) { setTimeout(function () { attempt(tries - 1); }, 1200); return; }
+      if (busy) return;
+      window.openNoticeModal(true);
+    };
+    setTimeout(function () { attempt(6); }, 900);
+  }
+
 
   // ----------------------------------------------------
   // 실시간 이벤트 시스템 (EXP 2배 / 무한 룰렛 / 행운 100%)
@@ -7966,6 +8579,15 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 - 초월각성 다음 단계입니다. 전제 조건: 초월각성 완료 + Lv.900 이상 + 신화 이상 갑주 장착 + 🪙 100,000 토큰.
 - 효과: 직업 스탯 600%(6배) · 전용 궁극기 [APEX: 종말의 기록] (MP 60) · 턴당 6% 재생 · 칭호 3종.
 
+6-11. 📅 [출석 보상]:
+- 상단 '📅 출석 보상'에서 하루 한 번 출석 체크하면 🪙 토큰을 받습니다. 자정(한국 시간)에 새 출석이 열립니다.
+- 하루를 건너뛰면 연속 기록이 1일차로 돌아갑니다. 연속 7·14·21·28일째에는 신화 갑주 확정 · 차원 파편 · 대량 토큰이 함께 지급됩니다.
+- 보정 상한은 28일차이고, 28일을 넘기면 다시 1일차 보상부터 사이클이 반복됩니다.
+
+6-12. 📢 [업데이트 공지]:
+- 새 업데이트가 있으면 접속할 때 공지 창이 한 번 뜹니다. 닫으면 그 버전은 다시 뜨지 않습니다.
+- 지난 공지는 상단 '📢 공지' 버튼으로 언제든 다시 볼 수 있습니다.
+
 7. 🎒 [인벤토리 · 파편 쓰기 · 코드 입력]:
 - 1~8차원 보스를 격파하면 그 차원 고유의 '차원 파편'과 첫 격파 '격파 증표'를 획득합니다.
 - 🌀 파편 쓰기에서 8개 포탈에 각 차원의 파편을 하나씩 넣으세요. 8개를 모두 채우면 한정 칭호 [🌌 여덟 차원의 결속자]를 획득합니다.
@@ -8710,6 +9332,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       if (getCurrentUser()) {
         closeAuthModal();
         closeResultOverlay();
+        const noticeOv = document.getElementById("codexNoticeOverlay");
+        if (noticeOv && noticeOv.classList.contains("show")) closeNoticeModal();
       }
     }
   });
@@ -8852,6 +9476,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (pInput) pInput.value = "";
     const adminWelcome = isAdminId ? "\n👑 [어드민 특권] 리미트 칭호 2종(최초의 기록자, 개발자의 친구)이 활성화되었습니다!" : "";
     showResultModal(true, `🎉 [${user.nickname}]님, 환영합니다!\n성공적으로 로그인되었습니다.${adminWelcome}\n차원의 모험을 이어서 시작하세요!`);
+    maybeShowNotice();
   };
 
   window.handleRegisterSubmit = function(e) {
@@ -8927,6 +9552,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     if (cInput) cInput.value = "";
 
     showResultModal(true, `🎉 회원가입 성공!\n[${nickname}] 계정이 생성되어 바로 로그인되었습니다.\n모든 진행 상황이 안전하게 저장됩니다!`);
+    maybeShowNotice();
   };
 
   window.handleLogout = function() {
@@ -10366,8 +10992,12 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     setInterval(updateDayNightBanner, 30 * 1000);
     updateAuthUI();
     updateUI();
+    renderAttendance();
+    updateNoticeBadge();
     // 초기 로딩에도 확장 UI가 모두 그려지도록
     setTimeout(refreshNewUI, 60);
+    // 이미 로그인된 상태로 접속했다면 새 공지를 한 번 띄웁니다.
+    maybeShowNotice();
   });
 
   // 브라우저 오디오 권한 자동 활성화 리스너
