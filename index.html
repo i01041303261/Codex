@@ -2379,17 +2379,18 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 .attend-meta-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .88rem; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 9px 12px; }
 .attend-meta-row span { color: #a0aec0; font-weight: 700; flex: 0 0 auto; }
 .attend-meta-row b { color: #fff; font-weight: 800; text-align: right; }
-.attend-claim-btn {
+button.attend-claim-btn {
   width: 100%; margin-top: 4px; padding: 16px 18px; font-size: 1.06rem; font-weight: 900;
   border-radius: 16px; background: linear-gradient(135deg, #ffbe0b, #ff006e); color: #160d02;
   box-shadow: 0 6px 26px rgba(255,0,110,.4); min-height: 54px;
 }
-.attend-claim-btn.ready { animation: attendPulse 1.8s ease-in-out infinite; }
+button.attend-claim-btn:hover { filter: brightness(1.06); }
+button.attend-claim-btn.ready { animation: attendPulse 1.8s ease-in-out infinite; }
 @keyframes attendPulse {
   0%, 100% { box-shadow: 0 6px 26px rgba(255,0,110,.4); }
   50% { box-shadow: 0 10px 36px rgba(255,190,11,.8); }
 }
-.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b96a8; box-shadow: none; animation: none; cursor: default; }
+button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b96a8; box-shadow: none; animation: none; cursor: default; }
 .attend-msg { margin-top: 10px; text-align: center; font-weight: 800; font-size: .93rem; color: #ffd166; min-height: 1.1em; }
 .attend-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 7px; }
 .attend-cell {
@@ -2428,6 +2429,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 .attend-home-line { font-size: .92rem; font-weight: 800; color: #ffd166; line-height: 1.5; }
 .attend-home-btn { flex: 1 1 auto; }
 .attend-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: #ff006e; box-shadow: 0 0 8px rgba(255,0,110,.95); display: inline-block; }
+.attend-nav-dot[hidden] { display: none !important; }
 .attend-burst { position: fixed; inset: 0; pointer-events: none; z-index: 9998; overflow: hidden; }
 .attend-spark { position: absolute; width: 9px; height: 14px; border-radius: 2px; opacity: .95; animation: attendFall 1.5s ease-out forwards; }
 @keyframes attendFall {
@@ -4113,7 +4115,7 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     return p === "night" || p === "evening";
   }
 
-  function showToast(html, kind) {
+  function showToast(html, kind, durationMs) {
     try {
       let box = document.getElementById("codexToastBox");
       if (!box) {
@@ -4126,7 +4128,8 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
       el.className = "codex-toast" + (kind ? " " + kind : "");
       el.innerHTML = html;
       box.appendChild(el);
-      setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 420); }, 2600);
+      const holdMs = Math.max(1200, Math.min(10000, Number(durationMs) || 2600));
+      setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 420); }, holdMs);
       while (box.children.length > 4) box.removeChild(box.firstChild);
     } catch (e) { }
   }
@@ -6232,9 +6235,17 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
     attendLogLines = attendLogLines.slice(0, 5);
     save();
     renderAttendance();
-    showToast(head + "<br>" + grant.lines.join("<br>"), grant.reward.m ? "boss" : "win");
+    showToast(head + "<br>" + grant.lines.join("<br>"), grant.reward.m ? "boss" : "win", grant.reward.m ? 4200 : 3600);
     Sound.win();
-    if (grant.reward.m) { setTimeout(function () { try { Sound.levelUp(); } catch (e) { } }, 240); attendCelebrate(); }
+    if (grant.reward.m) {
+      setTimeout(function () { try { Sound.levelUp(); } catch (e) { } }, 240);
+      attendCelebrate();
+      setTimeout(function () {
+        try {
+          showResultModal(true, "📅 출석 " + newStreak + "일 연속 달성!\n\n" + grant.plain.join("\n") + "\n\n" + attendMilestoneDesc(grant.reward.m) + "\n\n내일도 이어가면 다음 특별 보상이 더 커집니다!");
+        } catch (e) { }
+      }, 420);
+    }
     const btn = document.getElementById("attendClaimBtn");
     if (btn) { btn.classList.remove("attend-pop"); void btn.offsetWidth; btn.classList.add("attend-pop"); }
   };
