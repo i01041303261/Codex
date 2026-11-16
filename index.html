@@ -4651,8 +4651,10 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   }
 
   function applyLoadedSave(loaded) {
+    const prevNoticeSeen = (state && typeof state.noticeSeenVersion === "string") ? state.noticeSeenVersion : null;
     state = Object.assign({}, defaultState, loaded);
     state = normalizeNestedState(state);
+    if (!state.noticeSeenVersion && prevNoticeSeen) state.noticeSeenVersion = prevNoticeSeen;
     currentHp = null;
     currentMp = null;
     save();
@@ -5975,6 +5977,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   };
   const ATTEND_MILESTONE_DAYS = [7, 14, 21, 28];
   let attendLogLines = [];
+  let attendLogOwner = null;
 
   function attendParseDate(str) {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(str || ""));
@@ -6109,6 +6112,9 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     } catch (e) { }
   }
   function renderAttendance() {
+    // 계정이 바뀌면(로그아웃/로그인) 이전 계정의 세션 기록은 비웁니다.
+    const logUser = getCurrentUsername();
+    if (attendLogOwner !== logUser) { attendLogLines = []; attendLogOwner = logUser; }
     const info = attendInfo();
     const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
 
@@ -6230,6 +6236,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       ? "📅 <b>출석 " + newStreak + "일째 · " + grant.reward.m.icon + " 특별 보상!</b>"
       : "📅 <b>출석 " + newStreak + "일 연속 보상!</b>";
     state.lastEvent = "📅 출석 " + newStreak + "일 연속 — " + grant.plain.join(" · ");
+    attendLogOwner = getCurrentUsername();
     attendLogLines.unshift(newStreak + "일차 · " + grant.plain.join(" · "));
     attendLogLines = attendLogLines.slice(0, 5);
     save();
