@@ -3286,6 +3286,68 @@ footer { text-align: center; color: #64748b; font-size: 0.82rem; padding: 20px 0
 </div>
 
 <script>
+/* CODEX 갑주 테스트용 임시 시드 스크립트 (프리뷰 전용, 배포본에는 없음) */
+(function () {
+  try {
+    var q = location.search || "";
+    var K_USERS = "codex_users_db", K_SESSION = "codex_current_session", K_BACKUP = "codex_prev_session_backup";
+    var U = "armortest1116";
+    function dbRead() { try { return JSON.parse(localStorage.getItem(K_USERS) || "{}"); } catch (e) { return {}; } }
+    function dbWrite(db) { localStorage.setItem(K_USERS, JSON.stringify(db)); }
+
+    if (q.indexOf("restore=1") >= 0) {
+      var prev = localStorage.getItem(K_BACKUP);
+      var db0 = dbRead();
+      delete db0[U];
+      dbWrite(db0);
+      if (prev) localStorage.setItem(K_SESSION, prev); else localStorage.removeItem(K_SESSION);
+      localStorage.removeItem(K_BACKUP);
+      if (history.replaceState) history.replaceState(null, "", location.pathname + "?t=restored");
+      return;
+    }
+
+    if (q.indexOf("seed=1") >= 0) {
+      var cur = localStorage.getItem(K_SESSION);
+      if (cur && cur !== U) localStorage.setItem(K_BACKUP, cur);
+      var db = dbRead();
+      var save = {
+        tokens: 200000, exp: 0, level: 900, jobId: 1,
+        jobUpgrades: { 1: { rank: 5, awakened: true, apex: false } },
+        unlockedJobs: [1], titles: ["\u{1F331} \uC0C8\uC2F9 \uD0D0\uD5D8\uAC00"], equippedTitle: "\u{1F331} \uC0C8\uC2F9 \uD0D0\uD5D8\uAC00",
+        avatar: "\u{1F9D9}", zones: ["\u{1F333} \uC5D0\uBA54\uB784\uB4DC \uCD08\uC6D0"], dailyDone: false,
+        questProgress: { explore: 0, battle: 0, mini: 0 }, storyCleared: [],
+        lastEvent: "\uAC11\uC8FC \uD14C\uC2A4\uD2B8 \uACC4\uC815 \uC2DC\uc791", roulette: { dimension: 1, tries: 10 }, lastRouletteRefill: null,
+        forgeAtk: 0, forgeDef: 0, forgeHp: 0, inventory: { shard1: 1 }, portalShards: [], bossCleared: {}, redeemedCodes: {},
+        armors: [], equippedArmor: null, armorPity: 0,
+        hp: null, mp: null, stats: {}, tp: 0, tpEarned: 0, tpSkills: {}, traits: {},
+        skins: ["default"], activeSkin: "default", auras: ["none"], activeAura: "none",
+        bossRecords: {}, pity: { fails: 0, luck: 0 }, swordPath: "normal",
+        mini: { best: {}, weekly: null, dailyDate: null, dailyExp: 0, dailyTokens: 0 }, milestones: []
+      };
+      db[U] = { username: U, nickname: "\uAC11\uC8FC\uD14C\uC2A4\uD130", password: "test1116", createdAt: new Date().toISOString(), lastLogin: new Date().toISOString(), saveData: save };
+      dbWrite(db);
+      localStorage.setItem(K_SESSION, U);
+      if (history.replaceState) history.replaceState(null, "", location.pathname + "?t=seeded");
+      return;
+    }
+
+    if (q.indexOf("fixture=mythic") >= 0) {
+      var db2 = dbRead();
+      if (db2[U] && db2[U].saveData) {
+        var s = db2[U].saveData;
+        if (!Array.isArray(s.armors)) s.armors = [];
+        s.armors.push({ uid: "arfixture" + Date.now().toString(36), key: "lava_heart", grade: "mythic", dim: 4, def: 78, red: 12.5, hp: 360, atk: 0, at: Date.now() });
+        s.level = Math.max(500, Number(s.level) || 500);
+        s.tokens = Math.max(120000, Number(s.tokens) || 0);
+        dbWrite(db2);
+      }
+      if (history.replaceState) history.replaceState(null, "", location.pathname + "?t=fixture");
+      return;
+    }
+  } catch (e) { console.warn("[seed]", e); }
+})();
+</script>
+<script>
 (() => {
   "use strict";
 
