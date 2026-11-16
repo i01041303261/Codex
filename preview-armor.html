@@ -5811,8 +5811,6 @@ window.addEventListener("unhandledrejection", function (e) {
       save();
     }
   }
-  dailyCheck();
-  setInterval(dailyCheck, 60 * 1000);
 
   // ----------------------------------------------------
   // 실시간 이벤트 시스템 (EXP 2배 / 무한 룰렛 / 행운 100%)
@@ -10424,6 +10422,11 @@ window.addEventListener("unhandledrejection", function (e) {
   window.villageViewBackdrop = function (e) {
     if (e.target && e.target.id === "villageViewOverlay") window.closeVillageView();
   };
+
+  // 📅 일일 리셋 검사 — 게임 데이터(MONSTERS·BOSSES·DIMENSIONS)와 전투 상태 선언이 모두 끝난 뒤에 실행합니다.
+  //    (초기화 시점에 save()→updateUI()가 돌면 아직 선언되지 않은 const/let에 닿아 스크립트 전체가 멈출 수 있음)
+  dailyCheck();
+  setInterval(dailyCheck, 60 * 1000);
 
   document.addEventListener("DOMContentLoaded", () => {
     initBgParticles();
