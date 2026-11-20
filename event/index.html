@@ -2047,7 +2047,7 @@ function rkRender() {
         발급 ${rkTime(r.createdAt)} · 갱신 ${rkTime(r.updatedAt)} · <b>${rkLeft(r.expiresAt)}</b>${Number(r.uses) ? ` · 복원 ${Number(r.uses)}회` : ""}
       </div>
       <div class="rk-actions">
-        <button type="button" class="${rkLiveOn(k) ? "live-on" : ""}" onclick="rkToggleWait('${k}')">${rkLiveOn(k) ? "🟢 대기 끄기" : "📡 대기 켜기"}</button>
+        <button type="button" data-wk="${k}" class="${rkLiveOn(k) ? "live-on" : ""}" onclick="rkToggleWait('${k}')">${rkLiveOn(k) ? "🟢 대기 끄기" : "📡 대기 켜기"}</button>
         <button type="button" onclick="rkCopy('${k}')">📋 복사</button>
         <button type="button" onclick="rkRefreshOne('${k}')">🔄 지금 세이브로 갱신</button>
         <button type="button" class="del" onclick="rkDelete('${k}')">🗑 삭제</button>
@@ -2134,7 +2134,7 @@ function rkIssueCore(wantKey) {
   const head = wantKey
     ? `✅ 원하는 6자리 복구키 [ ${key} ] 발급 완료!`
     : `✅ 6자리 복구키 [ ${key} ] 발급 완료!`;
-  rkSetMsg(`${head} ${copied ? "클립보드에 복사했어요. " : ""}게임 로그인 창의 [📥 세이브 코드로 복원]에 이 6자리를 넣으면 됩니다.\n📡 이 기기의 '다른 기기 전송 대기'를 켜는 중이에요...`, "var(--cyan)");
+  rkSetMsg(`${head} ${copied ? "클립보드에 복사했어요. " : ""}게임 로그인 화면의 [🔑 복구키 로그인]에 이 6자리를 넣으면 바로 들어가집니다. (📥 세이브 코드로 복원에서도 돼요)\n📡 이 기기의 '다른 기기 전송 대기'를 켜는 중이에요...`, "var(--cyan)");
   rkStartWait(key);
 }
 
@@ -2279,6 +2279,14 @@ function rkRenderLive() {
     lines.push(RK_LIVE[k].msg);
   });
   status.innerHTML = lines.join("<br>");
+  // 목록의 키별 [📡 대기 켜기] ↔ [🟢 대기 끄기] 버튼 상태도 맞춘다
+  const wbtns = document.querySelectorAll("button[data-wk]");
+  for (let i = 0; i < wbtns.length; i++) {
+    const k = wbtns[i].getAttribute("data-wk");
+    const on = rkLiveOn(k);
+    wbtns[i].textContent = on ? "🟢 대기 끄기" : "📡 대기 켜기";
+    wbtns[i].classList.toggle("live-on", on);
+  }
 }
 
 async function rkStartWait(key) {
