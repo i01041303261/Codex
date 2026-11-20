@@ -1981,6 +1981,7 @@ window.rkSanitizeInput = function () {
   if (!el) return;
   const digits = String(el.value || "").replace(/\D/g, "").slice(0, 6);
   if (el.value !== digits) el.value = digits;
+  rkSetMsg("");
 };
 
 function rkCustomValue() {
