@@ -3404,7 +3404,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   </section>
 
   <footer>
-    CODEX • Endless Dimension Evolution | v2026.11.20c · 📡 6자리 실시간 기기 전송 | Designed &amp; Powered by Pickle Agent
+    CODEX • Endless Dimension Evolution | v2026.11.20d · 📡 6자리 실시간 기기 전송 | Designed &amp; Powered by Pickle Agent
   </footer>
 </div>
 
@@ -5326,12 +5326,14 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
 
     try { closeSaveCodeModal(); } catch (e) { /* 무시 */ }
     Sound.win();
-    const pwLine = ident.devicePassword
-      ? `\n\n🔐 이 기기 로그인 비밀번호: ${ident.devicePassword}\n(이 기기에서 다시 로그인할 때 쓰는 비밀번호예요. 꼭 메모해 두세요. 잊어도 복구키로 다시 들어올 수 있어요.)`
-      : "";
+    // 🔒 이 기기에 자동으로 만들어진 로그인 비밀번호는 화면에 절대 표시하지 않는다(내부 저장만).
+    //    다음에도 6자리 복구키로 바로 들어올 수 있으므로 사용자가 비밀번호를 알 필요가 없다.
     const headText = o.resultHead || "🎉 세이브 복원 완료!";
     const titleText = o.resultTitle || "🎉 복원 완료";
-    showResultModal(true, `${headText}\n\n${savePreviewText(state)}\n계정: ${ident.nickname} (@${ident.username})${pwLine}\n\n새로고침해도 이 상태 그대로 유지됩니다.`, titleText);
+    const tailText = usedRecoveryKey
+      ? "새로고침해도 이 상태 그대로 유지됩니다. 다음에도 6자리 복구키로 바로 로그인할 수 있어요."
+      : "새로고침해도 이 상태 그대로 유지됩니다.";
+    showResultModal(true, `${headText}\n\n${savePreviewText(state)}\n계정: ${ident.nickname} (@${ident.username})\n\n${tailText}`, titleText);
     return { ok: true, ident };
   }
 
@@ -7057,6 +7059,16 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   //   version 값이 세이브의 noticeSeenVersion 과 다르면 접속 시 자동으로 한 번 뜹니다.
   // ==================================================
   const PATCH_NOTES = [
+    {
+      version: "2026.11.20d",
+      date: "2026-11-20",
+      title: "🔒 복구 완료 창에서 기기 비밀번호 표시 안 함",
+      items: [
+        "🔒 6자리 복구키로 로그인하거나 세이브 코드로 복원했을 때, 완료 창에 뜨던 '이 기기 로그인 비밀번호'를 더 이상 보여 주지 않아요.",
+        "🔑 계정은 예전처럼 자동으로 준비되니, 다음에도 6자리 복구키로 바로 로그인하면 됩니다. 완료 창에는 계정·레벨·토큰·복원 안내만 나옵니다.",
+        "✨ 복원 완료 안내 문구도 한 줄로 정리했어요."
+      ]
+    },
     {
       version: "2026.11.20c",
       date: "2026-11-20",
