@@ -3500,7 +3500,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     <div class="auth-key-login" id="authKeyLogin">
       <div class="auth-key-title">🔑 6자리 복구키로 바로 로그인</div>
       <div class="auth-key-row">
-        <input type="text" id="loginRecoveryKey" class="auth-input" inputmode="numeric" maxlength="6" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="6자리 숫자 (예: 481927)" oninput="sanitizeLoginRecoveryKey()" onkeydown="if(event.key==='Enter'){event.preventDefault();loginWithRecoveryKey();}">
+        <input type="text" id="loginRecoveryKey" class="auth-input" inputmode="numeric" maxlength="6" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="6자리 숫자" oninput="sanitizeLoginRecoveryKey()" onkeydown="if(event.key==='Enter'){event.preventDefault();loginWithRecoveryKey();}">
         <button type="button" class="secondary" onclick="loginWithRecoveryKey()">🔑 복구키 로그인</button>
       </div>
       <div class="auth-key-msg" id="loginRecoveryMsg"></div>
