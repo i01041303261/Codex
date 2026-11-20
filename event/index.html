@@ -841,6 +841,97 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
   -webkit-tap-highlight-color: rgba(255, 209, 102, 0.3);
 }
 
+/* 🔑 6자리 복구키 발급소 */
+.rk-card {
+  border: 2px solid rgba(0, 245, 212, 0.3);
+  background: linear-gradient(135deg, rgba(16, 34, 44, 0.86), rgba(20, 26, 46, 0.86));
+}
+.rk-issue-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 2px 0 10px;
+}
+.rk-input {
+  flex: 1;
+  min-width: 190px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(0, 245, 212, 0.35);
+  color: #fff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: inherit;
+}
+.rk-input:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.16);
+}
+.rk-msg {
+  min-height: 1.3em;
+  font-size: 0.86rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  white-space: pre-line;
+}
+.rk-list { display: flex; flex-direction: column; gap: 10px; }
+.rk-empty { color: var(--text-sub); font-size: 0.86rem; padding: 8px 0 2px; }
+.rk-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(0, 245, 212, 0.07);
+  border: 1px solid rgba(0, 245, 212, 0.28);
+}
+.rk-item.expired { background: rgba(255, 0, 110, 0.07); border-color: rgba(255, 0, 110, 0.35); }
+.rk-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 0.24em;
+  color: var(--cyan);
+  text-shadow: 0 0 14px rgba(0, 245, 212, 0.45);
+  white-space: nowrap;
+}
+.rk-item.expired .rk-code { color: #ff8fa3; text-shadow: none; }
+.rk-meta {
+  flex: 1;
+  min-width: 170px;
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  line-height: 1.55;
+}
+.rk-meta b { color: #fff; }
+.rk-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.rk-actions button {
+  padding: 7px 11px;
+  font-size: 0.76rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.rk-actions button:hover { background: rgba(255, 255, 255, 0.18); }
+.rk-actions button.del { color: #ff8fa3; border-color: rgba(255, 0, 110, 0.4); }
+.rk-warn {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: #cbd5e1;
+  background: rgba(255, 190, 11, 0.08);
+  border: 1px solid rgba(255, 190, 11, 0.28);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+@media (max-width: 520px) {
+  .rk-code { font-size: 1.2rem; letter-spacing: 0.16em; }
+}
 </style>
 </head>
 <body>
@@ -1019,6 +1110,36 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
       </div>
     </div>
 
+    <!-- 4. 6자리 복구키 발급소 -->
+    <div class="card event-card rk-card" id="cardRecovery">
+      <div class="event-header">
+        <div class="event-title-box">
+          <div class="event-icon">🔑</div>
+          <div class="event-title-text">
+            <h2>4. 6자리 복구키 발급소</h2>
+            <span class="event-badge ready" id="badgeRecovery">🔑 발급 가능</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-desc">
+        세이브를 <b>6자리 숫자 복구키</b>로 만들어 두세요. 게임 로그인 창의 <b>📥 세이브 코드로 복원</b>에 6자리만 넣으면 긴 코드 없이 바로 복원됩니다.
+      </div>
+
+      <div class="rk-issue-row">
+        <select id="rkAccount" class="rk-input" title="복구키를 만들 계정"></select>
+        <button type="button" class="btn-toggle turn-on" onclick="rkIssue()">🔑 6자리 복구키 만들기</button>
+      </div>
+      <div class="rk-msg" id="rkMsg"></div>
+
+      <div class="rk-list" id="rkList"></div>
+
+      <div class="rk-warn">
+        ⚠️ 6자리 복구키는 <b>이 브라우저·기기</b>(localStorage)에만 저장돼요. 서버가 없는 사이트라 <b>다른 기기에서는 6자리 키로 복구되지 않고</b>, 그때는 <b>CDX3. 전체 세이브 코드</b>를 써야 합니다.<br>
+        🔄 발급한 키는 플레이하면서 최신 세이브로 자동 갱신되며, <b>30일</b> 동안 안 쓰면 만료됩니다(이 화면에서 언제든 새로 발급).
+      </div>
+    </div>
+
   </div>
 
   <!-- 하단 플레이 CTA -->
@@ -1046,7 +1167,7 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
   </div>
 
   <footer>
-    CODEX Event Portal • Made for i01041303261 • Endless Dimension
+    CODEX Event Portal • v2026.11.20 · 🔑 6자리 복구키 발급소 • Made for i01041303261 • Endless Dimension
   </footer>
 </div>
 
@@ -1670,8 +1791,254 @@ function animateParticles() {
 animateParticles();
 
 // 초기 렌더링
+// ==========================================
+// 🔑 6자리 복구키 발급소 (이벤트 센터)
+//  · 게임(Codex/index.html)과 같은 오리진의 localStorage를 공유한다.
+//  · codex_users_db[아이디].saveData 로 CDX3. 스냅샷을 만들어
+//    codex_recovery_keys_v1 에 6자리 키로 저장한다.
+//  · 서버가 없는 정적 사이트라 키는 이 브라우저·기기 안에서만 유효하다.
+// ==========================================
+const RK_STORE = "codex_recovery_keys_v1";
+const RK_DAYS = 30;
+const RK_MAX = 10;
+
+function rkLoad() {
+  try {
+    const raw = localStorage.getItem(RK_STORE);
+    const obj = raw ? JSON.parse(raw) : null;
+    if (!obj || typeof obj !== "object") return { v: 1, keys: {} };
+    if (!obj.keys || typeof obj.keys !== "object") obj.keys = {};
+    return obj;
+  } catch (e) { return { v: 1, keys: {} }; }
+}
+
+function rkSaveStore(store) {
+  try { localStorage.setItem(RK_STORE, JSON.stringify(store)); return true; }
+  catch (e) { console.warn("[RecoveryKey] 저장 실패", e); return false; }
+}
+
+function rkUsers() {
+  try {
+    const db = JSON.parse(localStorage.getItem("codex_users_db") || "{}");
+    return (db && typeof db === "object") ? db : {};
+  } catch (e) { return {}; }
+}
+
+function rkUtf8ToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  const CHUNK = 0x8000;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(bin);
+}
+
+function rkBuildCode(saveData, user) {
+  const snap = {};
+  Object.keys(saveData || {}).forEach(k => { if (k !== "milestones") snap[k] = saveData[k]; });
+  snap._v = 3;
+  snap._at = new Date().toISOString();
+  snap._acct = { username: user.username, nickname: user.nickname || user.username };
+  return "CDX3." + rkUtf8ToBase64(JSON.stringify(snap));
+}
+
+function rkNewKey(store) {
+  const buf = new Uint32Array(1);
+  for (let i = 0; i < 300; i++) {
+    try { crypto.getRandomValues(buf); } catch (e) { buf[0] = Math.floor(Math.random() * 4294967296); }
+    const k = String(100000 + (buf[0] % 900000));
+    if (!store.keys[k]) return k;
+  }
+  return null;
+}
+
+function rkSetMsg(text, color) {
+  const el = document.getElementById("rkMsg");
+  if (!el) return;
+  el.textContent = text || "";
+  el.style.color = color || "var(--gold)";
+}
+
+function rkSummary(saveData) {
+  const lv = Number(saveData && saveData.level) || 1;
+  const tk = Number(saveData && saveData.tokens) || 0;
+  return `Lv.${lv} · 🪙 ${tk.toLocaleString()}`;
+}
+
+function rkTime(iso) {
+  if (!iso) return "-";
+  try {
+    const d = new Date(iso);
+    return d.toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+  } catch (e) { return "-"; }
+}
+
+function rkLeft(iso) {
+  if (!iso) return "기한 없음";
+  const t = Date.parse(iso);
+  if (!t) return "기한 없음";
+  const left = t - Date.now();
+  if (left <= 0) return "만료됨";
+  return `D-${Math.ceil(left / 86400000)}`;
+}
+
+function rkWriteClipboard(text) {
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) { return false; }
+}
+
+function rkFillAccounts() {
+  const sel = document.getElementById("rkAccount");
+  if (!sel) return;
+  const db = rkUsers();
+  const session = localStorage.getItem("codex_current_session");
+  const names = Object.keys(db).filter(u => db[u] && db[u].saveData);
+  names.sort((a, b) => (a === session ? -1 : b === session ? 1 : 0));
+  const prev = sel.value;
+  sel.innerHTML = "";
+  if (!names.length) {
+    const o = document.createElement("option");
+    o.value = "";
+    o.textContent = "저장된 계정이 없어요 (게임에서 먼저 로그인)";
+    sel.appendChild(o);
+    return;
+  }
+  names.forEach(u => {
+    const o = document.createElement("option");
+    o.value = u;
+    o.textContent = `${db[u].nickname || u} (@${u}) · ${rkSummary(db[u].saveData)}`;
+    sel.appendChild(o);
+  });
+  if (prev && db[prev]) sel.value = prev;
+}
+
+function rkRender() {
+  const list = document.getElementById("rkList");
+  const badge = document.getElementById("badgeRecovery");
+  if (!list) return;
+  const store = rkLoad();
+  const keys = Object.keys(store.keys).filter(k => store.keys[k] && typeof store.keys[k] === "object");
+  keys.sort((a, b) => String(store.keys[b].createdAt || "").localeCompare(String(store.keys[a].createdAt || "")));
+  if (badge) badge.textContent = keys.length ? `🔑 발급된 키 ${keys.length}개` : "🔑 발급 가능";
+  if (!keys.length) {
+    list.innerHTML = `<div class="rk-empty">아직 발급한 복구키가 없어요. 위에서 계정을 고르고 <b>🔑 6자리 복구키 만들기</b>를 누르면 바로 발급됩니다.</div>`;
+    return;
+  }
+  list.innerHTML = keys.map(k => {
+    const r = store.keys[k];
+    const expired = r.expiresAt && Date.parse(r.expiresAt) < Date.now();
+    return `<div class="rk-item${expired ? " expired" : ""}">
+      <div class="rk-code">${k}</div>
+      <div class="rk-meta">
+        <b>${(r.nickname || r.username || "?")}</b> (@${r.username || "?"}) · Lv.${Number(r.level) || 1} · 🪙 ${(Number(r.tokens) || 0).toLocaleString()}<br>
+        발급 ${rkTime(r.createdAt)} · 갱신 ${rkTime(r.updatedAt)} · <b>${rkLeft(r.expiresAt)}</b>${Number(r.uses) ? ` · 복원 ${Number(r.uses)}회` : ""}
+      </div>
+      <div class="rk-actions">
+        <button type="button" onclick="rkCopy('${k}')">📋 복사</button>
+        <button type="button" onclick="rkRefreshOne('${k}')">🔄 지금 세이브로 갱신</button>
+        <button type="button" class="del" onclick="rkDelete('${k}')">🗑 삭제</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+window.rkIssue = function () {
+  const sel = document.getElementById("rkAccount");
+  const username = sel ? sel.value : "";
+  const db = rkUsers();
+  const user = username ? db[username] : null;
+  if (!user) { rkSetMsg("❌ 복구키를 만들 계정이 없어요. 먼저 게임에서 회원가입·로그인을 해 주세요.", "var(--pink)"); return; }
+  if (!user.saveData) { rkSetMsg("❌ 이 계정에는 아직 세이브가 없어요. 게임을 한 번 플레이한 뒤 다시 시도해 주세요.", "var(--pink)"); return; }
+
+  const session = localStorage.getItem("codex_current_session");
+  if (username !== session) {
+    const pw = prompt(`🔒 [${user.nickname || username}] (@${username}) 계정 비밀번호를 입력하세요.\n(다른 사람 계정으로 복구키를 만드는 것을 막는 확인이에요)`);
+    if (pw === null) return;
+    if (!pw || pw !== user.password) { rkSetMsg("❌ 비밀번호가 맞지 않아요. 그 계정의 비밀번호를 넣어 주세요.", "var(--pink)"); return; }
+  }
+
+  const store = rkLoad();
+  if (Object.keys(store.keys).length >= RK_MAX) {
+    rkSetMsg(`❌ 복구키는 최대 ${RK_MAX}개까지 저장돼요. 안 쓰는 키를 지우고 다시 시도해 주세요.`, "var(--pink)");
+    return;
+  }
+  const key = rkNewKey(store);
+  if (!key) { rkSetMsg("❌ 복구키 번호를 만들지 못했어요. 다시 시도해 주세요.", "var(--pink)"); return; }
+
+  const now = Date.now();
+  store.keys[key] = {
+    username: user.username || username,
+    nickname: user.nickname || username,
+    code: rkBuildCode(user.saveData, user),
+    level: Number(user.saveData.level) || 1,
+    tokens: Number(user.saveData.tokens) || 0,
+    createdAt: new Date(now).toISOString(),
+    updatedAt: new Date(now).toISOString(),
+    expiresAt: new Date(now + RK_DAYS * 86400000).toISOString(),
+    uses: 0,
+    lastUsedAt: null
+  };
+  if (!rkSaveStore(store)) { rkSetMsg("❌ 브라우저 저장 공간이 부족해 복구키를 저장하지 못했어요.", "var(--pink)"); return; }
+  rkFillAccounts();
+  rkRender();
+  try { Sound.powerOn(); } catch (e) {}
+  const copied = rkWriteClipboard(key);
+  rkSetMsg(`✅ 6자리 복구키 [ ${key} ] 발급 완료! ${copied ? "클립보드에 복사했어요. " : ""}게임 로그인 창의 [📥 세이브 코드로 복원]에 이 6자리를 넣으면 됩니다.`, "var(--cyan)");
+};
+
+window.rkCopy = function (key) {
+  const ok = rkWriteClipboard(key);
+  rkSetMsg(ok ? `📋 복구키 ${key} 를 클립보드에 복사했어요.` : `복구키는 ${key} 예요. 길게 눌러 직접 복사해 주세요.`, ok ? "var(--cyan)" : "var(--gold)");
+};
+
+window.rkRefreshOne = function (key) {
+  const store = rkLoad();
+  const rec = store.keys[key];
+  if (!rec) return;
+  const db = rkUsers();
+  const user = db[rec.username];
+  if (!user || !user.saveData) { rkSetMsg(`❌ @${rec.username} 계정의 세이브를 찾지 못했어요.`, "var(--pink)"); return; }
+  const now = Date.now();
+  rec.code = rkBuildCode(user.saveData, user);
+  rec.level = Number(user.saveData.level) || 1;
+  rec.tokens = Number(user.saveData.tokens) || 0;
+  rec.nickname = user.nickname || rec.nickname;
+  rec.updatedAt = new Date(now).toISOString();
+  rec.expiresAt = new Date(now + RK_DAYS * 86400000).toISOString();
+  if (!rkSaveStore(store)) { rkSetMsg("❌ 갱신 내용을 저장하지 못했어요.", "var(--pink)"); return; }
+  rkRender();
+  rkSetMsg(`🔄 복구키 ${key} 를 지금 세이브(${rkSummary(user.saveData)})로 갱신했어요.`, "var(--cyan)");
+};
+
+window.rkDelete = function (key) {
+  const store = rkLoad();
+  const rec = store.keys[key];
+  if (!rec) return;
+  if (!confirm(`복구키 ${key} (@${rec.username})를 삭제할까요?\n삭제하면 이 6자리로는 더 이상 복원할 수 없어요.`)) return;
+  delete store.keys[key];
+  rkSaveStore(store);
+  rkFillAccounts();
+  rkRender();
+  rkSetMsg(`🗑 복구키 ${key} 를 삭제했어요.`, "var(--gold)");
+};
+
 window.addEventListener("DOMContentLoaded", () => {
   render();
+  rkFillAccounts();
+  rkRender();
 });
 </script>
 

@@ -3347,7 +3347,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   </section>
 
   <footer>
-    CODEX • Endless Dimension Evolution | Designed & Powered by Pickle Agent
+    CODEX • Endless Dimension Evolution | v2026.11.20 · 🔑 6자리 복구키 | Designed &amp; Powered by Pickle Agent
   </footer>
 </div>
 
@@ -3372,7 +3372,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       <button type="button" class="primary" id="codexSaveActionBtn" onclick="runImportFromModal()">📥 복원 실행</button>
       <button type="button" class="secondary" onclick="closeSaveCodeModal()">닫기</button>
     </div>
-    <div class="save-hint">코드가 길어서 일부만 복사되면 복원되지 않아요. 코드 전체를 한 번에 복사해 주세요.</div>
+    <div class="save-hint">코드가 길어서 일부만 복사되면 복원되지 않아요. 코드 전체를 한 번에 복사해 주세요.<br>🔑 이벤트 센터에서 발급한 <b>6자리 복구키</b>를 넣어도 이 브라우저에서는 바로 복원됩니다.</div>
   </div>
 </div>
 
@@ -3526,7 +3526,10 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
         <button type="button" class="secondary" style="flex: 1; padding: 10px; font-size: 0.88rem;" onclick="exportSaveCode()">📋 세이브 내보내기</button>
         <button type="button" class="secondary" style="flex: 1; padding: 10px; font-size: 0.88rem;" onclick="importSaveCode()">📥 세이브 복원</button>
       </div>
-      <div style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 12px;">본인 계정 비밀번호만 있으면 언제든 백업·복원할 수 있습니다. 내보낸 코드는 <b>다른 기기·새 브라우저</b>에서도 아이디·닉네임까지 그대로 복원됩니다.</div>
+      <div style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 8px;">본인 계정 비밀번호만 있으면 언제든 백업·복원할 수 있습니다. 내보낸 코드는 <b>다른 기기·새 브라우저</b>에서도 아이디·닉네임까지 그대로 복원됩니다.</div>
+      <div style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 12px; padding:10px 12px; background:rgba(0,245,212,0.08); border:1px solid rgba(0,245,212,0.3); border-radius:10px;">
+        🔑 <b style="color:var(--cyan);">6자리 복구키</b>는 <a href="event.html" style="color:var(--gold);font-weight:800;">이벤트 센터</a>의 '🔑 6자리 복구키 발급소'에서 만들어요. 이 브라우저·이 기기에서는 6자리만 넣으면 바로 복원됩니다. (다른 기기로 옮길 때는 CDX3. 전체 코드를 쓰세요)
+      </div>
 
       <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; margin-bottom: 14px;">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
@@ -4754,6 +4757,68 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     return SAVE_CODE_PREFIX + utf8ToBase64(JSON.stringify(snap));
   }
 
+  // ---------- 8-2. 🔑 6자리 복구키 ----------
+  //  · 발급은 이벤트 센터(event.html)의 '🔑 6자리 복구키 발급소'에서 합니다.
+  //  · 같은 오리진(i01041303261.github.io)의 localStorage[codex_recovery_keys_v1]에
+  //    { "123456": { code: "CDX3....", username, nickname, level, tokens, createdAt, updatedAt, expiresAt, uses, lastUsedAt } }
+  //    형태로 저장되므로, 이 브라우저·이 기기에서는 6자리만으로 복원됩니다.
+  //  · 서버가 없는 정적 호스팅이라 다른 기기의 6자리 키는 조회할 수 없습니다(그때는 CDX3. 전체 코드).
+  const RECOVERY_KEY_STORE = "codex_recovery_keys_v1";
+  const RECOVERY_KEY_DAYS = 30;
+
+  function loadRecoveryKeyStore() {
+    try {
+      const raw = localStorage.getItem(RECOVERY_KEY_STORE);
+      const obj = raw ? JSON.parse(raw) : null;
+      if (!obj || typeof obj !== "object") return { v: 1, keys: {} };
+      if (!obj.keys || typeof obj.keys !== "object") obj.keys = {};
+      return obj;
+    } catch (e) { return { v: 1, keys: {} }; }
+  }
+
+  function saveRecoveryKeyStore(store) {
+    try { localStorage.setItem(RECOVERY_KEY_STORE, JSON.stringify(store)); return true; }
+    catch (e) { console.warn("[RecoveryKey] 저장 실패", e); return false; }
+  }
+
+  function isRecoveryKeyInput(raw) {
+    return /^\d{6}$/.test(cleanSaveCodeInput(raw).replace(/[\s-]/g, ""));
+  }
+
+  function lookupRecoveryKey(raw) {
+    const k = cleanSaveCodeInput(raw).replace(/[\s-]/g, "");
+    const store = loadRecoveryKeyStore();
+    const rec = store.keys[k];
+    return (rec && typeof rec === "object") ? Object.assign({ key: k }, rec) : null;
+  }
+
+  // 현재 로그인 계정의 6자리 복구키 스냅샷을 지금 세이브로 맞춰 둡니다(발급 후 레벨이 올라도 최신 유지).
+  let lastRecoveryKeyRefresh = 0;
+  function refreshRecoveryKeys(force) {
+    try {
+      const now = Date.now();
+      if (!force && now - lastRecoveryKeyRefresh < 60000) return;
+      const username = getCurrentUsername();
+      if (!username || !state) return;
+      const store = loadRecoveryKeyStore();
+      const mine = Object.keys(store.keys).filter(k => store.keys[k] && store.keys[k].username === username);
+      if (!mine.length) return;
+      const code = buildSaveCode();
+      const user = getCurrentUser();
+      const expiresAt = new Date(now + RECOVERY_KEY_DAYS * 86400000).toISOString();
+      mine.forEach(k => {
+        const rec = store.keys[k];
+        rec.code = code;
+        rec.level = Number(state.level) || 1;
+        rec.tokens = Number(state.tokens) || 0;
+        if (user && user.nickname) rec.nickname = user.nickname;
+        rec.updatedAt = new Date(now).toISOString();
+        rec.expiresAt = expiresAt;
+      });
+      if (saveRecoveryKeyStore(store)) lastRecoveryKeyRefresh = now;
+    } catch (e) { console.warn("[RecoveryKey] 갱신 실패", e); }
+  }
+
   function recordMilestone(label) {
     try {
       if (!state) return;
@@ -4846,8 +4911,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       desc.textContent = (saveCodeModalMode === "export")
         ? "아래 코드를 전부 복사해서 메모장·메일 등 브라우저 밖에 보관하세요. 다른 기기의 [📥 세이브 코드로 복원]에 붙여넣으면 아이디·닉네임까지 그대로 이어집니다."
         : (user
-          ? `다른 기기에서 내보낸 세이브 코드를 붙여넣고 [복원 실행]을 누르세요. 코드에 담긴 계정(${user.nickname} / @${user.username}) 정보까지 함께 복원됩니다.`
-          : "새 기기예요? 폰에서 내보낸 세이브 코드를 붙여넣고 [복원 실행]을 누르세요. 이 기기에서 쓸 비밀번호만 정하면 계정까지 그대로 만들어집니다.");
+          ? `다른 기기에서 내보낸 세이브 코드를 붙여넣고 [복원 실행]을 누르세요. 코드에 담긴 계정(${user.nickname} / @${user.username}) 정보까지 함께 복원됩니다.\n🔑 이벤트 센터에서 발급한 6자리 복구키(예: 481927)를 넣어도 이 브라우저에서는 바로 복원됩니다.`
+          : "새 기기예요? 폰에서 내보낸 세이브 코드를 붙여넣고 [복원 실행]을 누르세요. 이 기기에서 쓸 비밀번호만 정하면 계정까지 그대로 만들어집니다.\n🔑 6자리 복구키는 발급한 브라우저에서만 동작해요. 새 기기로 옮길 때는 CDX3. 세이브 코드를 쓰세요.");
     }
     if (area) {
       area.value = (saveCodeModalMode === "export") ? (code || "") : "";
@@ -4887,7 +4952,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   };
 
   // 복원: 어느 계정으로 되살릴지 정하고, 그 계정의 비밀번호(또는 새 기기용 비밀번호)를 확인
-  async function resolveRestoreAccount(loaded) {
+  async function resolveRestoreAccount(loaded, opts) {
     const acct = (loaded && loaded._acct && typeof loaded._acct === "object") ? loaded._acct : null;
     const codeUser = (acct && typeof acct.username === "string") ? acct.username.trim() : "";
     const codeNick = (acct && typeof acct.nickname === "string") ? acct.nickname.trim() : "";
@@ -4916,6 +4981,10 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     );
 
     if (existing && !isBlank) {
+      // 6자리 복구키로 복원할 때는 키 자체가 인증 수단이므로 비밀번호를 다시 묻지 않습니다.
+      if (opts && opts.skipPassword) {
+        return { username: target, nickname: existing.nickname || codeNick || target, password: existing.password };
+      }
       const pw = prompt(`🔒 [${target}] 계정 비밀번호를 입력하세요.\n(이 기기의 세이브를 복원합니다)`);
       if (pw === null) return null;
       const pwOk = (typeof existing.password === "string" && existing.password !== "" && pw === existing.password) || await checkAdminAuth(pw);
@@ -4963,13 +5032,40 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     const raw = area ? area.value : "";
     const say = (msg, color) => { if (status) { status.textContent = msg; status.style.color = color || "var(--gold)"; } };
 
-    let loaded;
-    try {
-      loaded = decodeSaveCode(raw);
-    } catch (e) {
-      Sound.hit();
-      say("❌ " + e.message, "var(--red)");
-      return;
+    let loaded = null;
+    let usedRecoveryKey = null;
+
+    if (isRecoveryKeyInput(raw)) {
+      // 🔑 6자리 복구키 경로 (이 브라우저에 저장된 키만 조회 가능)
+      const rec = lookupRecoveryKey(raw);
+      if (!rec) {
+        Sound.hit();
+        say(`❌ 이 브라우저에는 6자리 복구키 ${cleanSaveCodeInput(raw).replace(/[\s-]/g, "")} 가 없어요.\n6자리 복구키는 발급한 그 브라우저·기기에서만 바로 복구돼요. 다른 기기로 옮길 때는 [CDX3.] 전체 세이브 코드를 사용해 주세요.`, "var(--red)");
+        return;
+      }
+      const exp = rec.expiresAt ? Date.parse(rec.expiresAt) : 0;
+      if (exp && exp < Date.now()) {
+        const days = Math.max(1, Math.ceil((Date.now() - exp) / 86400000));
+        Sound.hit();
+        say(`❌ 6자리 복구키 ${rec.key} 는 ${days}일 전에 만료됐어요. 이벤트 센터의 '🔑 6자리 복구키 발급소'에서 새 키를 발급하면 지금 세이브로 바로 만들 수 있어요.`, "var(--red)");
+        return;
+      }
+      try {
+        loaded = decodeSaveCode(rec.code);
+      } catch (e) {
+        Sound.hit();
+        say("❌ 복구키에 담긴 세이브가 손상됐어요. 이벤트 센터에서 키를 다시 발급해 주세요.", "var(--red)");
+        return;
+      }
+      usedRecoveryKey = rec;
+    } else {
+      try {
+        loaded = decodeSaveCode(raw);
+      } catch (e) {
+        Sound.hit();
+        say("❌ " + e.message, "var(--red)");
+        return;
+      }
     }
     if (!isSaveLike(loaded)) {
       Sound.hit();
@@ -4979,11 +5075,14 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     const curUser = getCurrentUser();
     const preview = savePreviewText(loaded);
     const curPreview = curUser ? savePreviewText(state) : "없음 (새 기기)";
-    if (!confirm(`📥 복원 미리보기\n\n복원할 세이브: ${preview}\n현재 세이브: ${curPreview}\n\n이 코드로 복원할까요?${curUser ? "\n(복원 전 지금 상태는 '최근 자동 백업'에 저장됩니다)" : ""}`)) return;
+    const keyLine = usedRecoveryKey
+      ? `\n🔑 6자리 복구키: ${usedRecoveryKey.key} (${usedRecoveryKey.updatedAt ? new Date(usedRecoveryKey.updatedAt).toLocaleString("ko-KR") : "발급"} 시점 세이브)`
+      : "";
+    if (!confirm(`📥 복원 미리보기${keyLine}\n\n복원할 세이브: ${preview}\n현재 세이브: ${curPreview}\n\n${usedRecoveryKey ? "이 복구키로" : "이 코드로"} 복원할까요?${curUser ? "\n(복원 전 지금 상태는 '최근 자동 백업'에 저장됩니다)" : ""}`)) return;
 
     let ident = null;
     try {
-      ident = await resolveRestoreAccount(loaded);
+      ident = await resolveRestoreAccount(loaded, { skipPassword: !!usedRecoveryKey });
     } catch (e) {
       Sound.hit();
       say("❌ " + e.message, "var(--red)");
@@ -5003,6 +5102,24 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       Sound.hit();
       say("❌ 복원에 실패했어요: " + e.message, "var(--red)");
       return;
+    }
+    if (usedRecoveryKey) {
+      // 사용 기록을 남기고, 키의 스냅샷을 방금 복원한 상태로 맞춰 둔다
+      try {
+        const store = loadRecoveryKeyStore();
+        const rec = store.keys[usedRecoveryKey.key];
+        if (rec) {
+          rec.uses = (Number(rec.uses) || 0) + 1;
+          rec.lastUsedAt = new Date().toISOString();
+          rec.updatedAt = new Date().toISOString();
+          rec.expiresAt = new Date(Date.now() + RECOVERY_KEY_DAYS * 86400000).toISOString();
+          rec.code = buildSaveCode();
+          rec.level = Number(state.level) || 1;
+          rec.tokens = Number(state.tokens) || 0;
+          rec.nickname = ident.nickname || rec.nickname;
+          saveRecoveryKeyStore(store);
+        }
+      } catch (e) { console.warn("[RecoveryKey] 사용 기록 실패", e); }
     }
     if (preBackup) {
       try {
@@ -6194,6 +6311,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
         }
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      refreshRecoveryKeys(false);   // 이 계정의 6자리 복구키가 있으면 최신 세이브로 맞춰 둔다(60초 스로틀)
     } catch (e) {
       console.warn("[Save Error]", e);
     }
@@ -6594,6 +6712,17 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   //   version 값이 세이브의 noticeSeenVersion 과 다르면 접속 시 자동으로 한 번 뜹니다.
   // ==================================================
   const PATCH_NOTES = [
+    {
+      version: "2026.11.20",
+      date: "2026-11-20",
+      title: "🔑 6자리 복구키 + 이벤트 센터 발급소",
+      items: [
+        "🔑 이제 세이브를 6자리 숫자 복구키로도 되살릴 수 있어요. 긴 코드를 복사할 필요 없이 6자리만 넣으면 됩니다.",
+        "🎉 복구키 발급은 이벤트 센터의 '🔑 6자리 복구키 발급소'에서 해요. 계정을 고르고 버튼 한 번이면 발급되고, 복사·갱신·삭제도 거기서 합니다.",
+        "🔄 발급한 키는 플레이하면서 최신 세이브로 자동 갱신되고, 30일 동안 안 쓰면 만료돼요. 이벤트 센터에서 바로 새로 만들 수 있습니다.",
+        "📱 6자리 복구키는 발급한 그 브라우저·기기에서만 동작해요. 다른 기기로 옮길 때는 지금처럼 CDX3. 전체 세이브 코드를 쓰세요."
+      ]
+    },
     {
       version: "2026.11.16.2",
       date: "2026-11-16",
