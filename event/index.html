@@ -944,8 +944,72 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
   border-radius: 12px;
   padding: 10px 12px;
 }
+/* 📡 6자리 실시간 기기 전송 (WebRTC P2P) */
+.rk-live {
+  margin-top: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 245, 212, 0.35);
+  background: rgba(0, 245, 212, 0.06);
+  padding: 12px 14px;
+}
+.rk-live-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+.rk-live-badge {
+  font-size: 0.74rem;
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  font-weight: 800;
+}
+.rk-live-badge.on {
+  color: #0b0c16;
+  background: linear-gradient(135deg, #00f5d4, #00bbf9);
+  border-color: transparent;
+  box-shadow: 0 0 12px rgba(0, 245, 212, 0.4);
+}
+.rk-live-badge.sent {
+  color: #0b0c16;
+  background: linear-gradient(135deg, #ffd166, #ffbe0b);
+  border-color: transparent;
+}
+.rk-live-desc {
+  font-size: 0.8rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+  margin-top: 6px;
+}
+.rk-live-status {
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.65;
+  margin-top: 8px;
+  white-space: pre-line;
+  min-height: 1.2em;
+}
+.rk-live-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.rk-live-actions button {
+  padding: 8px 13px;
+  font-size: 0.78rem;
+  border-radius: 10px;
+  background: rgba(0, 245, 212, 0.14);
+  color: #fff;
+  border: 1px solid rgba(0, 245, 212, 0.4);
+  font-weight: 800;
+  cursor: pointer;
+}
+.rk-live-actions button:hover { background: rgba(0, 245, 212, 0.26); }
+.rk-actions button.live-on { color: #0b0c16; background: linear-gradient(135deg, #00f5d4, #00bbf9); border-color: transparent; }
 @media (max-width: 520px) {
   .rk-code { font-size: 1.2rem; letter-spacing: 0.16em; }
+  .rk-live-actions button { flex: 1; }
 }
 </style>
 </head>
@@ -963,7 +1027,7 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
       </div>
       <div class="header-tools">
         <button id="adminAuthBtn" class="tool-btn" onclick="openAdminModal()" style="background: linear-gradient(135deg, #ffd166, #ff006e); color:#0b0c16; font-weight:800; border:none; box-shadow: 0 0 12px rgba(255,209,102,0.4); cursor:pointer;">👑 개발자 로그인</button>
-        <a href="../index.html" class="tool-btn primary">🎮 게임으로 돌아가기</a>
+        <a href="index.html" class="tool-btn primary">🎮 게임으로 돌아가기</a>
       </div>
     </div>
   </header>
@@ -1154,8 +1218,23 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
 
       <div class="rk-list" id="rkList"></div>
 
+      <!-- 📡 6자리 실시간 기기 전송 (WebRTC P2P) -->
+      <div class="rk-live" id="rkLive">
+        <div class="rk-live-head">
+          <span>📡 다른 기기 전송 대기</span>
+          <span class="rk-live-badge" id="rkLiveBadge">⚪ 꺼짐</span>
+        </div>
+        <div class="rk-live-desc">
+          대기를 켜 두면, <b>다른 기기</b>의 게임 로그인 창에서 같은 6자리를 넣는 순간 이 브라우저의 최신 세이브가 <b>WebRTC 실시간 연결</b>로 바로 전송됩니다. (위 목록의 키 옆 <b>📡 대기 켜기</b> 또는 발급 시 자동으로 켜집니다.)
+        </div>
+        <div class="rk-live-status" id="rkLiveStatus"></div>
+        <div class="rk-live-actions">
+          <button type="button" id="rkLiveStopAll" onclick="rkStopAllWaits()">📴 모든 대기 끄기</button>
+        </div>
+      </div>
+
       <div class="rk-warn">
-        ⚠️ 6자리 복구키는 <b>이 브라우저·기기</b>(localStorage)에만 저장돼요. 서버가 없는 사이트라 <b>다른 기기에서는 6자리 키로 복구되지 않고</b>, 그때는 <b>CDX3. 전체 세이브 코드</b>를 써야 합니다.<br>
+        ⚠️ 6자리 복구키는 <b>이 브라우저·기기</b>(localStorage)에 저장돼요. <b>다른 기기</b>에서는 이 화면의 <b>📡 전송 대기</b>가 켜져 있을 때 6자리만으로 바로 받을 수 있고, 연결이 안 되는 환경(시그널 서버 차단·대기 꺼짐)에서는 <b>CDX3. 전체 세이브 코드</b>를 써야 합니다.<br>
         🔄 발급한 키는 플레이하면서 최신 세이브로 자동 갱신되며, <b>30일</b> 동안 안 쓰면 만료됩니다(이 화면에서 언제든 새로 발급).<br>
         🔐 원하는 번호를 쓰되, <b>123456·000000 처럼 남이 먼저 찍어 볼 만한 번호</b>는 피하는 게 안전해요.
       </div>
@@ -1169,7 +1248,7 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
     <p style="margin:0 0 24px 0; color:var(--text-sub); font-size:0.95rem;">
       버프가 적용된 상태로 CODEX 게임에 바로 입장해 모험을 즐기세요!
     </p>
-    <a href="../index.html" class="btn-play-large">
+    <a href="index.html" class="btn-play-large">
       <span>🚀 이벤트 적용하고 게임 시작하기</span>
     </a>
   </div>
@@ -1188,7 +1267,7 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
   </div>
 
   <footer>
-    CODEX Event Portal • v2026.11.20b · 🔑 사용자 지정 6자리 복구키 • Made for i01041303261 • Endless Dimension
+    CODEX Event Portal • v2026.11.20c · 📡 6자리 실시간 기기 전송 • Made for i01041303261 • Endless Dimension
   </footer>
 </div>
 
@@ -1968,12 +2047,14 @@ function rkRender() {
         발급 ${rkTime(r.createdAt)} · 갱신 ${rkTime(r.updatedAt)} · <b>${rkLeft(r.expiresAt)}</b>${Number(r.uses) ? ` · 복원 ${Number(r.uses)}회` : ""}
       </div>
       <div class="rk-actions">
+        <button type="button" class="${rkLiveOn(k) ? "live-on" : ""}" onclick="rkToggleWait('${k}')">${rkLiveOn(k) ? "🟢 대기 끄기" : "📡 대기 켜기"}</button>
         <button type="button" onclick="rkCopy('${k}')">📋 복사</button>
         <button type="button" onclick="rkRefreshOne('${k}')">🔄 지금 세이브로 갱신</button>
         <button type="button" class="del" onclick="rkDelete('${k}')">🗑 삭제</button>
       </div>
     </div>`;
   }).join("");
+  rkRenderLive();
 }
 
 window.rkSanitizeInput = function () {
@@ -2053,7 +2134,8 @@ function rkIssueCore(wantKey) {
   const head = wantKey
     ? `✅ 원하는 6자리 복구키 [ ${key} ] 발급 완료!`
     : `✅ 6자리 복구키 [ ${key} ] 발급 완료!`;
-  rkSetMsg(`${head} ${copied ? "클립보드에 복사했어요. " : ""}게임 로그인 창의 [📥 세이브 코드로 복원]에 이 6자리를 넣으면 됩니다.`, "var(--cyan)");
+  rkSetMsg(`${head} ${copied ? "클립보드에 복사했어요. " : ""}게임 로그인 창의 [📥 세이브 코드로 복원]에 이 6자리를 넣으면 됩니다.\n📡 이 기기의 '다른 기기 전송 대기'를 켜는 중이에요...`, "var(--cyan)");
+  rkStartWait(key);
 }
 
 window.rkIssue = function () {
@@ -2102,10 +2184,287 @@ window.rkDelete = function (key) {
   if (!confirm(`복구키 ${key} (@${rec.username})를 삭제할까요?\n삭제하면 이 6자리로는 더 이상 복원할 수 없어요.`)) return;
   delete store.keys[key];
   rkSaveStore(store);
+  rkStopWait(key);
   rkFillAccounts();
   rkRender();
   rkSetMsg(`🗑 복구키 ${key} 를 삭제했어요.`, "var(--gold)");
 };
+
+// ==========================================
+// 📡 6자리 실시간 기기 전송 (WebRTC P2P · PeerJS)
+//  · 이벤트 센터(보내는 기기)가  PeerJS ID  codex-i01041303261-rec-{6자리}  로 대기한다.
+//  · 다른 기기의 게임 로그인 창에서 같은 6자리를 넣으면 그 피어로 접속해
+//    최신 CDX3. 세이브 스냅샷을 받아간다(직접 연결, 서버에 세이브를 저장하지 않음).
+//  · 시그널링은 PeerJS 공개 서버, 실제 데이터는 WebRTC DataChannel 로만 오간다.
+// ==========================================
+const RK_PEER_PREFIX = "codex-i01041303261-rec-";
+const RK_PEERJS_URL = "https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js";
+const RK_LIVE = {};          // key -> { peer, status, msg }
+let rkPeerJsLoading = null;
+
+function rkPeerConfig() {
+  const base = {
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:stun1.l.google.com:19302" }
+    ]
+  };
+  // 테스트/고급 설정용 훅: 페이지가 window.CODEX_P2P_PEER_CONFIG_OVERRIDE 를 지정하면 그 값을 쓴다.
+  const override = window.CODEX_P2P_PEER_CONFIG_OVERRIDE;
+  return (override && typeof override === "object") ? Object.assign({}, base, override) : base;
+}
+
+function rkLoadPeerJs() {
+  if (window.Peer) return Promise.resolve(true);
+  if (rkPeerJsLoading) return rkPeerJsLoading;
+  rkPeerJsLoading = new Promise((resolve, reject) => {
+    let settled = false;
+    const script = document.createElement("script");
+    const finish = (ok) => {
+      if (settled) return;
+      settled = true;
+      if (ok && window.Peer) resolve(true);
+      else reject(new Error("실시간 연결 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요."));
+    };
+    const timer = setTimeout(() => finish(false), 12000);
+    script.src = RK_PEERJS_URL;
+    script.async = true;
+    script.onload = () => { clearTimeout(timer); finish(true); };
+    script.onerror = () => { clearTimeout(timer); finish(false); };
+    document.head.appendChild(script);
+  }).catch((e) => { rkPeerJsLoading = null; throw e; });
+  return rkPeerJsLoading;
+}
+
+function rkLiveOn(key) {
+  const st = RK_LIVE[key];
+  return !!(st && st.peer);
+}
+
+function rkLiveBadgeClass() {
+  const keys = Object.keys(RK_LIVE).filter(k => RK_LIVE[k] && RK_LIVE[k].peer);
+  if (!keys.length) return { cls: "", text: "⚪ 꺼짐" };
+  const sending = keys.some(k => RK_LIVE[k].status === "sending");
+  const waiting = keys.some(k => RK_LIVE[k].status === "waiting");
+  if (sending) return { cls: "sent", text: "📡 전송 중" };
+  if (waiting) return { cls: "on", text: "🟢 대기 중" };
+  return { cls: "", text: "⏳ 연결 중" };
+}
+
+function rkRenderLive() {
+  const badge = document.getElementById("rkLiveBadge");
+  const status = document.getElementById("rkLiveStatus");
+  const stopAll = document.getElementById("rkLiveStopAll");
+  const keys = Object.keys(RK_LIVE).filter(k => RK_LIVE[k]);
+  const active = keys.filter(k => RK_LIVE[k].peer);
+  const info = rkLiveBadgeClass();
+  if (badge) {
+    badge.textContent = info.text;
+    badge.className = "rk-live-badge" + (info.cls ? " " + info.cls : "");
+  }
+  if (stopAll) stopAll.style.display = active.length ? "" : "none";
+  if (!status) return;
+  const lines = [];
+  const waiting = active.filter(k => RK_LIVE[k].status === "waiting");
+  waiting.forEach(k => {
+    lines.push(`🟢 <b>${k}</b> 실시간 전송 대기 중 (이 화면을 켜 두면 다른 기기에서 6자리로 바로 받을 수 있어요)`);
+  });
+  active.filter(k => RK_LIVE[k].status === "connecting").forEach(k => {
+    lines.push(`⏳ <b>${k}</b> 전송 대기 연결을 준비하는 중...`);
+  });
+  active.filter(k => RK_LIVE[k].msg).forEach(k => {
+    lines.push(RK_LIVE[k].msg);
+  });
+  Object.keys(RK_LIVE).filter(k => !RK_LIVE[k].peer && RK_LIVE[k].msg).forEach(k => {
+    lines.push(RK_LIVE[k].msg);
+  });
+  status.innerHTML = lines.join("<br>");
+}
+
+async function rkStartWait(key) {
+  const existing = RK_LIVE[key];
+  if (existing && existing.peer) return;
+  const rec = rkLoad().keys[key];
+  if (!rec) return;
+  const st = RK_LIVE[key] = { peer: null, status: "connecting", msg: "" };
+  rkRenderLive();
+  try {
+    await rkLoadPeerJs();
+  } catch (e) {
+    st.status = "error";
+    st.msg = "❌ " + e.message;
+    rkRenderLive();
+    return;
+  }
+  let peer;
+  try {
+    peer = new window.Peer(RK_PEER_PREFIX + key, { config: rkPeerConfig(), debug: 0 });
+  } catch (e) {
+    st.status = "error";
+    st.msg = "❌ 실시간 전송 대기를 켜지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+    rkRenderLive();
+    return;
+  }
+  st.peer = peer;
+  peer.on("open", () => {
+    st.status = "waiting";
+    st.msg = "";
+    rkRenderLive();
+  });
+  peer.on("connection", (conn) => rkHandleIncoming(key, conn));
+  peer.on("disconnected", () => {
+    if (st.peer !== peer) return;
+    st.status = "connecting";
+    st.msg = `⚠️ <b>${key}</b> 전송 대기 연결이 잠시 끊겼어요. 다시 연결하는 중...`;
+    rkRenderLive();
+    try { peer.reconnect(); } catch (e) { /* 무시 */ }
+  });
+  peer.on("error", (err) => {
+    if (st.peer !== peer) return;
+    const type = (err && err.type) || "";
+    if (type === "unavailable-id") {
+      st.peer = null;
+      st.status = "error";
+      st.msg = `⚠️ <b>${key}</b> 키의 전송 대기 주소가 이미 다른 화면에서 켜져 있어요. 그 화면을 끄고 이 화면에서만 대기를 켜 주세요.`;
+      try { peer.destroy(); } catch (e) { /* 무시 */ }
+    } else if (type === "network" || type === "server-error" || type === "socket-error" || type === "socket-closed") {
+      st.peer = null;
+      st.status = "error";
+      st.msg = "⚠️ 실시간 연결 서버에 접속하지 못했어요. 잠시 뒤 다시 시도해 주세요. (그동안은 CDX3. 전체 코드로 옮길 수 있어요)";
+      try { peer.destroy(); } catch (e) { /* 무시 */ }
+    } else if (type) {
+      st.msg = `⚠️ 실시간 연결 오류(${type}). ${(err && err.message) || ""}`;
+    }
+    rkRenderLive();
+  });
+}
+
+function rkStopWait(key) {
+  const st = RK_LIVE[key];
+  if (!st) return;
+  try { if (st.peer) st.peer.destroy(); } catch (e) { /* 무시 */ }
+  delete RK_LIVE[key];
+  rkRenderLive();
+  const list = document.getElementById("rkList");
+  if (list && list.children.length) rkRender();
+}
+
+window.rkToggleWait = function (key) {
+  if (rkLiveOn(key)) {
+    rkStopWait(key);
+    rkSetMsg(`📴 ${key} 키의 다른 기기 전송 대기를 껐어요.`, "var(--gold)");
+  } else {
+    rkStartWait(key);
+    rkSetMsg(`📡 ${key} 키의 다른 기기 전송 대기를 켜는 중이에요...`, "var(--cyan)");
+  }
+};
+
+window.rkStopAllWaits = function () {
+  const keys = Object.keys(RK_LIVE);
+  keys.forEach(k => {
+    try { if (RK_LIVE[k].peer) RK_LIVE[k].peer.destroy(); } catch (e) { /* 무시 */ }
+    delete RK_LIVE[k];
+  });
+  rkRenderLive();
+  rkRender();
+  rkSetMsg("📴 모든 전송 대기를 껐어요.", "var(--gold)");
+};
+
+// 상대 기기에서 접속했을 때: 6자리를 확인하고 최신 세이브 스냅샷을 보낸다
+function rkHandleIncoming(key, conn) {
+  const st = RK_LIVE[key];
+  let sent = false;
+  const sendSave = (wantKey) => {
+    if (String(wantKey || "") !== key) {
+      try { conn.send({ type: "codex-error", reason: "key" }); } catch (e) { /* 무시 */ }
+      try { conn.close(); } catch (e) { /* 무시 */ }
+      return;
+    }
+    if (sent) return;
+    const store = rkLoad();
+    const rec = store.keys[key];
+    let code = rec ? rec.code : null;
+    const db = rkUsers();
+    const username = rec ? rec.username : null;
+    const user = username ? db[username] : null;
+    let level = rec ? Number(rec.level) || 1 : 1;
+    let tokens = rec ? Number(rec.tokens) || 0 : 0;
+    let nickname = rec ? (rec.nickname || rec.username) : null;
+    if (user && user.saveData) {
+      try {
+        code = rkBuildCode(user.saveData, user);
+        level = Number(user.saveData.level) || 1;
+        tokens = Number(user.saveData.tokens) || 0;
+        nickname = user.nickname || nickname;
+        const now = Date.now();
+        rec.code = code;
+        rec.level = level;
+        rec.tokens = tokens;
+        rec.nickname = nickname;
+        rec.updatedAt = new Date(now).toISOString();
+        rec.expiresAt = new Date(now + RK_DAYS * 86400000).toISOString();
+        rkSaveStore(store);
+      } catch (e) { /* 무시 */ }
+    }
+    if (!code) {
+      try { conn.send({ type: "codex-error", reason: "nokey" }); } catch (e) { /* 무시 */ }
+      return;
+    }
+    sent = true;
+    try {
+      conn.send({
+        type: "codex-save",
+        v: 1,
+        key: key,
+        code: code,
+        username: username,
+        nickname: nickname,
+        level: level,
+        tokens: tokens,
+        at: new Date().toISOString()
+      });
+    } catch (e) {
+      sent = false;
+      if (st) { st.msg = "⚠️ 세이브 전송에 실패했어요. 상대 기기에서 다시 시도해 주세요."; rkRenderLive(); }
+      return;
+    }
+    if (st) {
+      st.status = "sending";
+      st.msg = `📡 <b>${key}</b> — 다른 기기로 세이브 전송 중...`;
+    }
+    rkRenderLive();
+  };
+
+  conn.on("open", () => {
+    if (st) {
+      st.msg = `📱 <b>${key}</b> — 다른 기기에서 연결됐어요. 세이브를 준비하는 중...`;
+      rkRenderLive();
+    }
+  });
+  conn.on("data", (msg) => {
+    if (!msg || typeof msg !== "object") return;
+    if (msg.type === "codex-hello") { sendSave(msg.key); return; }
+    if (msg.type === "codex-ack") {
+      if (st) {
+        st.status = "waiting";
+        st.msg = `✅ <b>${key}</b> — 다른 기기로 세이브 전송 완료! (${new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}) 다른 기기로 또 받으려면 이 화면을 켜 두세요.`;
+      }
+      rkRenderLive();
+      try { Sound.powerOn(); } catch (e) { /* 무시 */ }
+      setTimeout(() => { try { conn.close(); } catch (e) { /* 무시 */ } }, 900);
+    }
+  });
+  conn.on("close", () => {
+    if (st && st.status === "sending") { st.status = "waiting"; rkRenderLive(); }
+  });
+  conn.on("error", () => {
+    if (st) {
+      st.status = "waiting";
+      st.msg = `⚠️ <b>${key}</b> — 전송 중 연결이 끊겼어요. 상대 기기에서 다시 시도해 주세요.`;
+      rkRenderLive();
+    }
+  });
+}
 
 window.addEventListener("DOMContentLoaded", () => {
   render();

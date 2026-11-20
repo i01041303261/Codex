@@ -1953,6 +1953,63 @@ body.auth-locked #codexAuthOverlay {
   cursor: pointer;
   font-weight: 700;
 }
+/* 🔑 6자리 복구키로 바로 로그인 */
+.auth-key-login {
+  margin-top: 14px;
+  padding: 12px 13px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 245, 212, 0.32);
+  background: rgba(0, 245, 212, 0.07);
+  text-align: left;
+}
+.auth-key-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.auth-key-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.auth-key-row input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-align: center;
+}
+.auth-key-row input::placeholder {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: normal;
+}
+.auth-key-row button {
+  flex: 0 0 auto;
+  padding: 0 14px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.auth-key-hint {
+  font-size: 0.74rem;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin-top: 8px;
+}
+.auth-key-msg {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.6;
+  margin-top: 8px;
+  white-space: pre-line;
+  min-height: 1.1em;
+}
 .auth-close-x {
   position: absolute;
   top: 16px;
@@ -3347,7 +3404,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   </section>
 
   <footer>
-    CODEX • Endless Dimension Evolution | v2026.11.20b · 🔑 사용자 지정 6자리 복구키 | Designed &amp; Powered by Pickle Agent
+    CODEX • Endless Dimension Evolution | v2026.11.20c · 📡 6자리 실시간 기기 전송 | Designed &amp; Powered by Pickle Agent
   </footer>
 </div>
 
@@ -3372,7 +3429,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       <button type="button" class="primary" id="codexSaveActionBtn" onclick="runImportFromModal()">📥 복원 실행</button>
       <button type="button" class="secondary" onclick="closeSaveCodeModal()">닫기</button>
     </div>
-    <div class="save-hint">코드가 길어서 일부만 복사되면 복원되지 않아요. 코드 전체를 한 번에 복사해 주세요.<br>🔑 이벤트 센터에서 발급한 <b>6자리 복구키</b>를 넣어도 이 브라우저에서는 바로 복원됩니다.</div>
+    <div class="save-hint">코드가 길어서 일부만 복사되면 복원되지 않아요. 코드를 복사할 때는 전체를 한 번에 복사해 주세요.<br>🔑 이벤트 센터에서 만든 <b>6자리 복구키</b>는 이 브라우저에 있으면 바로 복원되고, 없으면 <b>📡 전송 대기를 켠 다른 기기</b>에서 실시간으로 받아옵니다.</div>
   </div>
 </div>
 
@@ -3439,6 +3496,20 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       <button id="authTabBtnAccount" class="auth-tab-btn" onclick="switchAuthTab('account')" style="display: none;">👤 내 계정</button>
     </div>
 
+    <!-- 🔑 6자리 복구키로 바로 로그인 (로그인·회원가입 탭 어디서나 보임) -->
+    <div class="auth-key-login" id="authKeyLogin">
+      <div class="auth-key-title">🔑 6자리 복구키로 바로 로그인</div>
+      <div class="auth-key-row">
+        <input type="text" id="loginRecoveryKey" class="auth-input" inputmode="numeric" maxlength="6" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="6자리 숫자 (예: 481927)" oninput="sanitizeLoginRecoveryKey()" onkeydown="if(event.key==='Enter'){event.preventDefault();loginWithRecoveryKey();}">
+        <button type="button" class="secondary" onclick="loginWithRecoveryKey()">🔑 복구키 로그인</button>
+      </div>
+      <div class="auth-key-msg" id="loginRecoveryMsg"></div>
+      <div class="auth-key-hint">
+        아이디·비밀번호 없이, 이벤트 센터에서 만든 6자리만 넣으면 바로 입장해요.<br>
+        이 브라우저에 키가 없으면 <b>이벤트 센터를 켜 둔 다른 기기</b>에서 📡 실시간으로 세이브를 받아옵니다.
+      </div>
+    </div>
+
     <!-- 로그인 폼 -->
     <form id="authLoginForm" class="auth-form active" onsubmit="handleLoginSubmit(event)">
       <div class="auth-input-group">
@@ -3451,6 +3522,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       </div>
       <div id="loginMsg" class="auth-msg"></div>
       <button type="submit" class="primary auth-btn-submit">🔑 로그인하기</button>
+
+
       <div class="auth-switch-link">
         아직 계정이 없으신가요? <a onclick="switchAuthTab('register')">회원가입 하기</a>
       </div>
@@ -3528,7 +3601,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       </div>
       <div style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 8px;">본인 계정 비밀번호만 있으면 언제든 백업·복원할 수 있습니다. 내보낸 코드는 <b>다른 기기·새 브라우저</b>에서도 아이디·닉네임까지 그대로 복원됩니다.</div>
       <div style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 12px; padding:10px 12px; background:rgba(0,245,212,0.08); border:1px solid rgba(0,245,212,0.3); border-radius:10px;">
-        🔑 <b style="color:var(--cyan);">6자리 복구키</b>는 <a href="event.html" style="color:var(--gold);font-weight:800;">이벤트 센터</a>의 '🔑 6자리 복구키 발급소'에서 만들어요. <b>원하는 6자리를 직접 지정할 수도 있고</b>, 이 브라우저·이 기기에서는 6자리만 넣으면 바로 복원됩니다. (다른 기기로 옮길 때는 CDX3. 전체 코드를 쓰세요)
+        🔑 <b style="color:var(--cyan);">6자리 복구키</b>는 <a href="event.html" style="color:var(--gold);font-weight:800;">이벤트 센터</a>의 '🔑 6자리 복구키 발급소'에서 만들어요. <b>원하는 6자리를 직접 지정할 수도 있고</b>, 로그인 화면에서 6자리만 넣으면 바로 들어가집니다. <b>다른 기기</b>에서도 이벤트 센터의 <b>📡 전송 대기</b>가 켜져 있으면 6자리로 실시간 전송받을 수 있어요.
       </div>
 
       <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; margin-bottom: 14px;">
@@ -4792,6 +4865,142 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     return (rec && typeof rec === "object") ? Object.assign({ key: k }, rec) : null;
   }
 
+  // ---------- 8-3. 📡 6자리 실시간 기기 수신 (WebRTC P2P · PeerJS) ----------
+  //  · 보내는 기기(이벤트 센터)가  codex-i01041303261-rec-{6자리}  피어로 대기한다.
+  //  · 이 브라우저에 6자리 키가 없으면 그 피어로 접속해 최신 CDX3. 세이브를 받아온다(서버 저장 없음).
+  const P2P_PEER_PREFIX = "codex-i01041303261-rec-";
+  const P2P_TIMEOUT_MS = 10000;
+  const PEERJS_CDN = "https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js";
+  let peerJsLoading = null;
+
+  function p2pPeerConfig() {
+    const base = {
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" }
+      ]
+    };
+    // 테스트/고급 설정용 훅: 페이지가 window.CODEX_P2P_PEER_CONFIG_OVERRIDE 를 지정하면 그 값을 쓴다.
+    const override = window.CODEX_P2P_PEER_CONFIG_OVERRIDE;
+    return (override && typeof override === "object") ? Object.assign({}, base, override) : base;
+  }
+
+  function loadPeerJs() {
+    if (window.Peer) return Promise.resolve(true);
+    if (peerJsLoading) return peerJsLoading;
+    peerJsLoading = new Promise((resolve, reject) => {
+      let settled = false;
+      const script = document.createElement("script");
+      const finish = (ok) => {
+        if (settled) return;
+        settled = true;
+        if (ok && window.Peer) resolve(true);
+        else reject(new Error("실시간 연결 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요."));
+      };
+      const timer = setTimeout(() => finish(false), 12000);
+      script.src = PEERJS_CDN;
+      script.async = true;
+      script.onload = () => { clearTimeout(timer); finish(true); };
+      script.onerror = () => { clearTimeout(timer); finish(false); };
+      document.head.appendChild(script);
+    }).catch((e) => { peerJsLoading = null; throw e; });
+    return peerJsLoading;
+  }
+
+  function p2pNotFoundMessage() {
+    return "보내는 기기를 찾지 못했어요. 보내는 기기에서 이벤트 센터를 켜고 해당 6자리 키의 '전송 대기'가 켜져 있는지 확인해 주세요. (화면을 끄고 옮길 때는 CDX3. 전체 코드를 복사해 주세요)";
+  }
+
+  // 다른 기기(이벤트 센터 전송 대기)에서 세이브를 받아온다.
+  function fetchRecoveryKeySave(key, onStatus) {
+    return new Promise(async (resolve, reject) => {
+      let peer = null;
+      let conn = null;
+      let done = false;
+      const finish = (err, value) => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        try { if (conn) conn.close(); } catch (e) { /* 무시 */ }
+        try { if (peer) peer.destroy(); } catch (e) { /* 무시 */ }
+        if (err) reject(err); else resolve(value);
+      };
+      const timer = setTimeout(() => finish(new Error("timeout")), P2P_TIMEOUT_MS);
+      try {
+        await loadPeerJs();
+      } catch (e) {
+        finish(new Error("lib"));
+        return;
+      }
+      if (typeof onStatus === "function") {
+        onStatus("📡 다른 기기에서 세이브를 불러오는 중... 보내는 기기의 이벤트 센터 화면이 켜져 있어야 해요", "var(--cyan)");
+      }
+      const myId = "codex-i01041303261-dev-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      try {
+        peer = new window.Peer(myId, { config: p2pPeerConfig(), debug: 0 });
+      } catch (e) {
+        finish(new Error("init"));
+        return;
+      }
+      peer.on("open", () => {
+        try {
+          conn = peer.connect(P2P_PEER_PREFIX + key, { reliable: true, serialization: "json" });
+        } catch (e) {
+          finish(new Error("init"));
+          return;
+        }
+        conn.on("open", () => {
+          try { conn.send({ type: "codex-hello", v: 1, key: key }); } catch (e) { finish(new Error("send")); }
+        });
+        conn.on("data", (msg) => {
+          if (!msg || typeof msg !== "object") return;
+          if (msg.type === "codex-save" && typeof msg.code === "string") {
+            if (String(msg.key) !== key) { finish(new Error("mismatch")); return; }
+            // 보내는 기기에 "받았어요"를 알려 주고(전송 완료 표시), 잠깐 뒤 연결을 닫는다
+            try { conn.send({ type: "codex-ack", key: key }); } catch (e) { /* 무시 */ }
+            setTimeout(() => finish(null, msg), 250);
+          } else if (msg.type === "codex-error") {
+            finish(new Error(msg.reason === "key" ? "mismatch" : "nokey"));
+          }
+        });
+        conn.on("error", () => finish(new Error("conn")));
+      });
+      peer.on("error", (err) => {
+        const type = (err && err.type) || "";
+        if (type === "peer-unavailable") finish(new Error("notfound"));
+        else if (type === "unavailable-id") finish(new Error("init"));
+        else finish(new Error(type || "peer"));
+      });
+    });
+  }
+
+  // 받아온 키를 이 기기의 localStorage에도 저장해 둔다(다음부터는 6자리만으로 즉시 복원).
+  function storeReceivedRecoveryKey(key, code, ident) {
+    try {
+      const store = loadRecoveryKeyStore();
+      const now = Date.now();
+      const prev = store.keys[key] || {};
+      store.keys[key] = {
+        username: ident.username,
+        nickname: ident.nickname || ident.username,
+        code: code,
+        level: Number(state && state.level) || 1,
+        tokens: Number(state && state.tokens) || 0,
+        createdAt: prev.createdAt || new Date(now).toISOString(),
+        updatedAt: new Date(now).toISOString(),
+        expiresAt: new Date(now + RECOVERY_KEY_DAYS * 86400000).toISOString(),
+        uses: Number(prev.uses) || 0,
+        lastUsedAt: new Date(now).toISOString(),
+        source: "p2p"
+      };
+      saveRecoveryKeyStore(store);
+      return true;
+    } catch (e) {
+      console.warn("[RecoveryKey] 수신 키 저장 실패", e);
+      return false;
+    }
+  }
+
   // 현재 로그인 계정의 6자리 복구키 스냅샷을 지금 세이브로 맞춰 둡니다(발급 후 레벨이 올라도 최신 유지).
   let lastRecoveryKeyRefresh = 0;
   function refreshRecoveryKeys(force) {
@@ -4911,8 +5120,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       desc.textContent = (saveCodeModalMode === "export")
         ? "아래 코드를 전부 복사해서 메모장·메일 등 브라우저 밖에 보관하세요. 다른 기기의 [📥 세이브 코드로 복원]에 붙여넣으면 아이디·닉네임까지 그대로 이어집니다."
         : (user
-          ? `다른 기기에서 내보낸 세이브 코드를 붙여넣고 [복원 실행]을 누르세요. 코드에 담긴 계정(${user.nickname} / @${user.username}) 정보까지 함께 복원됩니다.\n🔑 이벤트 센터에서 발급한 6자리 복구키(예: 481927)를 넣어도 이 브라우저에서는 바로 복원됩니다.`
-          : "새 기기예요? 폰에서 내보낸 세이브 코드를 붙여넣고 [복원 실행]을 누르세요. 이 기기에서 쓸 비밀번호만 정하면 계정까지 그대로 만들어집니다.\n🔑 6자리 복구키는 발급한 브라우저에서만 동작해요. 새 기기로 옮길 때는 CDX3. 세이브 코드를 쓰세요.");
+          ? `다른 기기에서 내보낸 세이브 코드를 붙여넣고 [복원 실행]을 누르세요. 코드에 담긴 계정(${user.nickname} / @${user.username}) 정보까지 함께 복원됩니다.\n🔑 이벤트 센터에서 만든 6자리 복구키(예: 481927)를 넣어도 됩니다 — 이 브라우저에 키가 있으면 바로, 없으면 보내는 기기의 이벤트 센터 📡 전송 대기에서 실시간으로 받아옵니다.`
+          : "새 기기예요? 폰에서 내보낸 세이브 코드를 붙여넣고 [복원 실행]을 누르세요. 이 기기에서 쓸 비밀번호만 정하면 계정까지 그대로 만들어집니다.\n🔑 6자리 복구키(예: 481927)를 넣으면, 보내는 기기의 이벤트 센터에서 📡 전송 대기를 켜 둔 동안 이 기기로 세이브를 바로 받아옵니다.");
     }
     if (area) {
       area.value = (saveCodeModalMode === "export") ? (code || "") : "";
@@ -4994,6 +5203,11 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
 
     // 이 기기에 계정이 없거나(새 기기) 아직 아무 기록이 없는 계정 → 이 기기에서 쓸 비밀번호를 정한다
     const nickLabel = codeNick || (existing && existing.nickname) || target;
+    if (opts && opts.autoDevicePassword) {
+      // 🔑 복구키 로그인은 한 번에 끝나야 하므로 이 기기용 비밀번호를 자동으로 만들고 결과 화면에 알려 준다.
+      const autoPw = String(Math.floor(100000 + Math.random() * 900000));
+      return { username: target, nickname: nickLabel, password: autoPw, devicePassword: autoPw };
+    }
     const pw1 = prompt(`🆕 이 기기에 [${nickLabel}] (@${target}) 계정을 새로 준비합니다.\n앞으로 이 기기에서 로그인할 때 쓸 비밀번호를 정해 주세요 (4자 이상).\n(원래 쓰던 비밀번호를 그대로 써도 됩니다)`);
     if (pw1 === null) return null;
     if (String(pw1).length < 4) throw new Error("비밀번호는 4자 이상으로 정해 주세요.");
@@ -5026,69 +5240,44 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     try { closeAuthModal(); } catch (e) { /* 인증 모달이 없을 수 있음 */ }
   }
 
-  window.runImportFromModal = async function () {
-    const area = document.getElementById("codexSaveArea");
-    const status = document.getElementById("codexSaveStatus");
-    const raw = area ? area.value : "";
-    const say = (msg, color) => { if (status) { status.textContent = msg; status.style.color = color || "var(--gold)"; } };
-
-    let loaded = null;
-    let usedRecoveryKey = null;
-
-    if (isRecoveryKeyInput(raw)) {
-      // 🔑 6자리 복구키 경로 (이 브라우저에 저장된 키만 조회 가능)
-      const rec = lookupRecoveryKey(raw);
-      if (!rec) {
-        Sound.hit();
-        say(`❌ 이 브라우저에는 6자리 복구키 ${cleanSaveCodeInput(raw).replace(/[\s-]/g, "")} 가 없어요.\n6자리 복구키는 발급한 그 브라우저·기기에서만 바로 복구돼요. 다른 기기로 옮길 때는 [CDX3.] 전체 세이브 코드를 사용해 주세요.`, "var(--red)");
-        return;
-      }
-      const exp = rec.expiresAt ? Date.parse(rec.expiresAt) : 0;
-      if (exp && exp < Date.now()) {
-        const days = Math.max(1, Math.ceil((Date.now() - exp) / 86400000));
-        Sound.hit();
-        say(`❌ 6자리 복구키 ${rec.key} 는 ${days}일 전에 만료됐어요. 이벤트 센터의 '🔑 6자리 복구키 발급소'에서 새 키를 발급하면 지금 세이브로 바로 만들 수 있어요.`, "var(--red)");
-        return;
-      }
-      try {
-        loaded = decodeSaveCode(rec.code);
-      } catch (e) {
-        Sound.hit();
-        say("❌ 복구키에 담긴 세이브가 손상됐어요. 이벤트 센터에서 키를 다시 발급해 주세요.", "var(--red)");
-        return;
-      }
-      usedRecoveryKey = rec;
-    } else {
-      try {
-        loaded = decodeSaveCode(raw);
-      } catch (e) {
-        Sound.hit();
-        say("❌ " + e.message, "var(--red)");
-        return;
-      }
-    }
+  // 복원 공통 처리: 미리보기 확인 → 계정 정리 → 적용 → 결과 안내
+  //  opts = { usedRecoveryKey, say, autoDevicePassword, skipPreviewConfirm, fromP2P }
+  async function performSaveRestore(loaded, opts) {
+    const o = opts || {};
+    const say = (typeof o.say === "function") ? o.say : (() => {});
     if (!isSaveLike(loaded)) {
       Sound.hit();
       say("❌ 세이브 데이터가 들어 있지 않은 코드예요.", "var(--red)");
-      return;
+      return { ok: false };
     }
     const curUser = getCurrentUser();
+    const usedRecoveryKey = o.usedRecoveryKey || null;
     const preview = savePreviewText(loaded);
     const curPreview = curUser ? savePreviewText(state) : "없음 (새 기기)";
-    const keyLine = usedRecoveryKey
-      ? `\n🔑 6자리 복구키: ${usedRecoveryKey.key} (${usedRecoveryKey.updatedAt ? new Date(usedRecoveryKey.updatedAt).toLocaleString("ko-KR") : "발급"} 시점 세이브)`
-      : "";
-    if (!confirm(`📥 복원 미리보기${keyLine}\n\n복원할 세이브: ${preview}\n현재 세이브: ${curPreview}\n\n${usedRecoveryKey ? "이 복구키로" : "이 코드로"} 복원할까요?${curUser ? "\n(복원 전 지금 상태는 '최근 자동 백업'에 저장됩니다)" : ""}`)) return;
+    const hasProgress = !!curUser && state && (
+      (Number(state.level) || 1) > 1 ||
+      (Number(state.tokens) || 0) > 0 ||
+      (state.stats && Number(state.stats.kills) > 0)
+    );
+    if (!o.skipPreviewConfirm && hasProgress) {
+      const keyLine = usedRecoveryKey
+        ? `\n🔑 6자리 복구키: ${usedRecoveryKey.key}${o.fromP2P ? " (다른 기기에서 실시간 수신)" : (usedRecoveryKey.updatedAt ? ` (${new Date(usedRecoveryKey.updatedAt).toLocaleString("ko-KR")} 시점 세이브)` : "")}`
+        : "";
+      if (!confirm(`📥 복원 미리보기${keyLine}\n\n복원할 세이브: ${preview}\n현재 세이브: ${curPreview}\n\n이 세이브로 복원할까요?\n(복원 전 지금 상태는 '최근 자동 백업'에 저장됩니다)`)) return { ok: false };
+    }
 
     let ident = null;
     try {
-      ident = await resolveRestoreAccount(loaded, { skipPassword: !!usedRecoveryKey });
+      ident = await resolveRestoreAccount(loaded, {
+        skipPassword: !!usedRecoveryKey,
+        autoDevicePassword: !!o.autoDevicePassword
+      });
     } catch (e) {
       Sound.hit();
       say("❌ " + e.message, "var(--red)");
-      return;
+      return { ok: false };
     }
-    if (!ident) return;
+    if (!ident) return { ok: false };
 
     // 복원 전 현재 상태를 안전하게 이정표 백업으로 남긴다 (잘못된 코드로 덮어썼을 때 되돌리기용)
     let preBackup = null;
@@ -5101,11 +5290,14 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     } catch (e) {
       Sound.hit();
       say("❌ 복원에 실패했어요: " + e.message, "var(--red)");
-      return;
+      return { ok: false };
     }
+
     if (usedRecoveryKey) {
-      // 사용 기록을 남기고, 키의 스냅샷을 방금 복원한 상태로 맞춰 둔다
       try {
+        if (o.fromP2P) {
+          storeReceivedRecoveryKey(usedRecoveryKey.key, usedRecoveryKey.code, ident);
+        }
         const store = loadRecoveryKeyStore();
         const rec = store.keys[usedRecoveryKey.key];
         if (rec) {
@@ -5121,6 +5313,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
         }
       } catch (e) { console.warn("[RecoveryKey] 사용 기록 실패", e); }
     }
+
     if (preBackup) {
       try {
         if (!Array.isArray(state.milestones)) state.milestones = [];
@@ -5130,9 +5323,161 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
         renderAccountTab();
       } catch (e) { /* 백업 보관 실패는 복원 자체에 영향을 주지 않는다 */ }
     }
-    closeSaveCodeModal();
+
+    try { closeSaveCodeModal(); } catch (e) { /* 무시 */ }
     Sound.win();
-    showResultModal(true, `🎉 세이브 복원 완료!\n\n${savePreviewText(state)}\n계정: ${ident.nickname} (@${ident.username})\n\n새로고침해도 이 상태 그대로 유지됩니다.`, "🎉 복원 완료");
+    const pwLine = ident.devicePassword
+      ? `\n\n🔐 이 기기 로그인 비밀번호: ${ident.devicePassword}\n(이 기기에서 다시 로그인할 때 쓰는 비밀번호예요. 꼭 메모해 두세요. 잊어도 복구키로 다시 들어올 수 있어요.)`
+      : "";
+    const headText = o.resultHead || "🎉 세이브 복원 완료!";
+    const titleText = o.resultTitle || "🎉 복원 완료";
+    showResultModal(true, `${headText}\n\n${savePreviewText(state)}\n계정: ${ident.nickname} (@${ident.username})${pwLine}\n\n새로고침해도 이 상태 그대로 유지됩니다.`, titleText);
+    return { ok: true, ident };
+  }
+
+  // 🔑 6자리 복구키 → 세이브 확보 (① 이 브라우저 저장소 → ② 없으면 다른 기기에서 📡 P2P 수신)
+  async function resolveRecoveryKeySave(rawKey, say) {
+    const key = cleanSaveCodeInput(rawKey).replace(/[\s-]/g, "");
+    const rec = lookupRecoveryKey(key);
+    if (rec) {
+      const exp = rec.expiresAt ? Date.parse(rec.expiresAt) : 0;
+      if (exp && exp < Date.now()) {
+        const days = Math.max(1, Math.ceil((Date.now() - exp) / 86400000));
+        const err = new Error(`6자리 복구키 ${key} 는 ${days}일 전에 만료됐어요. 이벤트 센터의 '🔑 6자리 복구키 발급소'에서 새 키를 발급하면 지금 세이브로 바로 만들 수 있어요.`);
+        err.kind = "expired";
+        throw err;
+      }
+      try {
+        return { key: key, loaded: decodeSaveCode(rec.code), usedRecoveryKey: Object.assign({ key: key }, rec), fromP2P: false };
+      } catch (e) {
+        const err = new Error("복구키에 담긴 세이브가 손상됐어요. 이벤트 센터에서 키를 다시 발급해 주세요.");
+        err.kind = "corrupt";
+        throw err;
+      }
+    }
+
+    // 이 브라우저에 없는 키 → 다른 기기(이벤트 센터 전송 대기)에서 실시간으로 받아온다
+    if (typeof say === "function") {
+      say("📡 다른 기기에서 세이브를 불러오는 중... 보내는 기기의 이벤트 센터 화면이 켜져 있어야 해요", "var(--cyan)");
+    }
+    let got = null;
+    try {
+      got = await fetchRecoveryKeySave(key, say);
+    } catch (e) {
+      const err = new Error(p2pNotFoundMessage());
+      err.kind = "p2p";
+      throw err;
+    }
+    let loaded = null;
+    try {
+      loaded = decodeSaveCode(got.code);
+    } catch (e) {
+      const err = new Error("다른 기기에서 받은 세이브가 손상됐어요. 보내는 기기에서 세이브를 한 번 저장한 뒤 다시 시도해 주세요.");
+      err.kind = "corrupt";
+      throw err;
+    }
+    if (typeof say === "function") say("✅ 다른 기기에서 세이브를 받았어요. 복원을 진행합니다...", "var(--cyan)");
+    return {
+      key: key,
+      loaded: loaded,
+      usedRecoveryKey: {
+        key: key,
+        code: got.code,
+        username: got.username,
+        nickname: got.nickname,
+        level: got.level,
+        tokens: got.tokens,
+        receivedAt: got.at,
+        updatedAt: got.at
+      },
+      fromP2P: true
+    };
+  }
+
+  window.runImportFromModal = async function () {
+    const area = document.getElementById("codexSaveArea");
+    const status = document.getElementById("codexSaveStatus");
+    const raw = area ? area.value : "";
+    const say = (msg, color) => { if (status) { status.textContent = msg; status.style.color = color || "var(--gold)"; } };
+
+    if (isRecoveryKeyInput(raw)) {
+      let got = null;
+      try {
+        got = await resolveRecoveryKeySave(raw, say);
+      } catch (e) {
+        Sound.hit();
+        say("❌ " + e.message, "var(--red)");
+        return;
+      }
+      await performSaveRestore(got.loaded, {
+        usedRecoveryKey: got.usedRecoveryKey,
+        fromP2P: got.fromP2P,
+        autoDevicePassword: true,
+        say: say
+      });
+      return;
+    }
+
+    let loaded = null;
+    try {
+      loaded = decodeSaveCode(raw);
+    } catch (e) {
+      Sound.hit();
+      say("❌ " + e.message, "var(--red)");
+      return;
+    }
+    await performSaveRestore(loaded, { say: say });
+  };
+
+  // 메인 로그인 화면: 6자리만 넣으면 바로 로그인(이 브라우저에 없으면 다른 기기에서 📡 수신)
+  window.sanitizeLoginRecoveryKey = function () {
+    const input = document.getElementById("loginRecoveryKey");
+    if (!input) return;
+    const digits = String(input.value || "").replace(/\D/g, "").slice(0, 6);
+    if (input.value !== digits) input.value = digits;
+    const msg = document.getElementById("loginRecoveryMsg");
+    if (msg && msg.textContent) msg.textContent = "";
+  };
+
+  window.loginWithRecoveryKey = async function () {
+    const input = document.getElementById("loginRecoveryKey");
+    const msgEl = document.getElementById("loginRecoveryMsg");
+    const raw = input ? input.value : "";
+    const say = (text, color) => {
+      if (!msgEl) return;
+      msgEl.textContent = text || "";
+      msgEl.style.color = color || "var(--gold)";
+    };
+    if (!isRecoveryKeyInput(raw)) {
+      Sound.hit();
+      say("❌ 6자리 숫자를 입력해 주세요. (예: 481927)", "var(--red)");
+      return;
+    }
+    if (window.__loginRecoveryBusy) return;
+    window.__loginRecoveryBusy = true;
+    say("🔑 복구키를 확인하는 중...", "var(--cyan)");
+    try {
+      const got = await resolveRecoveryKeySave(raw, say);
+      const res = await performSaveRestore(got.loaded, {
+        usedRecoveryKey: got.usedRecoveryKey,
+        fromP2P: got.fromP2P,
+        autoDevicePassword: true,
+        say: say,
+        resultHead: got.fromP2P ? "🔑 6자리 복구키로 로그인했어요! (다른 기기에서 실시간 수신)" : "🔑 6자리 복구키로 로그인했어요!",
+        resultTitle: "🔑 복구키 로그인 완료"
+      });
+      if (res && res.ok) {
+        if (input) input.value = "";
+        say("", "var(--cyan)");
+      } else {
+        say("복원이 취소됐어요. 다시 시도해 주세요.", "var(--gold)");
+      }
+    } catch (e) {
+      Sound.hit();
+      say("❌ " + e.message, "var(--red)");
+    } finally {
+      window.__loginRecoveryBusy = false;
+    }
   };
 
   window.exportSaveCode = async function () {
@@ -6712,6 +7057,17 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   //   version 값이 세이브의 noticeSeenVersion 과 다르면 접속 시 자동으로 한 번 뜹니다.
   // ==================================================
   const PATCH_NOTES = [
+    {
+      version: "2026.11.20c",
+      date: "2026-11-20",
+      title: "📡 6자리 복구키, 다른 기기에서 실시간 전송 · 로그인 화면에서 바로 입장",
+      items: [
+        "📡 이벤트 센터 '🔑 6자리 복구키 발급소'에 [다른 기기 전송 대기]를 넣었어요. 대기를 켜 두면 다른 기기의 게임에서 같은 6자리를 넣는 순간 최신 세이브가 WebRTC 실시간 연결로 바로 전송됩니다(1:1 직접 연결, 서버에 세이브 저장 없음).",
+        "🔑 로그인 화면에 '6자리 복구키로 바로 로그인'이 생겼어요. 6자리만 넣고 누르면 아이디·비밀번호 없이 바로 게임에 들어갑니다.",
+        "🆕 이 브라우저에 키가 없으면 자동으로 다른 기기를 찾아가 세이브를 받아온 뒤 곧바로 복원·로그인까지 이어져요. (보내는 기기의 이벤트 센터 화면이 켜져 있어야 합니다)",
+        "⚠️ 보내는 기기를 못 찾으면 안내가 뜹니다. 그때는 이벤트 센터의 전송 대기를 확인하거나 CDX3. 전체 세이브 코드를 쓰면 돼요."
+      ]
+    },
     {
       version: "2026.11.20b",
       date: "2026-11-20",
@@ -9839,6 +10195,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     const rMsg = document.getElementById("regMsg");
     if (lMsg) { lMsg.textContent = ""; lMsg.className = "auth-msg"; }
     if (rMsg) { rMsg.textContent = ""; rMsg.className = "auth-msg"; }
+    const kMsg = document.getElementById("loginRecoveryMsg");
+    if (kMsg) kMsg.textContent = "";
   }
 
   window.switchAuthTab = function(tab) {
@@ -9857,6 +10215,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     if (formLogin) formLogin.classList.remove("active");
     if (formReg) formReg.classList.remove("active");
     if (formAcc) formAcc.classList.remove("active");
+    const keyBox = document.getElementById("authKeyLogin");
+    if (keyBox) keyBox.style.display = (tab === 'account') ? "none" : "";
 
     if (tab === 'register') {
       if (tabReg) tabReg.classList.add("active");
