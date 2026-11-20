@@ -3347,7 +3347,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   </section>
 
   <footer>
-    CODEX • Endless Dimension Evolution | v2026.11.20 · 🔑 6자리 복구키 | Designed &amp; Powered by Pickle Agent
+    CODEX • Endless Dimension Evolution | v2026.11.20b · 🔑 사용자 지정 6자리 복구키 | Designed &amp; Powered by Pickle Agent
   </footer>
 </div>
 
@@ -3528,7 +3528,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       </div>
       <div style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 8px;">본인 계정 비밀번호만 있으면 언제든 백업·복원할 수 있습니다. 내보낸 코드는 <b>다른 기기·새 브라우저</b>에서도 아이디·닉네임까지 그대로 복원됩니다.</div>
       <div style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 12px; padding:10px 12px; background:rgba(0,245,212,0.08); border:1px solid rgba(0,245,212,0.3); border-radius:10px;">
-        🔑 <b style="color:var(--cyan);">6자리 복구키</b>는 <a href="event.html" style="color:var(--gold);font-weight:800;">이벤트 센터</a>의 '🔑 6자리 복구키 발급소'에서 만들어요. 이 브라우저·이 기기에서는 6자리만 넣으면 바로 복원됩니다. (다른 기기로 옮길 때는 CDX3. 전체 코드를 쓰세요)
+        🔑 <b style="color:var(--cyan);">6자리 복구키</b>는 <a href="event.html" style="color:var(--gold);font-weight:800;">이벤트 센터</a>의 '🔑 6자리 복구키 발급소'에서 만들어요. <b>원하는 6자리를 직접 지정할 수도 있고</b>, 이 브라우저·이 기기에서는 6자리만 넣으면 바로 복원됩니다. (다른 기기로 옮길 때는 CDX3. 전체 코드를 쓰세요)
       </div>
 
       <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; margin-bottom: 14px;">
@@ -6712,6 +6712,16 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   //   version 값이 세이브의 noticeSeenVersion 과 다르면 접속 시 자동으로 한 번 뜹니다.
   // ==================================================
   const PATCH_NOTES = [
+    {
+      version: "2026.11.20b",
+      date: "2026-11-20",
+      title: "🔑 복구키, 원하는 6자리로 직접 만들기",
+      items: [
+        "🎯 이벤트 센터 '🔑 6자리 복구키 발급소'에 입력 칸을 넣었어요. 원하는 6자리를 직접 적고 [🔑 6자리 복구키 만들기]를 누르면 그 번호로 발급됩니다(예: 123456, 246810).",
+        "🎲 입력 칸을 비우고 누르거나 [🎲 랜덤]을 누르면 예전처럼 자동으로 6자리가 만들어져요.",
+        "⚠️ 6자리 숫자가 아니면 안내가 뜨고, 이미 쓰고 있는 번호는 겹치지 않게 막아 둡니다(기존 키를 지우거나 다른 번호를 쓰면 돼요)."
+      ]
+    },
     {
       version: "2026.11.20",
       date: "2026-11-20",

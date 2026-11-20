@@ -870,6 +870,21 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
   border-color: var(--cyan);
   box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.16);
 }
+.rk-code-input {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-align: center;
+  min-width: 210px;
+}
+.rk-code-input::placeholder {
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  color: #7f90ab;
+}
 .rk-msg {
   min-height: 1.3em;
   font-size: 0.86rem;
@@ -1123,11 +1138,16 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
       </div>
 
       <div class="event-desc">
-        세이브를 <b>6자리 숫자 복구키</b>로 만들어 두세요. 게임 로그인 창의 <b>📥 세이브 코드로 복원</b>에 6자리만 넣으면 긴 코드 없이 바로 복원됩니다.
+        세이브를 <b>6자리 숫자 복구키</b>로 만들어 두세요. 게임 로그인 창의 <b>📥 세이브 코드로 복원</b>에 6자리만 넣으면 긴 코드 없이 바로 복원됩니다.<br>
+        🎯 <b>원하는 6자리를 직접 정할 수 있어요.</b> 아래 칸에 숫자를 넣고 [🔑 6자리 복구키 만들기]를 누르면 그 번호로 발급됩니다. (칸을 비우거나 [🎲 랜덤]을 누르면 자동으로 만들어져요.)
       </div>
 
       <div class="rk-issue-row">
         <select id="rkAccount" class="rk-input" title="복구키를 만들 계정"></select>
+      </div>
+      <div class="rk-issue-row">
+        <input id="rkCustomCode" class="rk-input rk-code-input" type="text" inputmode="numeric" maxlength="6" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="원하는 6자리 숫자 입력 (예: 123456)" oninput="rkSanitizeInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();rkIssue();}">
+        <button type="button" class="btn-toggle" onclick="rkRandomIssue()" title="자동으로 만든 6자리로 바로 발급">🎲 랜덤</button>
         <button type="button" class="btn-toggle turn-on" onclick="rkIssue()">🔑 6자리 복구키 만들기</button>
       </div>
       <div class="rk-msg" id="rkMsg"></div>
@@ -1136,7 +1156,8 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
 
       <div class="rk-warn">
         ⚠️ 6자리 복구키는 <b>이 브라우저·기기</b>(localStorage)에만 저장돼요. 서버가 없는 사이트라 <b>다른 기기에서는 6자리 키로 복구되지 않고</b>, 그때는 <b>CDX3. 전체 세이브 코드</b>를 써야 합니다.<br>
-        🔄 발급한 키는 플레이하면서 최신 세이브로 자동 갱신되며, <b>30일</b> 동안 안 쓰면 만료됩니다(이 화면에서 언제든 새로 발급).
+        🔄 발급한 키는 플레이하면서 최신 세이브로 자동 갱신되며, <b>30일</b> 동안 안 쓰면 만료됩니다(이 화면에서 언제든 새로 발급).<br>
+        🔐 원하는 번호를 쓰되, <b>123456·000000 처럼 남이 먼저 찍어 볼 만한 번호</b>는 피하는 게 안전해요.
       </div>
     </div>
 
@@ -1167,7 +1188,7 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
   </div>
 
   <footer>
-    CODEX Event Portal • v2026.11.20 · 🔑 6자리 복구키 발급소 • Made for i01041303261 • Endless Dimension
+    CODEX Event Portal • v2026.11.20b · 🔑 사용자 지정 6자리 복구키 • Made for i01041303261 • Endless Dimension
   </footer>
 </div>
 
@@ -1934,7 +1955,7 @@ function rkRender() {
   keys.sort((a, b) => String(store.keys[b].createdAt || "").localeCompare(String(store.keys[a].createdAt || "")));
   if (badge) badge.textContent = keys.length ? `🔑 발급된 키 ${keys.length}개` : "🔑 발급 가능";
   if (!keys.length) {
-    list.innerHTML = `<div class="rk-empty">아직 발급한 복구키가 없어요. 위에서 계정을 고르고 <b>🔑 6자리 복구키 만들기</b>를 누르면 바로 발급됩니다.</div>`;
+    list.innerHTML = `<div class="rk-empty">아직 발급한 복구키가 없어요. 위에서 계정을 고르고 원하는 6자리를 입력(또는 🎲 랜덤)한 뒤 <b>🔑 6자리 복구키 만들기</b>를 누르면 바로 발급됩니다.</div>`;
     return;
   }
   list.innerHTML = keys.map(k => {
@@ -1943,7 +1964,7 @@ function rkRender() {
     return `<div class="rk-item${expired ? " expired" : ""}">
       <div class="rk-code">${k}</div>
       <div class="rk-meta">
-        <b>${(r.nickname || r.username || "?")}</b> (@${r.username || "?"}) · Lv.${Number(r.level) || 1} · 🪙 ${(Number(r.tokens) || 0).toLocaleString()}<br>
+        <b>${(r.nickname || r.username || "?")}</b> (@${r.username || "?"}) · Lv.${Number(r.level) || 1} · 🪙 ${(Number(r.tokens) || 0).toLocaleString()}${r.source === "custom" ? ' · <b style="color:var(--cyan)">내가 정한 번호</b>' : ""}<br>
         발급 ${rkTime(r.createdAt)} · 갱신 ${rkTime(r.updatedAt)} · <b>${rkLeft(r.expiresAt)}</b>${Number(r.uses) ? ` · 복원 ${Number(r.uses)}회` : ""}
       </div>
       <div class="rk-actions">
@@ -1955,11 +1976,34 @@ function rkRender() {
   }).join("");
 }
 
-window.rkIssue = function () {
+window.rkSanitizeInput = function () {
+  const el = document.getElementById("rkCustomCode");
+  if (!el) return;
+  const digits = String(el.value || "").replace(/\D/g, "").slice(0, 6);
+  if (el.value !== digits) el.value = digits;
+};
+
+function rkCustomValue() {
+  const el = document.getElementById("rkCustomCode");
+  return el ? String(el.value || "").replace(/\D/g, "").slice(0, 6) : "";
+}
+
+function rkClearCustom() {
+  const el = document.getElementById("rkCustomCode");
+  if (el) el.value = "";
+}
+
+// wantKey: "" 이면 자동 생성, 6자리를 넘기면 그 번호로 발급
+function rkIssueCore(wantKey) {
   const sel = document.getElementById("rkAccount");
   const username = sel ? sel.value : "";
   const db = rkUsers();
   const user = username ? db[username] : null;
+
+  if (wantKey && !/^\d{6}$/.test(wantKey)) {
+    rkSetMsg("❌ 6자리 숫자를 입력해 주세요. (예: 123456)", "var(--pink)");
+    return;
+  }
   if (!user) { rkSetMsg("❌ 복구키를 만들 계정이 없어요. 먼저 게임에서 회원가입·로그인을 해 주세요.", "var(--pink)"); return; }
   if (!user.saveData) { rkSetMsg("❌ 이 계정에는 아직 세이브가 없어요. 게임을 한 번 플레이한 뒤 다시 시도해 주세요.", "var(--pink)"); return; }
 
@@ -1971,11 +2015,18 @@ window.rkIssue = function () {
   }
 
   const store = rkLoad();
+
+  if (wantKey && store.keys[wantKey]) {
+    const prev = store.keys[wantKey];
+    rkSetMsg(`❌ ${wantKey} 는 이미 등록된 코드예요. 다른 6자리를 입력하거나 기존 키를 삭제해 주세요.\n(등록된 키: ${prev.nickname || prev.username || "?"} · 갱신 ${rkTime(prev.updatedAt)})`, "var(--pink)");
+    return;
+  }
+
   if (Object.keys(store.keys).length >= RK_MAX) {
     rkSetMsg(`❌ 복구키는 최대 ${RK_MAX}개까지 저장돼요. 안 쓰는 키를 지우고 다시 시도해 주세요.`, "var(--pink)");
     return;
   }
-  const key = rkNewKey(store);
+  const key = wantKey || rkNewKey(store);
   if (!key) { rkSetMsg("❌ 복구키 번호를 만들지 못했어요. 다시 시도해 주세요.", "var(--pink)"); return; }
 
   const now = Date.now();
@@ -1989,14 +2040,34 @@ window.rkIssue = function () {
     updatedAt: new Date(now).toISOString(),
     expiresAt: new Date(now + RK_DAYS * 86400000).toISOString(),
     uses: 0,
-    lastUsedAt: null
+    lastUsedAt: null,
+    source: wantKey ? "custom" : "random"
   };
   if (!rkSaveStore(store)) { rkSetMsg("❌ 브라우저 저장 공간이 부족해 복구키를 저장하지 못했어요.", "var(--pink)"); return; }
+  rkClearCustom();
   rkFillAccounts();
   rkRender();
   try { Sound.powerOn(); } catch (e) {}
   const copied = rkWriteClipboard(key);
-  rkSetMsg(`✅ 6자리 복구키 [ ${key} ] 발급 완료! ${copied ? "클립보드에 복사했어요. " : ""}게임 로그인 창의 [📥 세이브 코드로 복원]에 이 6자리를 넣으면 됩니다.`, "var(--cyan)");
+  const head = wantKey
+    ? `✅ 원하는 6자리 복구키 [ ${key} ] 발급 완료!`
+    : `✅ 6자리 복구키 [ ${key} ] 발급 완료!`;
+  rkSetMsg(`${head} ${copied ? "클립보드에 복사했어요. " : ""}게임 로그인 창의 [📥 세이브 코드로 복원]에 이 6자리를 넣으면 됩니다.`, "var(--cyan)");
+}
+
+window.rkIssue = function () {
+  const typed = rkCustomValue();
+  const el = document.getElementById("rkCustomCode");
+  if (el && String(el.value || "").trim() && !typed) {
+    rkSetMsg("❌ 6자리 숫자를 입력해 주세요. (예: 123456)", "var(--pink)");
+    return;
+  }
+  rkIssueCore(typed);
+};
+
+window.rkRandomIssue = function () {
+  rkClearCustom();
+  rkIssueCore("");
 };
 
 window.rkCopy = function (key) {
