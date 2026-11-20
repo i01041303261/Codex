@@ -1229,7 +1229,7 @@ button, .tool-btn, .btn-master, .btn-toggle, .admin-choice-card, .admin-tab-btn,
         </div>
         <div class="rk-live-status" id="rkLiveStatus"></div>
         <div class="rk-live-actions">
-          <button type="button" id="rkLiveStopAll" onclick="rkStopAllWaits()">📴 모든 대기 끄기</button>
+          <button type="button" id="rkLiveStopAll" onclick="rkStopAllWaits()" style="display:none;">📴 모든 대기 끄기</button>
         </div>
       </div>
 
@@ -2035,6 +2035,7 @@ function rkRender() {
   if (badge) badge.textContent = keys.length ? `🔑 발급된 키 ${keys.length}개` : "🔑 발급 가능";
   if (!keys.length) {
     list.innerHTML = `<div class="rk-empty">아직 발급한 복구키가 없어요. 위에서 계정을 고르고 원하는 6자리를 입력(또는 🎲 랜덤)한 뒤 <b>🔑 6자리 복구키 만들기</b>를 누르면 바로 발급됩니다.</div>`;
+    rkRenderLive();
     return;
   }
   list.innerHTML = keys.map(k => {
