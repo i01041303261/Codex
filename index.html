@@ -3404,7 +3404,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   </section>
 
   <footer>
-    CODEX • Endless Dimension Evolution | v2026.11.20d · 📡 6자리 실시간 기기 전송 | Designed &amp; Powered by Pickle Agent
+    CODEX • Endless Dimension Evolution | v2026.11.21a · 📡 6자리 실시간 기기 전송 | Designed &amp; Powered by Pickle Agent
   </footer>
 </div>
 
@@ -3691,6 +3691,100 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     } else {
       localStorage.removeItem(AUTH_SESSION_KEY);
     }
+  }
+
+  // ==================================================
+  // 📅 출석 보상 계정 저장소 (2026-11-21 신규)
+  //   · 출석 기록(마지막 출석 날짜·연속 일수)을 '아이디별'로 따로 보관합니다.
+  //     → 같은 계정이면 Codex/·Codex-(허브)·다른 탭 어디서 받아도 오늘 출석 완료로 이어지고,
+  //       다른 계정으로 로그인하면 그 계정 기록만 나옵니다(계정 간 기록이 섞이지 않음).
+  //   · 세이브(state.attendance)·계정 레코드(codex_users_db[아이디].attendance)·이 저장소를
+  //     함께 비교해 '더 최신 기록'(날짜가 뒤 / 같은 날이면 연속일수가 큰 쪽)을 항상 채택합니다.
+  //   · 서버가 없는 정적 호스팅이라 이 저장소도 브라우저 안에만 있습니다. 다른 기기로는
+  //     CDX3. 세이브 코드·6자리 복구키(P2P)로 옮길 때 세이브와 함께 따라갑니다.
+  // ==================================================
+  const ATTEND_LEDGER_KEY = "codex_attendance_ledger_v1";
+
+  function attendDateOk(v) {
+    return typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v);
+  }
+  function attendNormalize(att) {
+    const o = (att && typeof att === "object" && !Array.isArray(att)) ? att : null;
+    const lastDate = (o && attendDateOk(o.lastDate)) ? o.lastDate : null;
+    let streak = Math.max(0, Math.min(99999, Math.floor(Number(o && o.streak) || 0)));
+    if (!lastDate) streak = 0;
+    return { lastDate: lastDate, streak: streak };
+  }
+  function attendPickBest(a, b) {
+    const x = attendNormalize(a), y = attendNormalize(b);
+    if (!x.lastDate) return y;
+    if (!y.lastDate) return x;
+    if (y.lastDate > x.lastDate) return y;
+    if (x.lastDate > y.lastDate) return x;
+    return { lastDate: x.lastDate, streak: Math.max(x.streak, y.streak) };
+  }
+  function attendSame(a, b) {
+    const x = attendNormalize(a), y = attendNormalize(b);
+    return x.lastDate === y.lastDate && x.streak === y.streak;
+  }
+
+  let attendLedgerRawCache = null;
+  let attendLedgerObjCache = null;
+  function attendLedgerStore() {
+    let raw = null;
+    try { raw = localStorage.getItem(ATTEND_LEDGER_KEY); } catch (e) { raw = null; }
+    if (raw === attendLedgerRawCache && attendLedgerObjCache) return attendLedgerObjCache;
+    let obj = null;
+    try { obj = raw ? JSON.parse(raw) : null; } catch (e) { obj = null; }
+    if (!obj || typeof obj !== "object" || !obj.users || typeof obj.users !== "object" || Array.isArray(obj.users)) obj = { v: 1, users: {} };
+    attendLedgerRawCache = raw;
+    attendLedgerObjCache = obj;
+    return obj;
+  }
+  function attendLedgerRead(username) {
+    if (!username) return null;
+    const store = attendLedgerStore();
+    const rec = store.users[username];
+    return rec ? attendNormalize(rec) : null;
+  }
+  function attendLedgerWrite(username, att) {
+    if (!username) return null;
+    const best = attendNormalize(att);
+    if (!best.lastDate) return null;
+    const store = attendLedgerStore();
+    const merged = attendPickBest(store.users[username], best);
+    const prev = attendNormalize(store.users[username]);
+    if (prev.lastDate === merged.lastDate && prev.streak === merged.streak) return merged;
+    store.users[username] = { lastDate: merged.lastDate, streak: merged.streak, updatedAt: new Date().toISOString() };
+    try {
+      const nextRaw = JSON.stringify(store);
+      localStorage.setItem(ATTEND_LEDGER_KEY, nextRaw);
+      attendLedgerRawCache = nextRaw;
+      attendLedgerObjCache = store;
+    } catch (e) { console.warn("[Attendance] 계정 저장 실패", e); }
+    return merged;
+  }
+  // 계정(아이디)의 가장 최신 출석 기록 — 세이브·계정 레코드·계정 전용 저장소를 모두 비교합니다
+  function attendAccountBest(username, saveData) {
+    let best = attendNormalize(saveData && saveData.attendance);
+    const u = username || getCurrentUsername();
+    if (!u) return best;
+    try {
+      const db = getUsersDB();
+      const acc = db[u];
+      if (acc && acc.attendance) best = attendPickBest(best, acc.attendance);
+      if (acc && acc.saveData && acc.saveData.attendance) best = attendPickBest(best, acc.saveData.attendance);
+    } catch (e) { /* 무시 */ }
+    return attendPickBest(best, attendLedgerRead(u));
+  }
+  // 불러온 세이브에 계정의 최신 출석 기록을 입힙니다(옛 세이브·복원으로 오늘 출석이 되살아나거나 지워지는 것 방지)
+  function attendApplyAccountBest(target, username) {
+    if (!target || typeof target !== "object") return target;
+    const u = username || getCurrentUsername() || null;
+    const best = attendAccountBest(u, target);
+    target.attendance = best;
+    if (u && best.lastDate) attendLedgerWrite(u, best);
+    return target;
   }
 
   // 1. Web Audio 사운드 시스템
@@ -5077,6 +5171,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   function applyLoadedSave(loaded) {
     const prevNoticeSeen = (state && typeof state.noticeSeenVersion === "string") ? state.noticeSeenVersion : null;
     state = sanitizeState(loaded);
+    try { attendApplyAccountBest(state, getCurrentUsername()); } catch (e) { console.warn("[attendance]", e); }
     if (!state.noticeSeenVersion && prevNoticeSeen) state.noticeSeenVersion = prevNoticeSeen;
     currentHp = null;
     currentMp = null;
@@ -6530,6 +6625,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   function sanitizeState(saved) {
       const merged = Object.assign({}, defaultState, saved || {});
       merged.roulette = Object.assign({}, defaultState.roulette, (saved && saved.roulette) || {});
+      // 📅 출석 기록은 항상 새 객체로 복사합니다 — 게스트·새 계정이 기본 세이브 객체의 출석 값을 함께 쓰지 않도록
+      merged.attendance = Object.assign({}, (saved && saved.attendance && typeof saved.attendance === "object") ? saved.attendance : {});
       if (typeof merged.roulette.tries !== "number") merged.roulette.tries = 10;
       if (!Array.isArray(merged.titles)) merged.titles = ["🌱 새싹 탐험가"];
       if (!merged.titles.length) merged.titles.push("🌱 새싹 탐험가");
@@ -6554,6 +6651,9 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
         saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
       }
       const merged = sanitizeState(saved);
+      // 📅 이 계정(아이디)의 최신 출석 기록을 채택 — 다른 곳(허브·다른 탭·다른 기기 복원)에서 이미 받았으면 완료 상태로 시작
+      try { attendApplyAccountBest(merged, getCurrentUsername() || (user && user.username) || null); }
+      catch (e) { console.warn("[attendance]", e); }
 
       // 어드민 계정(ADMIN/어드민) 감지 시 리미트 칭호 2종 상시 자동 획득
       const currentU = getCurrentUsername();
@@ -6654,6 +6754,12 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
           }
           db[username].saveData = state;
           db[username].lastLogin = new Date().toISOString();
+          // 📅 출석 기록을 계정 레코드와 계정 전용 저장소에도 함께 남깁니다(계정 단위 귀속)
+          try {
+            const att = attendNormalize(state.attendance);
+            db[username].attendance = att;
+            if (att.lastDate) attendLedgerWrite(username, att);
+          } catch (e) { /* 무시 */ }
           saveUsersDB(db);
         }
       }
@@ -6793,6 +6899,15 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     if (typeof state.attendance.lastDate !== "string" || !attendParseDate(state.attendance.lastDate)) state.attendance.lastDate = null;
     state.attendance.streak = Math.max(0, Math.min(99999, Math.floor(Number(state.attendance.streak) || 0)));
     if (!state.attendance.lastDate) state.attendance.streak = 0;
+    // 📅 계정(아이디)별 최신 기록과 맞춥니다 — 다른 탭·허브·다른 기기에서 받은 기록이 있으면 이 화면도 그대로 따라옵니다
+    try {
+      const username = getCurrentUsername();
+      if (username) {
+        const best = attendPickBest(state.attendance, attendLedgerRead(username));
+        if (!attendSame(best, state.attendance)) state.attendance = best;
+        if (state.attendance.lastDate) attendLedgerWrite(username, state.attendance);
+      }
+    } catch (e) { console.warn("[attendance]", e); }
     return state.attendance;
   }
   function attendInfo() {
@@ -7006,6 +7121,20 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     if (navDot) navDot.hidden = info.claimedToday;
   }
   function refreshAttendanceUI() { renderAttendance(); }
+  // 📅 같은 브라우저의 다른 화면(허브 임베드·다른 탭)에서 출석을 받으면 이 화면도 바로 따라갑니다
+  window.addEventListener("storage", function (ev) {
+    try {
+      if (!ev || !ev.key) return;
+      if (ev.key !== ATTEND_LEDGER_KEY && ev.key !== AUTH_USERS_KEY) return;
+      const username = getCurrentUsername();
+      if (!username) return;
+      const best = attendAccountBest(username, state);
+      if (!attendSame(best, state.attendance)) {
+        state.attendance = best;
+        renderAttendance();
+      }
+    } catch (e) { console.warn("[attendance]", e); }
+  });
   function updateAttendClock() {
     const el = document.getElementById("attendTimer");
     if (!el) return;
@@ -7017,8 +7146,15 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
 
   window.attendClaim = function () {
     if (!getCurrentUser()) { openAuthModal(); return; }
+    // 📅 누르는 순간 계정 저장소를 다시 확인 — 다른 곳(허브·다른 탭·다른 기기)에서 이미 받았으면 중복 수령하지 않습니다
+    const claimUser = getCurrentUsername();
+    try {
+      const best = attendAccountBest(claimUser, state);
+      if (!attendSame(best, state.attendance)) state.attendance = best;
+    } catch (e) { console.warn("[attendance]", e); }
     const info = attendInfo();
     if (info.claimedToday) {
+      renderAttendance();
       showToast("📅 오늘 출석은 이미 완료했어요.<br>다음 출석은 <b>" + attendClockText(attendNextResetMs()) + "</b> 후에 열립니다.", "warn");
       return;
     }
@@ -7036,6 +7172,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     attendLogLines.unshift(newStreak + "일차 · " + grant.plain.join(" · "));
     attendLogLines = attendLogLines.slice(0, 5);
     save();
+    // 📅 출석 직후에는 6자리 복구키 스냅샷도 바로 최신화 — 곧바로 다른 기기로 옮겨도 오늘 출석이 따라갑니다
+    try { refreshRecoveryKeys(true); } catch (e) { /* 무시 */ }
     renderAttendance();
     showToast(head + "<br>" + grant.lines.join("<br>"), grant.reward.m ? "boss" : "win", grant.reward.m ? 4200 : 3600);
     Sound.win();
@@ -7059,6 +7197,18 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   //   version 값이 세이브의 noticeSeenVersion 과 다르면 접속 시 자동으로 한 번 뜹니다.
   // ==================================================
   const PATCH_NOTES = [
+    {
+      version: "2026.11.21a",
+      date: "2026-11-21",
+      title: "📅 출석 보상이 계정 따라 어디서든 이어집니다",
+      items: [
+        "📅 이제 출석 기록(오늘 출석 완료·연속 일수)이 계정(아이디) 기준으로 저장돼요. 한 계정으로 한 번만 출석하면 다른 곳으로 옮겨도 오늘 출석은 이미 처리된 상태로 이어집니다.",
+        "🌌 단독 사이트(Codex)·게임 관리소(Codex-)·다른 탭을 함께 켜 둬도, 한쪽에서 받으면 다른 화면이 바로 '✅ 오늘 출석 완료'로 바뀝니다(같은 날 중복 수령 방지).",
+        "🔀 계정마다 기록이 완전히 따로 관리돼요. 계정 A로 출석한 뒤 다른 계정 B로 로그인하면 B는 오늘 출석을 새로 할 수 있고, 다시 A로 돌아오면 A의 출석 완료 상태가 그대로 남아 있어요.",
+        "💾 세이브 코드로 다른 기기에 옛 세이브를 복원해도 오늘 이미 받은 출석 기록이 지워지거나 다시 받아지지 않아요(연속 일수도 되돌아가지 않습니다).",
+        "🔑 6자리 복구키로 옮길 때도 출석 직후 바로 최신 세이브가 전송되도록 손봤어요."
+      ]
+    },
     {
       version: "2026.11.20d",
       date: "2026-11-20",
@@ -10386,7 +10536,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       return;
     }
 
-    const userSaveData = keepData ? JSON.parse(JSON.stringify(state)) : Object.assign({}, defaultState);
+    const userSaveData = keepData ? JSON.parse(JSON.stringify(state)) : JSON.parse(JSON.stringify(defaultState));
     if (username.toUpperCase() === "ADMIN" || username === "어드민") {
       const limitTitles = ["🔒 최초의 기록자", "🔒 개발자의 친구"];
       if (!Array.isArray(userSaveData.titles)) userSaveData.titles = ["🌱 새싹 탐험가"];
@@ -10427,7 +10577,10 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     Sound.click();
     if (!confirm("정말 로그아웃 하시겠습니까?\n로그아웃하면 다시 로그인하거나 회원가입할 때까지 게임 화면이 잠깁니다.")) return;
     setSession(null);
-    state = Object.assign({}, defaultState);
+    // 게스트 상태는 기본 세이브를 깊은 복사해 씹니다 — 이전 계정의 출석·진행도가 게스트/새 계정으로 새지 않도록
+    state = sanitizeState(JSON.parse(JSON.stringify(defaultState)));
+    attendLogLines = [];
+    attendLogOwner = null;
     currentHp = null;
     currentMp = null;
     updateAuthUI();
