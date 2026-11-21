@@ -6561,6 +6561,10 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     noticeSeenVersion: null
   };
 
+  // 🔐 이 화면(탭·허브 임베드)의 세이브가 누구 계정 것인지 기억합니다.
+  //    로그인 세션은 같은 오리진의 모든 화면이 공유하지만 세이브는 화면마다 따로 들고 있으므로,
+  //    다른 탭에서 계정이 바뀌었을 때 이 화면이 남의 계정 기록을 덮지 않도록 저장 전에 대조합니다.
+  let stateOwner = null;
   let state = loadState();
 
   let currentHp = null;
@@ -6642,6 +6646,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   }
 
   function loadState() {
+    stateOwner = getCurrentUsername();   // 이 세이브는 지금 로그인한 계정의 것입니다
     try {
       let saved = null;
       const user = getCurrentUser();
@@ -6743,7 +6748,9 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       if (typeof currentHp === "number") state.hp = Math.round(currentHp);
       if (typeof currentMp === "number") state.mp = Math.round(currentMp);
       const username = getCurrentUsername();
-      if (username) {
+      // 이 화면의 세이브 주인과 지금 로그인 계정이 같을 때만 계정 저장소에 씁니다(다른 탭에서 계정을 바꿨을 때 남의 세이브를 덮지 않도록)
+      const ownerOk = (stateOwner || null) === (username || null);
+      if (username && ownerOk) {
         const db = getUsersDB();
         if (db[username]) {
           if (username.toUpperCase() === "ADMIN" || username === "어드민") {
@@ -6763,8 +6770,8 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
           saveUsersDB(db);
         }
       }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      refreshRecoveryKeys(false);   // 이 계정의 6자리 복구키가 있으면 최신 세이브로 맞춰 둔다(60초 스로틀)
+      if (!username || ownerOk) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (ownerOk) refreshRecoveryKeys(false);   // 이 계정의 6자리 복구키가 있으면 최신 세이브로 맞춰 둔다(60초 스로틀)
     } catch (e) {
       console.warn("[Save Error]", e);
     }
@@ -6902,7 +6909,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     // 📅 계정(아이디)별 최신 기록과 맞춥니다 — 다른 탭·허브·다른 기기에서 받은 기록이 있으면 이 화면도 그대로 따라옵니다
     try {
       const username = getCurrentUsername();
-      if (username) {
+      if (username && stateOwner === username) {
         const best = attendPickBest(state.attendance, attendLedgerRead(username));
         if (!attendSame(best, state.attendance)) state.attendance = best;
         if (state.attendance.lastDate) attendLedgerWrite(username, state.attendance);
@@ -7127,7 +7134,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       if (!ev || !ev.key) return;
       if (ev.key !== ATTEND_LEDGER_KEY && ev.key !== AUTH_USERS_KEY) return;
       const username = getCurrentUsername();
-      if (!username) return;
+      if (!username || stateOwner !== username) return;
       const best = attendAccountBest(username, state);
       if (!attendSame(best, state.attendance)) {
         state.attendance = best;
@@ -7148,6 +7155,10 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     if (!getCurrentUser()) { openAuthModal(); return; }
     // 📅 누르는 순간 계정 저장소를 다시 확인 — 다른 곳(허브·다른 탭·다른 기기)에서 이미 받았으면 중복 수령하지 않습니다
     const claimUser = getCurrentUsername();
+    if (claimUser && stateOwner !== claimUser) {
+      // 다른 탭에서 계정이 바뀌었으면 이 화면도 지금 로그인한 계정 상태로 다시 불러옵니다
+      state = loadState();
+    }
     try {
       const best = attendAccountBest(claimUser, state);
       if (!attendSame(best, state.attendance)) state.attendance = best;
@@ -10579,6 +10590,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
     setSession(null);
     // 게스트 상태는 기본 세이브를 깊은 복사해 씹니다 — 이전 계정의 출석·진행도가 게스트/새 계정으로 새지 않도록
     state = sanitizeState(JSON.parse(JSON.stringify(defaultState)));
+    stateOwner = null;
     attendLogLines = [];
     attendLogOwner = null;
     currentHp = null;
