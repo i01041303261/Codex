@@ -12188,14 +12188,15 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       pwaToast("브라우저 메뉴(⋮)의 <b>앱 설치</b> 또는 <b>홈 화면에 추가</b>로 설치할 수 있어요.", 6500);
       return;
     }
-    deferredPrompt.prompt();
     try {
+      deferredPrompt.prompt();
       const choice = await deferredPrompt.userChoice;
       if (choice && choice.outcome === "accepted") {
         pwaToast("📲 설치를 진행하고 있어요. 잠시만 기다려 주세요!");
       }
     } catch (err) {
       console.warn("[PWA] 설치 프롬프트 오류:", err);
+      pwaToast("브라우저 메뉴(⋮)의 <b>앱 설치</b>로 설치할 수 있어요.", 6500);
     }
     deferredPrompt = null;
     hideBtn();
