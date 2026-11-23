@@ -2634,6 +2634,12 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
 .pwa-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .pwa-toast b { color: #ffd166; }
 
+/* 좁은 화면: 헤더 버튼이 찌그러지지 않고 줄바꿈되도록 (앱 설치 버튼 추가로 인한 폭 부족 완화) */
+@media (max-width: 680px) {
+  .header-tools { flex-wrap: wrap; justify-content: flex-start; }
+  .header-tools .tool-btn { flex: 0 0 auto; white-space: nowrap; }
+}
+
 </style>
 </head>
 <body>
