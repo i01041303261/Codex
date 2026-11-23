@@ -2,7 +2,7 @@
  * 전략: Network-First (게임이 자주 업데이트되므로 항상 네트워크 우선, 실패 시에만 캐시)
  * - 같은 출처(origin)의 GET 요청만 다룬다. 외부 CDN(PeerJS 등)·다른 출처·non-GET은 그대로 통과.
  */
-const CACHE_VERSION = 'codex-v2026.11.23a';
+const CACHE_VERSION = 'codex-v2026.11.23b';
 const CACHE_PREFIX = 'codex-runtime-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
@@ -61,10 +61,12 @@ function isCacheableResponse(res) {
   return res && res.ok && res.type === 'basic' && res.status === 200;
 }
 
-async function networkFirst(request, fallbackUrl) {
+async function networkFirst(request, fallbackUrl, opts) {
   const cache = await caches.open(CACHE_NAME);
+  // HTML 문서는 브라우저 HTTP 캐시(GitHub Pages 10분)까지 건너뛰고 항상 최신을 받는다
+  const fetchInit = (opts && opts.noHttpCache) ? { cache: 'no-store' } : undefined;
   try {
-    const response = await fetch(request);
+    const response = await fetch(request, fetchInit);
     if (isCacheableResponse(response)) {
       cache.put(request, response.clone()).catch(() => {});
     }
@@ -113,7 +115,7 @@ self.addEventListener('fetch', (event) => {
   if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') return;
 
   if (request.mode === 'navigate') {
-    event.respondWith(networkFirst(request, './index.html'));
+    event.respondWith(networkFirst(request, './index.html', { noHttpCache: true }));
     return;
   }
 
