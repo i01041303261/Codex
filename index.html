@@ -10,6 +10,16 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://i01041303261.github.io/Codex/">
 
+<!-- PWA (크롬 앱 설치) -->
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0b0d1f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CODEX">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+
 <!-- Google Site Verification (Google Search Console) -->
 <meta name="google-site-verification" content="tEuE9oSpU2G8IXKY2EujlcyVeB2YKmaP0FMzFtTlDWU">
 
@@ -2579,6 +2589,48 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
 .notice-foot button { flex: 1 1 auto; }
 .notice-hint { font-size: .72rem; color: #7d8aa0; font-weight: 700; }
 
+/* 📲 앱 설치(PWA) 버튼 */
+.tool-btn.pwa-install-btn {
+  display: none;
+  background: linear-gradient(135deg, rgba(0, 245, 212, .95), rgba(131, 56, 236, .95));
+  border: 1px solid rgba(0, 245, 212, .75);
+  color: #08121c;
+  font-weight: 900;
+  box-shadow: 0 0 14px rgba(0, 245, 212, .45), 0 4px 14px rgba(131, 56, 236, .35);
+  text-shadow: none;
+}
+.tool-btn.pwa-install-btn.show {
+  display: flex;
+  animation: pwaPulse 2.6s ease-in-out infinite;
+}
+.tool-btn.pwa-install-btn:hover {
+  background: linear-gradient(135deg, #00f5d4, #a855f7);
+  border-color: #e9fffb;
+  color: #06101a;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 245, 212, .65), 0 6px 18px rgba(131, 56, 236, .45);
+}
+@keyframes pwaPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 245, 212, .35), 0 3px 10px rgba(131, 56, 236, .3); }
+  50% { box-shadow: 0 0 20px rgba(0, 245, 212, .7), 0 3px 16px rgba(131, 56, 236, .5); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tool-btn.pwa-install-btn.show { animation: none; }
+}
+
+/* 앱 설치 안내 토스트 */
+.pwa-toast {
+  position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(16px);
+  z-index: 9999; max-width: min(92vw, 420px);
+  background: linear-gradient(150deg, rgba(20, 24, 46, .98), rgba(12, 16, 32, .99));
+  border: 1px solid rgba(0, 245, 212, .45); border-radius: 14px;
+  padding: 12px 16px; color: #eaf7ff; font-size: .86rem; font-weight: 700; line-height: 1.5;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .55), 0 0 20px rgba(0, 245, 212, .18);
+  opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease;
+}
+.pwa-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.pwa-toast b { color: #ffd166; }
+
 </style>
 </head>
 <body>
@@ -2594,6 +2646,7 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
         <h1>CODEX <span>끝없는 차원의 모험</span></h1>
       </div>
       <div class="header-tools">
+        <button id="pwaInstallBtn" class="tool-btn pwa-install-btn" onclick="pwaPromptInstall()" title="크롬에서 CODEX를 앱으로 설치">📲 앱 설치</button>
         <a href="event.html" class="tool-btn event-btn" style="text-decoration:none; background: linear-gradient(135deg, #ff006e, #8338ec); color:#fff; font-weight:700; border: 1px solid rgba(255,0,110,0.5); box-shadow: 0 0 12px rgba(255,0,110,0.4);" title="실시간 이벤트 센터">🎉 이벤트 센터</a>
         <button id="authBtn" class="tool-btn auth-btn" onclick="openAuthModal('login')">🔑 로그인</button>
         <button id="registerBtn" class="tool-btn auth-btn highlight" onclick="openAuthModal('register')">✨ 회원가입</button>
@@ -12054,5 +12107,106 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
   window.addEventListener("error", e => console.warn("[CODEX Guard]", e.error || e.message));
 })();
 </script>
+
+<!-- PWA: Service Worker 등록 + 앱 설치 버튼 -->
+<script>
+(() => {
+  "use strict";
+
+  // ---------- Service Worker ----------
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js", { scope: "./" })
+        .then((reg) => {
+          console.log("[PWA] Service Worker 등록 완료:", reg.scope);
+          reg.addEventListener("updatefound", () => {
+            const nw = reg.installing;
+            if (!nw) return;
+            nw.addEventListener("statechange", () => {
+              if (nw.state === "installed" && navigator.serviceWorker.controller) {
+                console.log("[PWA] 새 버전 준비됨 - 다음 방문 시 자동 적용");
+              }
+            });
+          });
+        })
+        .catch((err) => console.warn("[PWA] Service Worker 등록 실패:", err));
+    });
+  }
+
+  // ---------- 설치 버튼 ----------
+  const btn = document.getElementById("pwaInstallBtn");
+  let deferredPrompt = null;
+
+  const isStandalone = () =>
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.matchMedia("(display-mode: window-controls-overlay)").matches ||
+    window.navigator.standalone === true;
+
+  const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  let toastEl = null;
+  let toastTimer = null;
+  function pwaToast(html, ms) {
+    if (!toastEl) {
+      toastEl = document.createElement("div");
+      toastEl.className = "pwa-toast";
+      document.body.appendChild(toastEl);
+    }
+    toastEl.innerHTML = html;
+    requestAnimationFrame(() => toastEl.classList.add("show"));
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), ms || 4200);
+  }
+
+  function hideBtn() { if (btn) btn.classList.remove("show"); }
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (isStandalone()) return;
+    if (btn) btn.classList.add("show");
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    hideBtn();
+    pwaToast("📲 <b>설치 완료!</b> 홈 화면의 CODEX 아이콘으로 바로 실행할 수 있어요.");
+  });
+
+  window.pwaPromptInstall = async function () {
+    if (isStandalone()) {
+      pwaToast("이미 설치된 앱으로 실행 중이에요. 홈 화면의 <b>CODEX</b> 아이콘을 눌러 주세요.");
+      return;
+    }
+    if (isiOS) {
+      pwaToast("아이폰은 사파리 하단 <b>공유</b> 버튼 → <b>홈 화면에 추가</b>를 눌러 설치해요.", 6500);
+      return;
+    }
+    if (!deferredPrompt) {
+      hideBtn();
+      pwaToast("브라우저 메뉴(⋮)의 <b>앱 설치</b> 또는 <b>홈 화면에 추가</b>로 설치할 수 있어요.", 6500);
+      return;
+    }
+    deferredPrompt.prompt();
+    try {
+      const choice = await deferredPrompt.userChoice;
+      if (choice && choice.outcome === "accepted") {
+        pwaToast("📲 설치를 진행하고 있어요. 잠시만 기다려 주세요!");
+      }
+    } catch (err) {
+      console.warn("[PWA] 설치 프롬프트 오류:", err);
+    }
+    deferredPrompt = null;
+    hideBtn();
+  };
+
+  // 이미 앱으로 실행 중이거나, 설치 이벤트를 지원하지 않는 브라우저는 버튼을 숨긴다
+  const onReady = () => { if (isStandalone()) hideBtn(); };
+  if (document.readyState === "complete") onReady();
+  else window.addEventListener("load", onReady);
+})();
+</script>
+
 </body>
 </html>
