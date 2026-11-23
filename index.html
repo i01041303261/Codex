@@ -12189,8 +12189,11 @@ button.attend-claim-btn:disabled { background: rgba(255,255,255,.09); color: #8b
       return;
     }
     try {
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
+      const promptEvent = deferredPrompt;
+      deferredPrompt = null;
+      hideBtn();
+      promptEvent.prompt();
+      const choice = await promptEvent.userChoice;
       if (choice && choice.outcome === "accepted") {
         pwaToast("📲 설치를 진행하고 있어요. 잠시만 기다려 주세요!");
       }
