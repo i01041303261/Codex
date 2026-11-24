@@ -2,7 +2,7 @@
  * 전략: Network-First (게임이 자주 업데이트되므로 항상 네트워크 우선, 실패 시에만 캐시)
  * - 같은 출처(origin)의 GET 요청만 다룬다. 외부 CDN(PeerJS 등)·다른 출처·non-GET은 그대로 통과.
  */
-const CACHE_VERSION = 'codex-v2026.11.23b';
+const CACHE_VERSION = 'codex-v2026.11.24a';
 const CACHE_PREFIX = 'codex-runtime-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 
@@ -11,10 +11,10 @@ const PRECACHE_URLS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-maskable-512.png',
-  './icons/apple-touch-icon.png'
+  './icons/icon-192.png?v=20261124a',
+  './icons/icon-512.png?v=20261124a',
+  './icons/icon-maskable-512.png?v=20261124a',
+  './icons/apple-touch-icon.png?v=20261124a'
 ];
 
 self.addEventListener('install', (event) => {
